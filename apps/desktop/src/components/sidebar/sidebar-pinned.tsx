@@ -74,7 +74,8 @@ export function SidebarPinned(): ReactElement | null {
           items={pinned.map((note) => note.path)}
           strategy={verticalListSortingStrategy}
         >
-          <ul className="mt-2 flex flex-col space-y-1">
+          {/* Rows sit flush, like the nav's — one density for the whole sidebar. */}
+          <ul className="mt-2 flex flex-col">
             {pinned.map((note) => (
               <SidebarSortablePinnedRow key={note.path} note={note} />
             ))}

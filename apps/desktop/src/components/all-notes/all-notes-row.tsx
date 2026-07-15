@@ -6,12 +6,14 @@ import type { NewWindowClickEvent } from '@/lib/windows/open-in-new-window'
 import { useSettings } from '@/providers/settings-provider'
 
 /**
- * The shared column template (Subject · Snippet · Tags · Updated) — the header
- * row in {@link AllNotesTable} uses the same classes so the columns line up.
- * The selection indicator is positioned beside the row, outside the column flow.
+ * The shared column template (Subject · Tags · Updated) — the header row in
+ * {@link AllNotesTable} uses the same classes so the columns line up. The
+ * subject takes the free space rather than a fixed cap: with no snippet
+ * beside it, a truncated title is pure loss. The selection indicator is
+ * positioned beside the row, outside the column flow.
  */
 export const ALL_NOTES_GRID =
-  'grid grid-cols-[minmax(0,15rem)_minmax(0,1fr)_minmax(0,8rem)_6rem] items-center gap-4 pl-12 pr-7'
+  'grid grid-cols-[minmax(0,1fr)_minmax(0,8rem)_6rem] items-center gap-4 pl-12 pr-7'
 
 interface AllNotesRowProps {
   note: NoteListEntry
@@ -92,9 +94,6 @@ export const AllNotesRow = memo(function AllNotesRow({ note, selected, onSelect,
       >
         {note.title}
       </button>
-      <span className={cn('truncate text-[13px]', selected ? 'text-accent' : 'text-text-secondary')}>
-        {note.snippet}
-      </span>
       <span className="truncate text-right text-[13px] text-text-secondary">
         {note.tags.map((tag) => `#${tag}`).join(' ')}
       </span>

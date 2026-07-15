@@ -131,8 +131,11 @@ export function AllNotesScreen({ section, tag }: AllNotesScreenProps): ReactElem
       aria-label={section === null ? 'Notas' : SECTION_LABELS[section]}
       className="flex h-full min-h-0 flex-col outline-none"
     >
-      <header className="flex flex-none flex-wrap items-center justify-between gap-3 border-b border-border py-4 pl-12 pr-7">
-        <h1 className="text-[15px] font-semibold text-text">
+      {/* The section's name is the page's title, not a label on its chrome:
+          it gets the top of the DS type scale and room to breathe, and the
+          controls ride its baseline rather than the other way round. */}
+      <header className="flex flex-none flex-wrap items-end justify-between gap-3 border-b border-border pt-10 pb-6 pl-12 pr-7">
+        <h1 className="text-3xl font-semibold tracking-tight text-text">
           {section === null ? 'Notas' : SECTION_LABELS[section]}
         </h1>
         <div className="flex flex-wrap items-center gap-3">

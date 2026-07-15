@@ -38,7 +38,9 @@ export function SidebarItem({
       onClick={onClick}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'group flex w-full items-center space-x-3 rounded-md px-2.5 py-1.5 text-xs font-medium',
+        // The row's height floor is the 24px icon box, not the text: past this
+        // padding, only shrinking the glyphs would tighten it further.
+        'group flex w-full items-center space-x-3 rounded-md px-2.5 py-0.5 text-xs font-medium',
         'transition-colors duration-100',
         active
           ? 'bg-surface-hover text-text dark:bg-transparent dark:text-accent'

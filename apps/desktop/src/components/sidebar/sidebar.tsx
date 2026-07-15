@@ -91,7 +91,7 @@ export function Sidebar({ graph, context }: SidebarProps): ReactElement {
 
         {/* A query container so each row can drop its shortcut hint once the
             sidebar is dragged too narrow to hold label and hint at once. */}
-        <nav aria-label="Principal" className="mt-6 space-y-1 px-4 @container">
+        <nav aria-label="Principal" className="mt-6 px-4 @container">
           <SidebarItem
             icon={
               <span className={lucideBox}>

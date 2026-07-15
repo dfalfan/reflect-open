@@ -168,16 +168,39 @@ function probedRoute(view: ReturnType<typeof renderScreen>): unknown {
   return JSON.parse(view.getByTestId('route').textContent ?? 'null')
 }
 
+/**
+ * The row body of the note titled `title` — the grid element itself, which is
+ * what a click on empty row space hits. Reached through the subject button's
+ * parent rather than by clicking incidental cell text, so the target stays
+ * stable as columns come and go.
+ */
+function rowBody(view: ReturnType<typeof renderScreen>, title: string): HTMLElement {
+  const subject = view.getByRole('button', { name: title })
+  const row = subject.parentElement
+  if (row === null) {
+    throw new Error(`no row body for "${title}"`)
+  }
+  return row
+}
+
 describe('AllNotesScreen', () => {
-  it('lists non-daily notes with subject, snippet, tags, and updated columns', async () => {
+  it('lists non-daily notes with subject, tags, and updated columns', async () => {
     const view = renderScreen()
 
     await view.findByText('Health Stacked')
-    expect(view.getByText('Shop your health goals.')).toBeDefined()
     expect(view.getByText('Tokyo Gâteau')).toBeDefined()
     expect(view.getAllByText('#link')).toHaveLength(2)
     expect(view.getByText('1/15/2020')).toBeDefined()
     expect(view.getByText('1/10/2020')).toBeDefined()
+    view.unmount()
+  })
+
+  it('shows no snippet column — the subject takes the free space', async () => {
+    const view = renderScreen()
+
+    await view.findByText('Health Stacked')
+    expect(view.queryByText('Fragmento')).toBeNull()
+    expect(view.queryByText('Shop your health goals.')).toBeNull()
     view.unmount()
   })
 
@@ -188,7 +211,7 @@ describe('AllNotesScreen', () => {
     const updated = await view.findByText('2020-01-15')
     expect(updated.className).toContain('whitespace-nowrap')
     expect(updated.parentElement?.className ?? '').toContain(
-      'grid-cols-[minmax(0,15rem)_minmax(0,1fr)_minmax(0,8rem)_6rem]',
+      'grid-cols-[minmax(0,1fr)_minmax(0,8rem)_6rem]',
     )
     view.unmount()
   })
@@ -423,15 +446,15 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
-    // Clicking the row body (the snippet, not a button) selects without opening.
-    fireEvent.click(view.getByText('Shop your health goals.'))
+    // Clicking the row body (not a button) selects without opening.
+    fireEvent.click(rowBody(view, 'Health Stacked'))
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
     const trashButton = view.getByRole('button', { name: /Enviar a la papelera \(1\)/ })
     expect(trashButton).toBeDefined()
     expect(view.getByRole('group', { name: 'Filtrar por etiqueta' }).previousElementSibling).toBe(trashButton)
 
     // ⌘-click a second row extends the selection.
-    fireEvent.click(view.getByText('Dandelion chocolate.'), { metaKey: true })
+    fireEvent.click(rowBody(view, 'Tokyo Gâteau'), { metaKey: true })
     expect(view.getByRole('button', { name: /Enviar a la papelera \(2\)/ })).toBeDefined()
     expect(openRouteInNewWindow).not.toHaveBeenCalled()
     view.unmount()
@@ -459,10 +482,10 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     const view = renderScreen()
     await view.findByText('Note A')
 
-    // Click the first row's body (the snippet), then Shift-click the third →
-    // the whole range is selected (the row passes the modifier through).
-    fireEvent.click(view.getByText('alpha'))
-    fireEvent.click(view.getByText('charlie'), { shiftKey: true })
+    // Click the first row's body, then Shift-click the third → the whole range
+    // is selected (the row passes the modifier through).
+    fireEvent.click(rowBody(view, 'Note A'))
+    fireEvent.click(rowBody(view, 'Note C'), { shiftKey: true })
 
     expect(view.getByRole('button', { name: /Enviar a la papelera \(3\)/ })).toBeDefined()
     view.unmount()
@@ -472,7 +495,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
-    fireEvent.doubleClick(view.getByText('Shop your health goals.'))
+    fireEvent.doubleClick(rowBody(view, 'Health Stacked'))
     expect(probedRoute(view)).toEqual({ kind: 'note', path: 'notes/health.md' })
     view.unmount()
   })
@@ -496,7 +519,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     await view.findByText('Health Stacked')
     const surface = view.getByLabelText('Inbox')
 
-    fireEvent.click(view.getByText('Shop your health goals.'))
+    fireEvent.click(rowBody(view, 'Health Stacked'))
     expect(view.queryByRole('button', { name: /Enviar a la papelera \(1\)/ })).not.toBeNull()
 
     fireEvent.keyDown(surface, { key: 'Escape' })
@@ -508,8 +531,8 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
-    fireEvent.click(view.getByText('Shop your health goals.'))
-    fireEvent.click(view.getByText('Dandelion chocolate.'), { metaKey: true })
+    fireEvent.click(rowBody(view, 'Health Stacked'))
+    fireEvent.click(rowBody(view, 'Tokyo Gâteau'), { metaKey: true })
     fireEvent.click(view.getByRole('button', { name: /Enviar a la papelera \(2\)/ }))
 
     // Confirm, then the two notes go to the trash via `note_delete`.
@@ -538,7 +561,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     await view.findByText('Health Stacked')
     const surface = view.getByLabelText('Inbox')
 
-    fireEvent.click(view.getByText('Shop your health goals.'))
+    fireEvent.click(rowBody(view, 'Health Stacked'))
     fireEvent.keyDown(surface, { key: 'Backspace', metaKey: true })
 
     expect(await view.findByText('¿Enviar 1 nota a la papelera?')).toBeDefined()
@@ -551,7 +574,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
 
     // Select a note, then send Return to the New note button: a focused control
     // owns Return, so the document-level shortcut must back off and not open.
-    fireEvent.click(view.getByText('Shop your health goals.'))
+    fireEvent.click(rowBody(view, 'Health Stacked'))
     fireEvent.keyDown(view.getByRole('button', { name: /Nota nueva/ }), { key: 'Enter' })
 
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
@@ -581,7 +604,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
-    fireEvent.click(view.getByText('Shop your health goals.'))
+    fireEvent.click(rowBody(view, 'Health Stacked'))
     fireEvent.click(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ }))
     await view.findByText('¿Enviar 1 nota a la papelera?')
     fireEvent.click(view.getByRole('button', { name: 'Enviar a la papelera' }))
@@ -626,8 +649,8 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
-    fireEvent.click(view.getByText('Shop your health goals.'))
-    fireEvent.click(view.getByText('Dandelion chocolate.'), { metaKey: true })
+    fireEvent.click(rowBody(view, 'Health Stacked'))
+    fireEvent.click(rowBody(view, 'Tokyo Gâteau'), { metaKey: true })
     fireEvent.click(view.getByRole('button', { name: /Enviar a la papelera \(2\)/ }))
     await view.findByText('¿Enviar 2 notas a la papelera?')
     fireEvent.click(view.getByRole('button', { name: 'Enviar a la papelera' }))
@@ -643,7 +666,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
-    fireEvent.click(view.getByText('Shop your health goals.'))
+    fireEvent.click(rowBody(view, 'Health Stacked'))
     fireEvent.click(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ }))
     await view.findByText('¿Enviar 1 nota a la papelera?')
 

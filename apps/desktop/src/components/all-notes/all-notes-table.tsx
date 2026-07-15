@@ -74,7 +74,6 @@ export function AllNotesTable({
         )}
       >
         <span>Asunto</span>
-        <span>Fragmento</span>
         <span className="text-right">Etiquetas</span>
         <span className="text-right">Actualizada</span>
       </div>
