@@ -17,6 +17,13 @@ interface SidebarItemProps {
  * medium label on a translucent hover wash; selected rows keep the wash in
  * light mode and tint the text brand-indigo in dark, with the keyboard
  * shortcut revealed on hover — chrome that teaches the fast path.
+ *
+ * The hint is `invisible` rather than unmounted, so revealing it on hover never
+ * reflows the row — but that reserved width is only affordable while the
+ * sidebar is wide enough for both. Below that the hint stops rendering
+ * altogether and the label takes the room: at the 200px floor a truncated
+ * "Todas las notas" costs more than a shortcut the row only ever whispers.
+ * The query container is the `nav` in {@link Sidebar}.
  */
 export function SidebarItem({
   icon,
@@ -43,7 +50,7 @@ export function SidebarItem({
       {binding ? (
         <ShortcutKeys
           binding={binding}
-          className="invisible group-hover:visible group-focus-visible:visible"
+          className="hidden invisible @min-[13rem]:block group-hover:visible group-focus-visible:visible"
         />
       ) : null}
     </button>
