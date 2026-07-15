@@ -1,16 +1,34 @@
 import { isTauri } from '@tauri-apps/api/core'
-import { Menu, type MenuItemOptions } from '@tauri-apps/api/menu'
+import { Menu, type MenuItemOptions, type PredefinedMenuItemOptions } from '@tauri-apps/api/menu'
 
-export interface NativeContextMenuItem {
-  /** Visible native menu item label. */
-  text: string
-  /** Invoked when the native menu item is selected. */
-  action: () => void
-}
+export type NativeContextMenuItem =
+  | {
+      /** Visible native menu item label. */
+      text: string
+      /** Invoked when the native menu item is selected. */
+      action: () => void
+    }
+  | {
+      /**
+       * A native-role item (Copy, Paste, Separator, …): macOS dispatches the
+       * standard selector at the focused element, so Copy/Paste work in the
+       * editor and in plain inputs alike — the same items the window's Edit
+       * menu uses.
+       */
+      predefined: PredefinedMenuItemOptions['item']
+      /** Label override (the native default is English). */
+      text?: string
+    }
 
 export interface NativeContextMenuOptions {
   /** Menu items to render in order. */
   items: readonly NativeContextMenuItem[]
+}
+
+function itemOptions(item: NativeContextMenuItem): MenuItemOptions | PredefinedMenuItemOptions {
+  return 'predefined' in item
+    ? { item: item.predefined, ...(item.text !== undefined ? { text: item.text } : {}) }
+    : { text: item.text, action: item.action }
 }
 
 /**
@@ -22,10 +40,6 @@ export async function openNativeContextMenu(options: NativeContextMenuOptions): 
     return
   }
 
-  const menuItems: MenuItemOptions[] = options.items.map((item) => ({
-    text: item.text,
-    action: item.action,
-  }))
-  const menu = await Menu.new({ items: menuItems })
+  const menu = await Menu.new({ items: options.items.map(itemOptions) })
   await menu.popup()
 }

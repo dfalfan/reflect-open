@@ -9,6 +9,7 @@ import { WindowDragRegion } from '@/components/window-drag-region'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useMainWindowEffect } from '@/hooks/use-main-window-effect'
 import { startDeepLinkListener } from '@/lib/deep-links/intake'
+import { installAppContextMenu } from '@/lib/native-menu/app-context-menu'
 import { trackSubscriptions } from '@/lib/subscriptions'
 import { GraphProvider } from '@/providers/graph-provider'
 import { SidebarWidthEffect } from '@/providers/sidebar-width'
@@ -50,6 +51,16 @@ export function DesktopRoot(): ReactElement {
     return () => {
       subscriptions.disposeAll()
     }
+  }, [])
+
+  // The minimal app-wide right-click menu (Copiar/Pegar). Gated on the bridge
+  // so plain-browser dev keeps the browser's own context menu — suppressing
+  // it there would leave right-click doing nothing at all.
+  useEffect(() => {
+    if (!hasBridge()) {
+      return
+    }
+    return installAppContextMenu()
   }, [])
 
   return (
