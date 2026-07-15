@@ -187,31 +187,9 @@ describe('Sidebar', () => {
     await waitFor(() => expect(navigate).toHaveBeenCalledWith({ kind: 'chat' }))
   })
 
-  it('New note runs its command and shows active while the placeholder note is open', async () => {
-    // The route a ⌘N/new-note click lands on: a fresh ULID placeholder path.
-    const { view, navigate } = renderSidebar(undefined, {
-      kind: 'note',
-      path: untitledNotePath(),
-    })
-    const newNote = view.getByRole('button', { name: /nota nueva/i })
-
-    // Active like every other row whose route is current — until the birth
-    // rename moves the note onto a title slug.
-    expect(newNote.getAttribute('aria-current')).toBe('page')
-
-    await userEvent.click(newNote)
-    await waitFor(() =>
-      expect(navigate).toHaveBeenCalledWith(
-        expect.objectContaining({ kind: 'note', path: expect.stringMatching(/^notes\/.+\.md$/) }),
-      ),
-    )
-  })
-
-  it('New note is inactive on slug-named note routes', () => {
-    const { view } = renderSidebar(undefined, { kind: 'note', path: 'notes/meeting.md' })
-    expect(
-      view.getByRole('button', { name: /nota nueva/i }).getAttribute('aria-current'),
-    ).toBeNull()
+  it('has no New note row — ⌘N and the palette own that gesture', () => {
+    const { view } = renderSidebar(undefined, { kind: 'note', path: untitledNotePath() })
+    expect(view.queryByRole('button', { name: /nota nueva/i })).toBeNull()
   })
 
   it('All notes stays active while editing a slug-named note', () => {
@@ -221,13 +199,10 @@ describe('Sidebar', () => {
     ).toBe('page')
   })
 
-  it('only "New note" — not "All notes" — lights for the untitled placeholder', () => {
-    // A brand-new note is still an untitled placeholder, so the two rows must
-    // never light at once.
+  it('"All notes" stays dark for the untitled placeholder', () => {
+    // A brand-new note is still an untitled placeholder: it hasn't earned its
+    // way into the collection, so the row that names the collection stays dark.
     const { view } = renderSidebar(undefined, { kind: 'note', path: untitledNotePath() })
-    expect(
-      view.getByRole('button', { name: /nota nueva/i }).getAttribute('aria-current'),
-    ).toBe('page')
     expect(
       view.getByRole('button', { name: /todas las notas/i }).getAttribute('aria-current'),
     ).toBeNull()

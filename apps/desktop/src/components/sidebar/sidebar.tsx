@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import { isUntitledNotePath, type GraphInfo } from '@reflect/core'
-import { ListChecks, MessageSquare, SquarePen } from 'lucide-react'
+import { ListChecks, MessageSquare } from 'lucide-react'
 import { AudioMemoButton } from '@/components/audio-memo/audio-memo-button'
 import { ListIcon } from '@/components/icons/list-icon'
 import { PencilIcon } from '@/components/icons/pencil-icon'
@@ -71,40 +71,15 @@ export function Sidebar({ graph, context }: SidebarProps): ReactElement {
             sidebar is dragged too narrow to hold label and hint at once. */}
         <nav aria-label="Principal" className="mt-6 space-y-1 px-4 @container">
           <SidebarItem
-            icon={<PencilIcon className="shrink-0" />}
-            label="Notas diarias"
-            binding={keybindingFor('nav.today') ?? undefined}
-            active={(route.kind === 'today' || route.kind === 'daily') && !hasActivePinnedNote}
-            onClick={() => void runCommand('nav.today', context)}
-          />
-          <SidebarItem
             icon={
               <span className={lucideBox}>
-                <SquarePen aria-hidden strokeWidth={1.75} className="size-4" />
+                <MessageSquare aria-hidden strokeWidth={1.75} className="size-4" />
               </span>
             }
-            label="Nota nueva"
-            binding={keybindingFor('note.new') ?? undefined}
-            // Active while the open note is still on its ULID placeholder
-            // name — the state this row creates. The birth rename onto a
-            // title slug is also what hands the note off to ordinary
-            // navigation, releasing the highlight.
-            active={route.kind === 'note' && isUntitledNotePath(route.path)}
-            onClick={() => void runCommand('note.new', context)}
-          />
-          <SidebarItem
-            icon={<ListIcon className="shrink-0" />}
-            label="Todas las notas"
-            binding={keybindingFor('nav.allNotes') ?? undefined}
-            // A named note lives in the All Notes collection, so keep this row
-            // lit while editing one. A brand-new note is still an untitled
-            // placeholder, though, and the "New note" row above owns that
-            // highlight until the birth rename — so the two never light at once.
-            active={
-              route.kind === 'allNotes' ||
-              (route.kind === 'note' && !isUntitledNotePath(route.path) && !hasActivePinnedNote)
-            }
-            onClick={() => void runCommand('nav.allNotes', context)}
+            label="Chat"
+            binding={keybindingFor('chat.open') ?? undefined}
+            active={route.kind === 'chat'}
+            onClick={() => void runCommand('chat.open', context)}
           />
           <SidebarItem
             icon={
@@ -118,15 +93,33 @@ export function Sidebar({ graph, context }: SidebarProps): ReactElement {
             onClick={() => void runCommand('nav.tasks', context)}
           />
           <SidebarItem
-            icon={
-              <span className={lucideBox}>
-                <MessageSquare aria-hidden strokeWidth={1.75} className="size-4" />
-              </span>
+            icon={<PencilIcon className="shrink-0" />}
+            label="Notas diarias"
+            binding={keybindingFor('nav.today') ?? undefined}
+            active={(route.kind === 'today' || route.kind === 'daily') && !hasActivePinnedNote}
+            onClick={() => void runCommand('nav.today', context)}
+          />
+
+          {/* The rows above are the day-to-day surfaces; the collection below is
+              where you go looking. The rule carries the gap on padding, so the
+              nav's `space-y-1` can't collapse it unevenly. */}
+          <div className="py-2">
+            <hr className="border-border" />
+          </div>
+
+          <SidebarItem
+            icon={<ListIcon className="shrink-0" />}
+            label="Todas las notas"
+            binding={keybindingFor('nav.allNotes') ?? undefined}
+            // A named note lives in the All Notes collection, so keep this row
+            // lit while editing one. An untitled placeholder hasn't earned its
+            // way in yet — nothing lights for it, the same as before this row
+            // outlived the "New note" row that used to own that highlight.
+            active={
+              route.kind === 'allNotes' ||
+              (route.kind === 'note' && !isUntitledNotePath(route.path) && !hasActivePinnedNote)
             }
-            label="Chat"
-            binding={keybindingFor('chat.open') ?? undefined}
-            active={route.kind === 'chat'}
-            onClick={() => void runCommand('chat.open', context)}
+            onClick={() => void runCommand('nav.allNotes', context)}
           />
         </nav>
       </div>
