@@ -14,9 +14,9 @@ interface TaskFiltersDrawerProps {
 
 const BUCKETS: ReadonlyArray<{ key: keyof TaskFilters; label: string }> = [
   { key: 'pinned', label: 'Pinned notes' },
-  { key: 'current', label: 'Current' },
-  { key: 'overdue', label: 'Overdue' },
-  { key: 'upcoming', label: 'Upcoming' },
+  { key: 'current', label: 'Actuales' },
+  { key: 'overdue', label: 'Vencidas' },
+  { key: 'upcoming', label: 'Próximas' },
   { key: 'other', label: 'Other notes' },
 ]
 

@@ -312,7 +312,7 @@ describe('TasksScreen', () => {
 
     await view.findByText('today task')
     const headers = view.getAllByRole('heading', { level: 2 }).map((node) => node.textContent)
-    expect(headers).toEqual(['Current', 'Overdue', 'Project'])
+    expect(headers).toEqual(['Actuales', 'Vencidas', 'Project'])
     expect(view.getByText('overdue task')).toBeDefined()
     expect(view.getByText('project task')).toBeDefined()
     view.unmount()

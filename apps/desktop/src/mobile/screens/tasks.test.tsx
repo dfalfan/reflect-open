@@ -243,8 +243,8 @@ describe('MobileTasks', () => {
     ])
     const view = renderScreen()
 
-    await view.findByText('Current')
-    view.getByText('Overdue')
+    await view.findByText('Actuales')
+    view.getByText('Vencidas')
     // The undated task groups under its source note's title.
     view.getByRole('button', { name: 'N' })
     // Date buckets show the source note's compact date on the row.
@@ -309,7 +309,7 @@ describe('MobileTasks', () => {
     await user.click(view.getByRole('button', { name: 'Task filters' }))
     expect(hapticImpactLight).toHaveBeenCalledTimes(2)
 
-    await user.click(view.getByRole('checkbox', { name: 'Current' }))
+    await user.click(view.getByRole('checkbox', { name: 'Actuales' }))
     expect(hapticImpactLight).toHaveBeenCalledTimes(3)
 
     await user.click(view.getByRole('button', { name: 'dismiss-drawer' }))
@@ -689,9 +689,9 @@ describe('MobileTasks', () => {
     const user = userEvent.setup()
     const view = renderScreen()
 
-    await view.findByText('Current')
+    await view.findByText('Actuales')
     await user.click(view.getByRole('button', { name: 'Task filters' }))
-    await user.click(view.getByRole('checkbox', { name: 'Current' }))
+    await user.click(view.getByRole('checkbox', { name: 'Actuales' }))
 
     await waitFor(() => expect(view.queryByText('jotted today')).toBeNull())
     view.getByText('undated')
