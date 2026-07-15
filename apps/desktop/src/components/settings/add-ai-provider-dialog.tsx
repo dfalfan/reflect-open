@@ -85,9 +85,9 @@ export function AddAiProviderDialog({ onAdd, onClose }: AddAiProviderDialogProps
     <Dialog open onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
       <DialogContent showCloseButton={false} className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Add AI provider</DialogTitle>
+          <DialogTitle>Agregar proveedor de IA</DialogTitle>
           <DialogDescription>
-            The API key is stored in your OS keychain, never in your graph.
+            La clave de API se guarda en el llavero de tu sistema operativo, nunca en tu grafo.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -97,7 +97,7 @@ export function AddAiProviderDialog({ onAdd, onClose }: AddAiProviderDialogProps
           }}
         >
           <div className="flex flex-col gap-1">
-            <span className={FIELD_LABEL_CLASS}>Provider</span>
+            <span className={FIELD_LABEL_CLASS}>Proveedor</span>
             <Select
               value={provider.id}
               onValueChange={(value) => {
@@ -107,7 +107,7 @@ export function AddAiProviderDialog({ onAdd, onClose }: AddAiProviderDialogProps
                 resetUnverified()
               }}
             >
-              <SelectTrigger aria-label="Provider" className="w-full">
+              <SelectTrigger aria-label="Proveedor" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -121,7 +121,7 @@ export function AddAiProviderDialog({ onAdd, onClose }: AddAiProviderDialogProps
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className={FIELD_LABEL_CLASS}>Default model</span>
+            <span className={FIELD_LABEL_CLASS}>Modelo por defecto</span>
             <ModelCombobox
               value={selectedModel}
               provider={provider.id}
@@ -131,14 +131,14 @@ export function AddAiProviderDialog({ onAdd, onClose }: AddAiProviderDialogProps
           </div>
 
           <label className="flex flex-col gap-1">
-            <span className={FIELD_LABEL_CLASS}>API key</span>
+            <span className={FIELD_LABEL_CLASS}>Clave de API</span>
             <Input
               type="password"
               placeholder={provider.keyPlaceholder}
               autoComplete="off"
               spellCheck={false}
               {...register('apiKey', {
-                validate: (value) => value.trim().length > 0 || 'Enter an API key.',
+                validate: (value) => value.trim().length > 0 || 'Ingresa una clave de API.',
                 onChange: () => {
                   resetUnverified()
                 },
@@ -153,23 +153,23 @@ export function AddAiProviderDialog({ onAdd, onClose }: AddAiProviderDialogProps
 
           <label className="flex items-center gap-2">
             <input type="checkbox" className="accent-accent" {...register('isDefault')} />
-            <span className="text-sm text-text">Use as the default provider</span>
+            <span className="text-sm text-text">Usar como proveedor por defecto</span>
           </label>
 
           {submitError !== null ? <InlineAlert tone="error">{submitError}</InlineAlert> : null}
           {unverified ? (
             <InlineAlert tone="warning">
-              Couldn't reach {provider.label} to verify the key. Submit again to save it
-              unverified.
+              No se pudo contactar a {provider.label} para verificar la clave. Envía de nuevo para
+              guardarla sin verificar.
             </InlineAlert>
           ) : null}
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" size="sm" onClick={onClose}>
-              Cancel
+              Cancelar
             </Button>
             <Button type="submit" size="sm" disabled={formState.isSubmitting}>
-              {unverified ? 'Save anyway' : 'Add provider'}
+              {unverified ? 'Guardar de todos modos' : 'Agregar proveedor'}
             </Button>
           </div>
         </form>

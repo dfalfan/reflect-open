@@ -76,7 +76,7 @@ export function BacklinkSourceGroup({
           <button
             type="button"
             aria-expanded={expanded}
-            aria-label={`${expanded ? 'Collapse' : 'Expand'} references from ${source.title}`}
+            aria-label={`${expanded ? 'Contraer' : 'Expandir'} referencias de ${source.title}`}
             onClick={() => setExpanded(!expanded)}
             className="absolute inset-y-0 -left-5 flex items-center text-text-muted opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
           >

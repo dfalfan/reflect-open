@@ -76,7 +76,7 @@ export function createTranscriptionReconciler(
       return
     }
     surfacedStop = stopped.message
-    startOperation('Transcribing audio memo').fail(stopped.message)
+    startOperation('Transcribiendo memo de audio').fail(stopped.message)
   }
 
   /** One pass: transcribe pending memos, gated behind a transcription-capable model. */

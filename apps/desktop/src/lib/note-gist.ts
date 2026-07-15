@@ -21,7 +21,7 @@ const activeGistOperations = new Set<string>()
 
 function claimGistOperation(path: string): boolean {
   if (activeGistOperations.has(path)) {
-    startOperation('Gist operation already running').fail('Wait for the current gist operation to finish')
+    startOperation('Ya hay una operación de gist en curso').fail('Espera a que termine la operación de gist actual')
     return false
   }
   activeGistOperations.add(path)
@@ -60,17 +60,17 @@ export async function publishNoteToGist(path: string, generation: number): Promi
   // one — and `upsertFrontmatter` rightly refuses to rewrite a header it
   // can't parse. That refusal must come *before* the gist exists, not after.
   if (parsed.frontmatterWarning !== undefined) {
-    throw new ReflectError('parse', 'The note has invalid frontmatter — fix it before publishing')
+    throw new ReflectError('parse', 'La nota tiene frontmatter inválido — corrígelo antes de publicar')
   }
 
   const body = splitFrontmatter(source).body
   if (body.trim() === '') {
-    throw new ReflectError('io', 'The note is empty — nothing to publish')
+    throw new ReflectError('io', 'La nota está vacía — no hay nada que publicar')
   }
 
   const token = await getGithubToken(providerFetch)
   if (token === null) {
-    throw new ReflectError('auth', 'Connect GitHub in Settings to publish gists')
+    throw new ReflectError('auth', 'Conecta GitHub en Ajustes para publicar gists')
   }
 
   const filename = gistFilename(parsed.title)
@@ -117,7 +117,7 @@ export async function unpublishNoteGist(path: string, generation: number): Promi
   const source = await readNoteSource(path)
   const parsed = parseNote({ path, source })
   if (parsed.frontmatterWarning !== undefined) {
-    throw new ReflectError('parse', 'The note has invalid frontmatter — fix it before unpublishing')
+    throw new ReflectError('parse', 'La nota tiene frontmatter inválido — corrígelo antes de despublicar')
   }
 
   const previous = parsed.frontmatter.gist
@@ -127,7 +127,7 @@ export async function unpublishNoteGist(path: string, generation: number): Promi
 
   const token = await getGithubToken(providerFetch)
   if (token === null) {
-    throw new ReflectError('auth', 'Connect GitHub in Settings to unpublish gists')
+    throw new ReflectError('auth', 'Conecta GitHub en Ajustes para despublicar gists')
   }
 
   await commitNoteFrontmatter(path, { gist: false }, generation)
@@ -158,7 +158,7 @@ export async function runGistPublish(path: string, generation: number): Promise<
     return null
   }
   try {
-    const operation = startOperation('Publishing gist')
+    const operation = startOperation('Publicando gist')
     let url: string
     try {
       url = await publishNoteToGist(path, generation)
@@ -172,9 +172,9 @@ export async function runGistPublish(path: string, generation: number): Promise<
     setNoteRowOverlay(path, generation, { gistUrl: url, gistStale: false })
     try {
       await navigator.clipboard.writeText(url)
-      startOperation('Gist link copied').done()
+      startOperation('Enlace del gist copiado').done()
     } catch (cause) {
-      startOperation('Copying the gist link').fail(errorMessage(cause))
+      startOperation('Copiando el enlace del gist').fail(errorMessage(cause))
     }
     return url
   } finally {
@@ -192,7 +192,7 @@ export async function runGistUnpublish(path: string, generation: number): Promis
     return false
   }
   try {
-    const operation = startOperation('Unpublishing gist')
+    const operation = startOperation('Despublicando gist')
     try {
       await unpublishNoteGist(path, generation)
     } catch (cause) {

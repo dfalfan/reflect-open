@@ -53,7 +53,7 @@ export const AllNotesRow = memo(function AllNotesRow({ note, selected, onSelect,
     >
       <button
         type="button"
-        aria-label={selected ? 'Deselect note' : 'Select note'}
+        aria-label={selected ? 'Deseleccionar nota' : 'Seleccionar nota'}
         aria-pressed={selected}
         onClick={(event) => {
           event.stopPropagation()

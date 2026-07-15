@@ -48,7 +48,7 @@ export function ChatTurn({ turn }: ChatTurnProps): ReactElement {
         <MessageContent className="gap-2">
           {turn.parts.length === 0 && turn.status === 'streaming' ? (
             <Marker className="animate-pulse text-sm text-text-muted">
-              <MarkerContent>Thinking…</MarkerContent>
+              <MarkerContent>Pensando…</MarkerContent>
             </Marker>
           ) : null}
           {turn.parts.map((part, index) => (

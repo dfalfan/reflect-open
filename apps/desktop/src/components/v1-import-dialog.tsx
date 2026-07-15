@@ -23,37 +23,37 @@ function count(quantity: number, singular: string, plural: string): string {
 
 /** The one-line result the dialog shows once an import completes. */
 export function summaryText(summary: GraphImportSummary): string {
-  const parts = [`${count(summary.importedFiles, 'file', 'files')} imported`]
+  const parts = [`${count(summary.importedFiles, 'archivo importado', 'archivos importados')}`]
   if (summary.mergedFiles > 0) {
-    parts.push(`${count(summary.mergedFiles, 'daily note', 'daily notes')} merged`)
+    parts.push(`${count(summary.mergedFiles, 'nota diaria combinada', 'notas diarias combinadas')}`)
   }
   if (summary.renamedFiles > 0) {
-    parts.push(`${summary.renamedFiles} renamed to avoid a name clash`)
+    parts.push(`${summary.renamedFiles} renombrados para evitar conflicto de nombres`)
   }
   if (summary.skippedFiles > 0) {
-    parts.push(`${summary.skippedFiles} already present`)
+    parts.push(`${summary.skippedFiles} ya presentes`)
   }
   if (summary.downloadedAssets > 0) {
-    parts.push(`${count(summary.downloadedAssets, 'attachment', 'attachments')} downloaded`)
+    parts.push(`${count(summary.downloadedAssets, 'adjunto descargado', 'adjuntos descargados')}`)
   }
   const text = `${parts.join(', ')}.`
   if (summary.failedAssetDownloads === 0) {
     return text
   }
   if (summary.failedAssetDownloads === 1) {
-    return `${text} 1 attachment couldn't be downloaded and still links to Reflect V1.`
+    return `${text} 1 adjunto no se pudo descargar y todavía enlaza a Reflect V1.`
   }
-  return `${text} ${summary.failedAssetDownloads} attachments couldn't be downloaded and still link to Reflect V1.`
+  return `${text} ${summary.failedAssetDownloads} adjuntos no se pudieron descargar y todavía enlazan a Reflect V1.`
 }
 
 function stageText(progress: GraphImportProgress | null): string {
   if (progress === null) {
-    return 'Reading the export…'
+    return 'Leyendo la exportación…'
   }
   if (progress.stage === 'downloading') {
-    return `Downloading attachments… ${progress.done} of ${progress.total}`
+    return `Descargando adjuntos… ${progress.done} de ${progress.total}`
   }
-  return `Adding notes… ${progress.done} of ${progress.total}`
+  return `Agregando notas… ${progress.done} de ${progress.total}`
 }
 
 function stagePercent(progress: GraphImportProgress | null): number | undefined {
@@ -98,13 +98,13 @@ export function V1ImportDialog({ state, onCancel, onDismiss }: V1ImportDialogPro
       >
         {state.phase === 'running' ? (
           <>
-            <DialogTitle>Importing from Reflect V1</DialogTitle>
+            <DialogTitle>Importando desde Reflect V1</DialogTitle>
             <DialogDescription role="status">{stageText(state.progress)}</DialogDescription>
             <Progress value={stagePercent(state.progress) ?? null} />
             {cancellable ? (
               <DialogFooter>
                 <Button variant="ghost" disabled={state.cancelling} onClick={onCancel}>
-                  {state.cancelling ? 'Cancelling…' : 'Cancel'}
+                  {state.cancelling ? 'Cancelando…' : 'Cancelar'}
                 </Button>
               </DialogFooter>
             ) : null}
@@ -112,20 +112,20 @@ export function V1ImportDialog({ state, onCancel, onDismiss }: V1ImportDialogPro
         ) : null}
         {state.phase === 'done' ? (
           <>
-            <DialogTitle>Import complete</DialogTitle>
+            <DialogTitle>Importación completa</DialogTitle>
             <DialogDescription role="status">{summaryText(state.summary)}</DialogDescription>
             <DialogFooter>
-              <Button onClick={onDismiss}>Done</Button>
+              <Button onClick={onDismiss}>Listo</Button>
             </DialogFooter>
           </>
         ) : null}
         {state.phase === 'failed' ? (
           <>
-            <DialogTitle>Import failed</DialogTitle>
+            <DialogTitle>Falló la importación</DialogTitle>
             <DialogDescription role="alert">{state.message}</DialogDescription>
             <DialogFooter>
               <Button variant="ghost" onClick={onDismiss}>
-                Close
+                Cerrar
               </Button>
             </DialogFooter>
           </>

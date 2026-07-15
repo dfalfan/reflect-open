@@ -68,9 +68,9 @@ export function TemplateCreateDialog({ context }: TemplateCreateDialogProps): Re
     >
       <DialogContent showCloseButton={false} className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>New template</DialogTitle>
+          <DialogTitle>Plantilla nueva</DialogTitle>
           <DialogDescription>
-            A markdown file in your graph's <code>templates/</code> folder.
+            Un archivo markdown en la carpeta <code>templates/</code> de tu grafo.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -81,11 +81,11 @@ export function TemplateCreateDialog({ context }: TemplateCreateDialogProps): Re
         >
           <Input
             autoFocus
-            placeholder="Template name"
+            placeholder="Nombre de la plantilla"
             autoComplete="off"
             spellCheck={false}
             {...register('name', {
-              validate: (value) => value.trim().length > 0 || 'Enter a name.',
+              validate: (value) => value.trim().length > 0 || 'Escribe un nombre.',
             })}
           />
           {formState.errors.name ? (
@@ -98,10 +98,10 @@ export function TemplateCreateDialog({ context }: TemplateCreateDialogProps): Re
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" size="sm" onClick={closeTemplateCreate}>
-              Cancel
+              Cancelar
             </Button>
             <Button type="submit" size="sm" disabled={formState.isSubmitting}>
-              Create
+              Crear
             </Button>
           </div>
         </form>

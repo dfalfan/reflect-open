@@ -42,9 +42,9 @@ export function BacklinksPanel({ path }: BacklinksPanelProps): ReactElement | nu
 
   if (isError) {
     return (
-      <section aria-label="Incoming backlinks" className="mt-8">
+      <section aria-label="Retroenlaces entrantes" className="mt-8">
         <p role="alert" className="text-xs text-text-muted">
-          Couldn’t load backlinks.
+          No se pudieron cargar los retroenlaces.
         </p>
       </section>
     )
@@ -59,7 +59,7 @@ export function BacklinksPanel({ path }: BacklinksPanelProps): ReactElement | nu
   }
 
   return (
-    <section aria-label="Incoming backlinks" className="mt-8">
+    <section aria-label="Retroenlaces entrantes" className="mt-8">
       <h3 className="text-xs font-medium text-text-muted">
         <button
           type="button"
@@ -74,7 +74,7 @@ export function BacklinksPanel({ path }: BacklinksPanelProps): ReactElement | nu
             }`}
           />
           <span>
-            Incoming backlink{count === 1 ? '' : 's'} ({count})
+            Retroenlace{count === 1 ? '' : 's'} entrante{count === 1 ? '' : 's'} ({count})
           </span>
         </button>
       </h3>

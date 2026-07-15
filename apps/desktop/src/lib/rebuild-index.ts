@@ -33,7 +33,7 @@ export function rebuildIndexVisibly(generation: number): Promise<void> {
 }
 
 async function runRebuild(generation: number): Promise<void> {
-  const operation = startOperation('Rebuilding search index')
+  const operation = startOperation('Reconstruyendo índice de búsqueda')
   const skippedNotes: string[] = []
   try {
     await rebuildIndex({
@@ -50,8 +50,8 @@ async function runRebuild(generation: number): Promise<void> {
       operation.done()
     } else {
       const sample = skippedNotes.slice(0, 3).join('; ')
-      const suffix = skippedNotes.length > 3 ? `; +${skippedNotes.length - 3} more` : ''
-      operation.warn(`Rebuilt with ${skippedNotes.length} skipped note(s): ${sample}${suffix}`)
+      const suffix = skippedNotes.length > 3 ? `; +${skippedNotes.length - 3} más` : ''
+      operation.warn(`Reconstruido con ${skippedNotes.length} nota(s) omitida(s): ${sample}${suffix}`)
     }
   } catch (cause) {
     operation.fail(errorMessage(cause))

@@ -23,9 +23,9 @@ interface ConnectGithubDialogProps {
 }
 
 const STEP_DESCRIPTIONS: Record<ConnectWizardStep, string> = {
-  repo: 'Back up this graph to a private GitHub repository.',
-  auth: 'Sign in so Reflect can push your backups.',
-  finish: 'Connecting your repository…',
+  repo: 'Respalda este grafo en un repositorio privado de GitHub.',
+  auth: 'Inicia sesión para que Reflect pueda subir tus respaldos.',
+  finish: 'Conectando tu repositorio…',
 }
 
 /**
@@ -55,7 +55,7 @@ export function ConnectGithubDialog({
     >
       <DialogContent showCloseButton={false} className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Connect GitHub</DialogTitle>
+          <DialogTitle>Conectar GitHub</DialogTitle>
           <DialogDescription>{STEP_DESCRIPTIONS[wizard.step]}</DialogDescription>
         </DialogHeader>
 
@@ -69,7 +69,7 @@ export function ConnectGithubDialog({
                   checked={wizard.mode === 'create'}
                   onChange={() => wizard.setMode('create')}
                 />
-                Create a new private repository
+                Crear un repositorio privado nuevo
               </label>
               {wizard.mode === 'create' ? (
                 <Input
@@ -77,7 +77,7 @@ export function ConnectGithubDialog({
                   value={wizard.repoName}
                   onChange={(event) => wizard.setRepoName(event.target.value)}
                   className="ml-6 w-auto"
-                  aria-label="New repository name"
+                  aria-label="Nombre del repositorio nuevo"
                 />
               ) : null}
               <label className="flex items-center gap-2 text-sm text-text">
@@ -87,7 +87,7 @@ export function ConnectGithubDialog({
                   checked={wizard.mode === 'existing'}
                   onChange={() => wizard.setMode('existing')}
                 />
-                Use an existing repository
+                Usar un repositorio existente
               </label>
               {wizard.mode === 'existing' ? (
                 <Input
@@ -96,12 +96,12 @@ export function ConnectGithubDialog({
                   onChange={(event) => wizard.setExistingRepo(event.target.value)}
                   placeholder="owner/name"
                   className="ml-6 w-auto"
-                  aria-label="Existing repository"
+                  aria-label="Repositorio existente"
                 />
               ) : null}
             </div>
             <Button onClick={wizard.continueFromRepo} size="sm">
-              Continue
+              Continuar
             </Button>
           </div>
         ) : null}

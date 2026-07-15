@@ -22,7 +22,7 @@ export function AiPromptRow({ prompt, onEdit, onRemove }: AiPromptRowProps): Rea
           type="button"
           variant="ghost"
           size="icon-sm"
-          aria-label={`Edit ${prompt.label}`}
+          aria-label={`Editar ${prompt.label}`}
           onClick={() => onEdit(prompt)}
           className="text-text-muted hover:bg-surface-hover hover:text-text"
         >
@@ -32,7 +32,7 @@ export function AiPromptRow({ prompt, onEdit, onRemove }: AiPromptRowProps): Rea
           type="button"
           variant="ghost"
           size="icon-sm"
-          aria-label={`Remove ${prompt.label}`}
+          aria-label={`Quitar ${prompt.label}`}
           onClick={() => onRemove(prompt.id)}
           className="text-text-muted hover:bg-surface-hover hover:text-text"
         >

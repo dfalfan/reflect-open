@@ -44,7 +44,7 @@ export function ConflictedNoteLinks({ notes }: ConflictedNoteLinksProps): ReactE
   }
 
   return (
-    <ul className="mt-1 flex flex-col gap-0.5" aria-label="Notes that need review">
+    <ul className="mt-1 flex flex-col gap-0.5" aria-label="Notas que necesitan revisión">
       {notes.map((note) => (
         <ConflictedNoteLink key={note.path} note={note} />
       ))}

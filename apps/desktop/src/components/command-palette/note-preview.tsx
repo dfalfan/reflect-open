@@ -48,11 +48,11 @@ export function NotePreview({ entry }: NotePreviewProps): ReactElement {
 
   let content: ReactElement | null
   if (isError) {
-    content = <p className="text-sm text-text-muted">This note can’t be previewed.</p>
+    content = <p className="text-sm text-text-muted">Esta nota no se puede previsualizar.</p>
   } else if (data === undefined) {
     content = null // still loading; blank beats a flash of the wrong state
   } else if (body === null || body.trim() === '') {
-    content = <p className="text-sm text-text-muted italic">Empty</p>
+    content = <p className="text-sm text-text-muted italic">Vacía</p>
   } else {
     content = <MarkdownPreview content={body} resolveImageUrl={resolveImageUrl} />
   }

@@ -28,17 +28,17 @@ import { useSync, type BackupState } from '@/providers/sync-provider'
 function statusLine(backup: Extract<BackupState, { phase: 'connected' }>): string {
   switch (backup.status.state) {
     case 'idle':
-      return 'Backed up'
+      return 'Respaldado'
     case 'syncing':
-      return 'Backing up…'
+      return 'Respaldando…'
     case 'offline':
       return backup.status.message
     case 'error':
       // "Reconnect GitHub" only helps when GitHub is the remote; a generic
       // remote's auth message already names the fix (ssh-add, known_hosts…).
       return backup.status.errorKind === 'auth' && backup.repo !== null
-        ? 'Backup failed — reconnect GitHub'
-        : `Backup failed: ${backup.status.message}`
+        ? 'Falló el respaldo: vuelve a conectar GitHub'
+        : `Falló el respaldo: ${backup.status.message}`
   }
 }
 
@@ -102,7 +102,7 @@ export function BackupSettingsField(): ReactElement {
       })
       .catch(() => {
         if (openRepoAttempt.current === attempt) {
-          action.setError(`Couldn’t open the browser — visit ${url} yourself.`)
+          action.setError(`No se pudo abrir el navegador: visita ${url} tú mismo.`)
         }
       })
   }
@@ -124,22 +124,22 @@ export function BackupSettingsField(): ReactElement {
   return (
     <>
       <SettingsField
-        legend={genericRemote ? 'Backup' : 'GitHub backup'}
+        legend={genericRemote ? 'Respaldo' : 'Respaldo en GitHub'}
         description={
           genericRemote
-            ? 'This graph backs up to its own git remote. Edits back up automatically a few moments after you stop typing.'
-            : 'Back up this graph to a GitHub repository. Edits back up automatically a few moments after you stop typing.'
+            ? 'Este grafo se respalda en su propio remoto de git. Las ediciones se respaldan automáticamente unos momentos después de que dejas de escribir.'
+            : 'Respalda este grafo en un repositorio de GitHub. Las ediciones se respaldan automáticamente unos momentos después de que dejas de escribir.'
         }
       >
         <div className="mt-3 flex flex-col gap-2">
           {backup.phase === 'loading' ? (
-            <p className="text-xs text-text-muted">Checking backup status…</p>
+            <p className="text-xs text-text-muted">Verificando el estado del respaldo…</p>
           ) : null}
 
           {backup.phase === 'disconnected' ? (
             <div>
               <Button size="sm" onClick={() => setConnectOpen(true)}>
-                Connect GitHub…
+                Conectar GitHub…
               </Button>
             </div>
           ) : null}
@@ -154,9 +154,9 @@ export function BackupSettingsField(): ReactElement {
                 <div className="text-xs text-amber-700 dark:text-amber-300">
                   <p>
                     {conflictCount === 1
-                      ? '1 note needs review'
-                      : `${conflictCount} notes need review`}{' '}
-                    — open {conflictCount === 1 ? 'it' : 'one'} to keep the version you want:
+                      ? '1 nota necesita revisión'
+                      : `${conflictCount} notas necesitan revisión`}{' '}
+                    — abre {conflictCount === 1 ? 'la nota' : 'una'} para conservar la versión que quieras:
                   </p>
                   <ConflictedNoteLinks notes={conflictedNotes} />
                 </div>
@@ -169,29 +169,29 @@ export function BackupSettingsField(): ReactElement {
                   disabled={backup.status.state === 'syncing' || action.pending}
                   onClick={() => void action.run(backUpNow)}
                 >
-                  Back up now
+                  Respaldar ahora
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  title="This graph stops backing up; its history and your GitHub sign-in stay"
+                  title="Este grafo deja de respaldarse; su historial y tu sesión de GitHub se conservan"
                   onClick={() => void action.run(disconnectGraph)}
                 >
-                  Stop backing up
+                  Dejar de respaldar
                 </Button>
                 {backup.repo !== null ? (
                   <Button variant="ghost" size="sm" onClick={openGithubRepo}>
                     <ExternalLink aria-hidden />
-                    Open GitHub repo
+                    Abrir repo de GitHub
                   </Button>
                 ) : null}
               </div>
               {backup.repo !== null ? (
                 <div className="mt-2 flex flex-col gap-2 border-t border-border/70 pt-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-xs font-medium text-text">GitHub account</p>
+                    <p className="text-xs font-medium text-text">Cuenta de GitHub</p>
                     <p className="text-xs text-text-muted">
-                      Sign out on this machine; connected graphs stop backing up.
+                      Cierra la sesión en esta máquina; los grafos conectados dejan de respaldarse.
                     </p>
                   </div>
                   <Dialog open={signOutOpen} onOpenChange={setSignOutDialogOpen}>
@@ -199,18 +199,18 @@ export function BackupSettingsField(): ReactElement {
                       <Button
                         variant="destructive"
                         size="sm"
-                        title="Removes the GitHub token from this machine"
+                        title="Elimina el token de GitHub de esta máquina"
                         disabled={signOutAction.pending}
                       >
-                        Sign out of GitHub…
+                        Cerrar sesión de GitHub…
                       </Button>
                     </DialogTrigger>
                     <DialogContent showCloseButton={!signOutAction.pending}>
                       <DialogHeader>
-                        <DialogTitle>Sign out of GitHub?</DialogTitle>
+                        <DialogTitle>¿Cerrar sesión de GitHub?</DialogTitle>
                         <DialogDescription>
-                          This removes the GitHub token from this machine. Every
-                          GitHub-backed graph will stop backing up until you sign in again.
+                          Esto elimina el token de GitHub de esta máquina. Todos los grafos
+                          respaldados en GitHub dejarán de respaldarse hasta que inicies sesión de nuevo.
                         </DialogDescription>
                       </DialogHeader>
                       {signOutAction.error !== null ? (
@@ -221,7 +221,7 @@ export function BackupSettingsField(): ReactElement {
                       <DialogFooter>
                         <DialogClose asChild>
                           <Button variant="outline" disabled={signOutAction.pending}>
-                            Cancel
+                            Cancelar
                           </Button>
                         </DialogClose>
                         <Button
@@ -229,7 +229,7 @@ export function BackupSettingsField(): ReactElement {
                           disabled={signOutAction.pending}
                           onClick={() => void confirmSignOut()}
                         >
-                          Sign out
+                          Cerrar sesión
                         </Button>
                       </DialogFooter>
                     </DialogContent>

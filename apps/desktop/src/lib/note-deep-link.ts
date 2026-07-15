@@ -59,13 +59,13 @@ export async function runCopyDeepLink(path: string, generation: number): Promise
   try {
     url = await deepLinkForNote(path, generation)
   } catch (cause) {
-    startOperation('Copying deep link').fail(errorMessage(cause))
+    startOperation('Copiando enlace directo').fail(errorMessage(cause))
     return
   }
   try {
     await navigator.clipboard.writeText(url)
-    startOperation('Deep link copied').done()
+    startOperation('Enlace directo copiado').done()
   } catch (cause) {
-    startOperation('Copying deep link').fail(errorMessage(cause))
+    startOperation('Copiando enlace directo').fail(errorMessage(cause))
   }
 }

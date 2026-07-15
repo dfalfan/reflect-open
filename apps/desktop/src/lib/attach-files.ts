@@ -35,7 +35,7 @@ export async function attachFilesToNote(context: CommandContext): Promise<void> 
   if (noteEditorHandleFor(notePath) === null) {
     return
   }
-  const picked = await open({ multiple: true, title: 'Attach files' })
+  const picked = await open({ multiple: true, title: 'Adjuntar archivos' })
   if (picked === null) {
     return
   }
@@ -64,8 +64,8 @@ export async function attachFilesToNote(context: CommandContext): Promise<void> 
     const handle = noteEditorHandleFor(notePath)
     if (handle === null) {
       problems.push(
-        `the note closed before its links could be inserted — ` +
-          `${attachedNames.join(', ')} were still copied into assets/`,
+        `la nota se cerró antes de poder insertar sus enlaces — ` +
+          `${attachedNames.join(', ')} se copiaron igual en assets/`,
       )
     } else {
       handle.insertMarkdown(links.join('\n'))
@@ -76,11 +76,11 @@ export async function attachFilesToNote(context: CommandContext): Promise<void> 
     const details = failures
       .map(({ name, cause }) => `${name} (${errorMessage(cause)})`)
       .join(', ')
-    problems.push(`could not be copied: ${details}`)
+    problems.push(`no se pudieron copiar: ${details}`)
   }
   if (problems.length > 0) {
     // Command dispatch has no error channel of its own — surface everything
     // that went wrong as one failed operation, like other background work.
-    startOperation('Attaching file').fail(problems.join('; '))
+    startOperation('Adjuntando archivo').fail(problems.join('; '))
   }
 }

@@ -35,7 +35,7 @@ export function AllNotesSection(): ReactElement {
     // keeping the draft so the user can fix it.
     if (!isTagName(tag)) {
       setDraftError(
-        `"${tag}" can't be a tag — tags start with a letter and use letters, numbers, /, _ or -.`,
+        `"${tag}" no puede ser una etiqueta: las etiquetas empiezan con una letra y usan letras, números, /, _ o -.`,
       )
       return
     }
@@ -53,8 +53,8 @@ export function AllNotesSection(): ReactElement {
   return (
     <SettingsSection id="all-notes">
       <SettingsField
-        legend="Filter tags"
-        description="Tags pinned as one-click filters at the top of the All Notes screen."
+        legend="Etiquetas de filtro"
+        description="Etiquetas fijadas como filtros de un clic en la parte superior de la pantalla Todas las notas."
       >
         <ul className="mt-3 flex flex-wrap items-center gap-1.5">
           {tags.map((tag) => (
@@ -65,7 +65,7 @@ export function AllNotesSection(): ReactElement {
               #{tag}
               <button
                 type="button"
-                aria-label={`Remove ${tag}`}
+                aria-label={`Quitar ${tag}`}
                 onClick={() => removeTag(tag)}
                 className="rounded-full p-0.5 text-text-muted transition-colors duration-100 hover:bg-border hover:text-text"
               >
@@ -75,7 +75,7 @@ export function AllNotesSection(): ReactElement {
           ))}
           {tags.length === 0 ? (
             <li className="text-[13px] text-text-muted">
-              No pinned tags — the screen shows only the All tab and the Custom menu.
+              No hay etiquetas fijadas: la pantalla muestra solo la pestaña Todas y el menú Personalizado.
             </li>
           ) : null}
         </ul>
@@ -93,16 +93,16 @@ export function AllNotesSection(): ReactElement {
               setDraft(event.target.value)
               setDraftError(null)
             }}
-            aria-label="Add filter tag"
+            aria-label="Agregar etiqueta de filtro"
             aria-invalid={draftError !== null}
-            placeholder="Add a tag (e.g. book)"
+            placeholder="Agrega una etiqueta (ej. libro)"
             className="w-full max-w-60 rounded-[7px] border border-border-strong bg-input-bg px-2.5 py-1.5 text-sm text-text shadow-input placeholder:text-text-muted"
           />
           <button
             type="submit"
             className="rounded-[7px] border border-border-strong bg-surface px-3 py-1.5 text-sm font-medium text-text-secondary shadow-input transition-colors duration-100 hover:bg-surface-hover hover:text-text"
           >
-            Add
+            Agregar
           </button>
         </form>
         {draftError !== null ? (

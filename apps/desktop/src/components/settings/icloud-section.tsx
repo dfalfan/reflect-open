@@ -33,30 +33,30 @@ const PENDING_NOTES_REFETCH_MS = 5_000
 
 function graphCountLine(count: number): string {
   if (count === 0) {
-    return 'No graphs in iCloud Drive yet.'
+    return 'Aún no hay grafos en iCloud Drive.'
   }
-  return count === 1 ? '1 graph in iCloud Drive.' : `${count} graphs in iCloud Drive.`
+  return count === 1 ? '1 grafo en iCloud Drive.' : `${count} grafos en iCloud Drive.`
 }
 
 function pendingNotesLine(count: number): string {
   if (count === 0) {
-    return 'All note files are downloaded.'
+    return 'Todos los archivos de notas están descargados.'
   }
   return count === 1
-    ? '1 note is still downloading from iCloud.'
-    : `${count} notes are still downloading from iCloud.`
+    ? '1 nota todavía se está descargando de iCloud.'
+    : `${count} notas todavía se están descargando de iCloud.`
 }
 
 function reviewLine(conflictCount: number, forkCount: number): string {
   if (conflictCount === 0 && forkCount === 0) {
-    return 'No notes need review.'
+    return 'Ninguna nota necesita revisión.'
   }
   const parts: string[] = []
   if (conflictCount > 0) {
-    parts.push(conflictCount === 1 ? '1 note needs review' : `${conflictCount} notes need review`)
+    parts.push(conflictCount === 1 ? '1 nota necesita revisión' : `${conflictCount} notas necesitan revisión`)
   }
   if (forkCount > 0) {
-    parts.push(forkCount === 1 ? '1 sync fork' : `${forkCount} sync forks`)
+    parts.push(forkCount === 1 ? '1 bifurcación de sincronización' : `${forkCount} bifurcaciones de sincronización`)
   }
   return parts.join(', ')
 }
@@ -138,7 +138,7 @@ export function IcloudSettingsField(): ReactElement | null {
           // graph regardless; the original folder keeping its backup is the
           // recovery copy working as intended. Tell the user, don't block.
           setError(
-            `The graph moved to iCloud, but GitHub backup could not be disconnected from the original folder: ${errorMessage(caught)}`,
+            `El grafo se movió a iCloud, pero no se pudo desconectar el respaldo de GitHub de la carpeta original: ${errorMessage(caught)}`,
           )
         }
       }
@@ -148,7 +148,7 @@ export function IcloudSettingsField(): ReactElement | null {
         // Append rather than replace: a disconnect failure above must stay
         // visible alongside this one — both tell the user something distinct.
         setError((previous) =>
-          [previous, 'The copy landed in iCloud but could not be opened — open it from Saved graphs.']
+          [previous, 'La copia llegó a iCloud pero no se pudo abrir — ábrela desde Grafos guardados.']
             .filter(Boolean)
             .join(' '),
         )
@@ -166,15 +166,15 @@ export function IcloudSettingsField(): ReactElement | null {
         legend="iCloud Drive"
         description={
           hosted
-            ? 'This graph lives in iCloud Drive — edits sync to your other devices, and conflicts resolve automatically where possible.'
+            ? 'Este grafo vive en iCloud Drive — los cambios se sincronizan con tus otros dispositivos y los conflictos se resuelven automáticamente cuando es posible.'
             : status?.available === true
-              ? 'Copy this graph into iCloud Drive to sync it with your other devices.'
-              : 'iCloud Drive isn’t reachable from this app — sign in to iCloud, or use a build with iCloud enabled.'
+              ? 'Copia este grafo a iCloud Drive para sincronizarlo con tus otros dispositivos.'
+              : 'No se puede acceder a iCloud Drive desde esta app — inicia sesión en iCloud o usa una versión con iCloud habilitado.'
         }
       >
         {hosted ? (
           <div className="mt-3 flex flex-col gap-1 text-xs text-text-muted">
-            {pendingNotes.isPending ? <p>Checking downloaded notes...</p> : null}
+            {pendingNotes.isPending ? <p>Verificando las notas descargadas...</p> : null}
             {pendingNotes.data !== undefined ? <p>{pendingNotesLine(pendingNotes.data)}</p> : null}
             {conflictCount !== undefined && forkCount !== undefined ? (
               <div className={hasReviewIssues ? 'text-amber-700 dark:text-amber-300' : undefined}>
@@ -193,28 +193,28 @@ export function IcloudSettingsField(): ReactElement | null {
             <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
               <DialogTrigger asChild>
                 <Button size="xs" variant="outline" disabled={status?.available !== true}>
-                  Move graph to iCloud…
+                  Mover grafo a iCloud…
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Move this graph to iCloud Drive?</DialogTitle>
+                  <DialogTitle>¿Mover este grafo a iCloud Drive?</DialogTitle>
                   <DialogDescription>
-                    Your notes are copied into iCloud Drive and the graph reopens there. The
-                    current folder stays on disk, untouched, as a recovery copy.
+                    Tus notas se copian a iCloud Drive y el grafo se vuelve a abrir allí. La
+                    carpeta actual permanece en el disco, intacta, como copia de recuperación.
                     {backupConnected
-                      ? ' GitHub backup is disconnected from the recovery copy; you can reconnect backup after the iCloud graph opens.'
+                      ? ' El respaldo de GitHub se desconecta de la copia de recuperación; puedes reconectar el respaldo después de que se abra el grafo de iCloud.'
                       : ''}
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                   <DialogClose asChild>
                     <Button variant="ghost" disabled={busy}>
-                      Cancel
+                      Cancelar
                     </Button>
                   </DialogClose>
                   <Button disabled={busy} onClick={() => void moveToICloud()}>
-                    {busy ? 'Moving…' : 'Move to iCloud'}
+                    {busy ? 'Moviendo…' : 'Mover a iCloud'}
                   </Button>
                 </DialogFooter>
               </DialogContent>

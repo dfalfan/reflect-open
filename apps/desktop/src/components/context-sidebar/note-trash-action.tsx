@@ -41,7 +41,7 @@ export function NoteTrashAction({ path }: NoteTrashActionProps): ReactElement | 
     if (generation === undefined) {
       return
     }
-    const operation = startOperation('Trashing note')
+    const operation = startOperation('Enviando la nota a la papelera')
     setIsTrashing(true)
     setError(null)
     try {
@@ -69,25 +69,25 @@ export function NoteTrashAction({ path }: NoteTrashActionProps): ReactElement | 
           <Trash2 size={14} aria-hidden />
         </span>
         <span className="min-w-0 flex-1 truncate text-xs font-medium transition-colors duration-100 group-hover:text-destructive">
-          Trash note
+          Enviar a la papelera
         </span>
       </button>
 
       <Dialog open={confirmingTrash} onOpenChange={(open) => !isTrashing && setConfirmingTrash(open)}>
         <DialogContent>
-          <DialogTitle>Trash this note?</DialogTitle>
+          <DialogTitle>¿Enviar esta nota a la papelera?</DialogTitle>
           <DialogDescription>
-            It moves to your system Trash, where you can restore it.
+            Se mueve a la papelera del sistema, donde puedes restaurarla.
           </DialogDescription>
           {error !== null ? <p className="text-sm text-destructive">{error}</p> : null}
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="ghost" disabled={isTrashing}>
-                Cancel
+                Cancelar
               </Button>
             </DialogClose>
             <Button variant="destructive" disabled={isTrashing} onClick={() => void onTrash()}>
-              Trash note
+              Enviar a la papelera
             </Button>
           </DialogFooter>
         </DialogContent>

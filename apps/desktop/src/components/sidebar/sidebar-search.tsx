@@ -20,7 +20,7 @@ export function SidebarSearch({ onOpen }: { onOpen: () => void }): ReactElement 
       <span className="flex-none">
         <SearchIcon />
       </span>
-      <span className="w-0 flex-1 truncate text-left">Search anything...</span>
+      <span className="w-0 flex-1 truncate text-left">Buscar cualquier cosa...</span>
       {PALETTE_BINDING !== null ? <ShortcutKeys binding={PALETTE_BINDING} ghost /> : null}
     </button>
   )

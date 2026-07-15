@@ -81,7 +81,7 @@ export function GithubAuthStep({ onAuthed, repoName }: GithubAuthStepProps): Rea
   async function verifyAndFinish(): Promise<void> {
     const user = await fetchSignedInUser()
     if (user === null) {
-      throw new Error('GitHub rejected that token — check it and try again.')
+      throw new Error('GitHub rechazó ese token — revísalo e inténtalo de nuevo.')
     }
     reportAuthed(user)
   }
@@ -122,7 +122,7 @@ export function GithubAuthStep({ onAuthed, repoName }: GithubAuthStepProps): Rea
   async function savePat(): Promise<void> {
     const token = patValue.trim()
     if (token.length === 0) {
-      pat.setError('Paste a token first.')
+      pat.setError('Primero pega un token.')
       return
     }
     // Keychain writes can fail (locked keychain, denied access) and GitHub
@@ -147,33 +147,33 @@ export function GithubAuthStep({ onAuthed, repoName }: GithubAuthStepProps): Rea
               disabled={deviceFlow.busy || pat.pending}
               size="sm"
             >
-              Sign in with GitHub
+              Iniciar sesión con GitHub
             </Button>
             <button
               type="button"
               className="text-left text-xs text-text-muted underline"
               onClick={() => setUsePat(true)}
             >
-              Use a personal access token instead
+              Usar un token de acceso personal en su lugar
             </button>
           </>
         ) : (
           <>
             <p className="text-xs text-text-muted">
-              Paste a fine-grained personal access token with <strong>Contents</strong> read/write
-              access to{' '}
+              Pega un token de acceso personal de alcance específico con acceso de lectura/escritura
+              a <strong>Contents</strong> para{' '}
               {repoName !== undefined ? (
                 <>
-                  the <strong>{repoName}</strong> repository
+                  el repositorio <strong>{repoName}</strong>
                 </>
               ) : (
-                'your backup repository'
+                'tu repositorio de respaldo'
               )}{' '}
-              (GitHub → Settings → Developer settings → Fine-grained tokens). It is stored in
-              your OS keychain, never in your graph.
+              (GitHub → Settings → Developer settings → Fine-grained tokens). Se guarda en el
+              llavero de tu sistema operativo, nunca en tu grafo.
             </p>
             <label className="flex flex-col gap-1">
-              <span className={FIELD_LABEL_CLASS}>Personal access token</span>
+              <span className={FIELD_LABEL_CLASS}>Token de acceso personal</span>
               <Input
                 autoFocus
                 type="password"
@@ -183,7 +183,7 @@ export function GithubAuthStep({ onAuthed, repoName }: GithubAuthStepProps): Rea
               />
             </label>
             <Button onClick={() => void savePat()} disabled={pat.pending} size="sm">
-              {pat.pending ? 'Checking…' : 'Save token'}
+              {pat.pending ? 'Verificando…' : 'Guardar token'}
             </Button>
             {isDeviceFlowConfigured() ? (
               <button
@@ -191,7 +191,7 @@ export function GithubAuthStep({ onAuthed, repoName }: GithubAuthStepProps): Rea
                 className="text-left text-xs text-text-muted underline"
                 onClick={() => setUsePat(false)}
               >
-                Sign in with GitHub instead
+                Iniciar sesión con GitHub en su lugar
               </button>
             ) : null}
           </>
@@ -200,23 +200,23 @@ export function GithubAuthStep({ onAuthed, repoName }: GithubAuthStepProps): Rea
         <div className="flex flex-col gap-2">
           <p className="text-xs text-text-muted">
             {copyState === 'copied'
-              ? 'Code copied — paste it on the GitHub page:'
-              : 'GitHub will ask for this one-time code:'}
+              ? 'Código copiado — pégalo en la página de GitHub:'
+              : 'GitHub te pedirá este código de un solo uso:'}
           </p>
           <p className="select-text text-center font-mono text-xl tracking-[0.3em] text-text">
             {flowView.userCode}
           </p>
           <Button size="sm" onClick={() => void copyCodeAndOpen(flowView)}>
-            {copyState === 'failed' ? 'Open GitHub' : 'Copy code and open GitHub'}
+            {copyState === 'failed' ? 'Abrir GitHub' : 'Copiar código y abrir GitHub'}
           </Button>
           {copyState === 'failed' ? (
             <p className="text-xs text-text-muted">
-              Couldn’t copy automatically — select the code above and copy it first.
+              No se pudo copiar automáticamente — selecciona el código de arriba y cópialo primero.
             </p>
           ) : null}
           {openFailed ? (
             <p className="select-text text-xs text-text-muted">
-              Couldn’t open the browser — visit {flowView.verificationUri} yourself.
+              No se pudo abrir el navegador — visita {flowView.verificationUri} tú mismo.
             </p>
           ) : null}
         </div>

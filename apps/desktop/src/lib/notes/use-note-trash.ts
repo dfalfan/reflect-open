@@ -53,10 +53,10 @@ export function useNoteTrash(): NoteTrash {
       const root = graph?.root
       if (generation === undefined || root === undefined) {
         // No graph to trash into — report it; never a silent success.
-        startOperation('Trashing notes').fail('No graph is open.')
+        startOperation('Enviando notas a la papelera').fail('No hay ningún grafo abierto.')
         return false
       }
-      const operation = startOperation('Trashing notes')
+      const operation = startOperation('Enviando notas a la papelera')
       setIsTrashing(true)
       let failures = 0
       let lastError: unknown = null

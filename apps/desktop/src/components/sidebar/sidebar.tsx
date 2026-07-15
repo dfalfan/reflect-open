@@ -67,10 +67,10 @@ export function Sidebar({ graph, context }: SidebarProps): ReactElement {
           <AudioMemoButton />
         </div>
 
-        <nav aria-label="Primary" className="mt-6 space-y-1 px-4">
+        <nav aria-label="Principal" className="mt-6 space-y-1 px-4">
           <SidebarItem
             icon={<PencilIcon className="shrink-0" />}
-            label="Daily notes"
+            label="Notas diarias"
             binding={keybindingFor('nav.today') ?? undefined}
             active={(route.kind === 'today' || route.kind === 'daily') && !hasActivePinnedNote}
             onClick={() => void runCommand('nav.today', context)}
@@ -81,7 +81,7 @@ export function Sidebar({ graph, context }: SidebarProps): ReactElement {
                 <SquarePen aria-hidden strokeWidth={1.75} className="size-4" />
               </span>
             }
-            label="New note"
+            label="Nota nueva"
             binding={keybindingFor('note.new') ?? undefined}
             // Active while the open note is still on its ULID placeholder
             // name — the state this row creates. The birth rename onto a
@@ -92,7 +92,7 @@ export function Sidebar({ graph, context }: SidebarProps): ReactElement {
           />
           <SidebarItem
             icon={<ListIcon className="shrink-0" />}
-            label="All notes"
+            label="Todas las notas"
             binding={keybindingFor('nav.allNotes') ?? undefined}
             // A named note lives in the All Notes collection, so keep this row
             // lit while editing one. A brand-new note is still an untitled
@@ -110,7 +110,7 @@ export function Sidebar({ graph, context }: SidebarProps): ReactElement {
                 <ListChecks aria-hidden strokeWidth={1.75} className="size-4" />
               </span>
             }
-            label="Tasks"
+            label="Tareas"
             binding={keybindingFor('nav.tasks') ?? undefined}
             active={route.kind === 'tasks'}
             onClick={() => void runCommand('nav.tasks', context)}

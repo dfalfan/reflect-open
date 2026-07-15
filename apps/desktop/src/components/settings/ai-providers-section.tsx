@@ -20,8 +20,9 @@ export function AiProvidersSection(): ReactElement {
     <SettingsSection id="ai-providers">
       {providers.length === 0 ? (
         <p className="px-4 py-3.5 text-xs text-text-muted">
-          No AI providers configured. Add a provider API key to use AI features — keys
-          are stored in your OS keychain and calls go directly to the provider.
+          No hay proveedores de IA configurados. Agrega la clave de API de un proveedor para usar
+          las funciones de IA: las claves se guardan en el llavero de tu sistema operativo y las
+          llamadas van directo al proveedor.
         </p>
       ) : (
         providers.map((config) => (
@@ -43,7 +44,7 @@ export function AiProvidersSection(): ReactElement {
           className="text-accent hover:bg-surface-hover"
         >
           <Plus aria-hidden strokeWidth={1.75} />
-          Add provider
+          Agregar proveedor
         </Button>
       </div>
       {adding ? <AddAiProviderDialog onAdd={addProvider} onClose={() => setAdding(false)} /> : null}

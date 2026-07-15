@@ -23,14 +23,14 @@ export function ModelDownloadProgress({ progress }: ModelDownloadProgressProps):
       : null
   const label =
     progress !== undefined && fraction !== null && fraction < 1
-      ? `Downloading the model — ${formatMegabytes(progress.downloaded)} of ${formatMegabytes(progress.total)}`
-      : 'Preparing the model…'
+      ? `Descargando el modelo — ${formatMegabytes(progress.downloaded)} de ${formatMegabytes(progress.total)}`
+      : 'Preparando el modelo…'
 
   return (
     <div>
       <div
         role="progressbar"
-        aria-label="Semantic search model download"
+        aria-label="Descarga del modelo de búsqueda semántica"
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={fraction !== null ? Math.round(fraction * 100) : undefined}

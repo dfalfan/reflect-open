@@ -47,7 +47,7 @@ export function AppShell({
       {sidebar ? (
         <aside
           id="workspace-sidebar"
-          aria-label="Workspace"
+          aria-label="Espacio de trabajo"
           className="relative flex w-[var(--sidebar-width)] shrink-0 flex-col overflow-hidden border-r border-border bg-surface-sunken"
         >
           {sidebar}
@@ -60,7 +60,7 @@ export function AppShell({
       {context ? (
         <aside
           id="context-sidebar"
-          aria-label="Context"
+          aria-label="Contexto"
           className="relative hidden w-[var(--context-sidebar-width)] shrink-0 border-l border-border bg-surface-sunken lg:block"
         >
           {contextEdge}

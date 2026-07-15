@@ -7,8 +7,8 @@ import {
 import { cn } from '@/lib/utils'
 
 const PANEL_LABELS: Record<ResizableSidebarPanel, string> = {
-  workspace: 'Resize sidebar',
-  context: 'Resize context panel',
+  workspace: 'Redimensionar barra lateral',
+  context: 'Redimensionar panel de contexto',
 }
 
 interface SidebarResizeHandleProps {

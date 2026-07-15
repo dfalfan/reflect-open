@@ -243,7 +243,7 @@ export function NotePaneComponent({
           className,
         )}
       >
-        Loading note…
+        Cargando nota…
       </div>
     )
   }
@@ -259,7 +259,7 @@ export function NotePaneComponent({
           className,
         )}
       >
-        Couldn’t open {path}: {document.error}
+        No se pudo abrir {path}: {document.error}
       </div>
     )
   }
@@ -294,19 +294,19 @@ export function NotePaneComponent({
   )
 
   return (
-    <div className={cn('relative', className)} aria-label={`Editing ${path}`}>
+    <div className={cn('relative', className)} aria-label={`Editando ${path}`}>
       <div className={gutterClassName}>
         {document.error !== null ? (
           <InlineAlert tone="error" className="mb-4">
-            Saving failed: {document.error}. Your edits are kept in the editor and the next
-            successful save will persist them.
+            No se pudo guardar: {document.error}. Tus ediciones se conservan en el editor y el
+            próximo guardado exitoso las persistirá.
           </InlineAlert>
         ) : null}
 
         {saveError !== null ? (
           <InlineAlert tone="error" className="mb-4">
-            Couldn’t save the {saveError.kind === 'image' ? 'pasted image' : 'file'}:{' '}
-            {saveError.message}. It was not added to the note.
+            No se pudo guardar {saveError.kind === 'image' ? 'la imagen pegada' : 'el archivo'}:{' '}
+            {saveError.message}. No se agregó a la nota.
           </InlineAlert>
         ) : null}
 
@@ -363,7 +363,7 @@ export function NotePaneComponent({
         onSlashMenuSearch={onSlashMenuSearch}
         // Daily notes carry no title semantics (the date is their subject),
         // so an empty leading H1 there is just an empty heading.
-        {...(dailyNote ? {} : { titlePlaceholder: 'Untitled' })}
+        {...(dailyNote ? {} : { titlePlaceholder: 'Sin título' })}
         // `reflect-note-surface` opts this primary editor into the reading
         // text size (Settings → Editor); compact MarkdownView previews that
         // also carry `reflect-editor` keep their own context size.

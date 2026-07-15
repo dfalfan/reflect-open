@@ -72,18 +72,18 @@ export function TaskGroupSection({
         {addTarget !== null ? (
           <button
             type="button"
-            aria-label={`Add a task to ${group.kind === 'current' ? 'today' : group.label}`}
+            aria-label={`Agregar una tarea a ${group.kind === 'current' ? 'hoy' : group.label}`}
             onClick={() => onAdd(addTarget)}
             className="ml-auto flex flex-none items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium text-text-muted transition-colors hover:text-text focus-visible:text-text focus-visible:outline-none"
           >
             <Plus aria-hidden className="size-3.5" />
-            Add
+            Agregar
           </button>
         ) : null}
       </div>
       <ul className="flex flex-col py-1">
         {group.tasks.length === 0 ? (
-          <li className="px-4 py-1.5 text-sm text-text-muted lg:px-12">No tasks</li>
+          <li className="px-4 py-1.5 text-sm text-text-muted lg:px-12">No hay tareas</li>
         ) : (
           contexts.map((context) => {
             const firstTask = context.tasks[0]!

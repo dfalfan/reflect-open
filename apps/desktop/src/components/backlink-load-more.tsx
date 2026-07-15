@@ -79,7 +79,7 @@ export function BacklinkLoadMore({
     <div className={cn('flex flex-col items-start gap-1', className)}>
       {isFetchNextPageError ? (
         <p role="alert" className="text-xs text-text-muted">
-          Couldn’t load more backlinks.
+          No se pudieron cargar más retroenlaces.
         </p>
       ) : null}
       <Button
@@ -93,10 +93,10 @@ export function BacklinkLoadMore({
       >
         {isFetchingNextPage ? <Spinner /> : null}
         {isFetchingNextPage
-          ? 'Loading more backlinks…'
+          ? 'Cargando más retroenlaces…'
           : isFetchNextPageError
-            ? 'Retry loading backlinks'
-            : 'Load more backlinks'}
+            ? 'Reintentar cargar retroenlaces'
+            : 'Cargar más retroenlaces'}
       </Button>
     </div>
   )

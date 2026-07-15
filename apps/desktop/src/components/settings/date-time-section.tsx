@@ -30,13 +30,13 @@ interface WeekStartOption {
 }
 
 const TIME_FORMAT_OPTIONS: TimeFormatOption[] = [
-  { value: '12h', label: '12-hour' },
-  { value: '24h', label: '24-hour' },
+  { value: '12h', label: '12 horas' },
+  { value: '24h', label: '24 horas' },
 ]
 
 const WEEK_START_OPTIONS: WeekStartOption[] = [
-  { value: 'monday', label: 'Monday' },
-  { value: 'sunday', label: 'Sunday' },
+  { value: 'monday', label: 'Lunes' },
+  { value: 'sunday', label: 'Domingo' },
 ]
 
 // The options demonstrate themselves: each shows today's date in its format,
@@ -56,15 +56,15 @@ export function DateTimeSection(): ReactElement {
   return (
     <SettingsSection id="date-time">
       <SettingsField
-        legend="Date format"
-        description="The style for dates shown throughout Reflect, including daily note titles."
+        legend="Formato de fecha"
+        description="El estilo de las fechas que se muestran en todo Reflect, incluidos los títulos de las notas diarias."
       >
         <div className="mt-3">
           <Select
             value={settings.dateFormat}
             onValueChange={(value) => updateSettings({ dateFormat: dateFormatSchema.parse(value) })}
           >
-            <SelectTrigger aria-label="Date format" className="w-44">
+            <SelectTrigger aria-label="Formato de fecha" className="w-44">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -78,8 +78,8 @@ export function DateTimeSection(): ReactElement {
         </div>
       </SettingsField>
       <SettingsField
-        legend="Start week on"
-        description="The first day shown in calendars."
+        legend="Empezar la semana en"
+        description="El primer día que se muestra en los calendarios."
       >
         <div className="mt-3">
           <Select
@@ -88,7 +88,7 @@ export function DateTimeSection(): ReactElement {
               updateSettings({ weekStartDay: weekStartDaySchema.parse(value) })
             }
           >
-            <SelectTrigger aria-label="Start week on" className="w-36">
+            <SelectTrigger aria-label="Empezar la semana en" className="w-36">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -102,15 +102,15 @@ export function DateTimeSection(): ReactElement {
         </div>
       </SettingsField>
       <SettingsField
-        legend="Time format"
-        description="How times are shown throughout Reflect — 8:22pm or 20:22."
+        legend="Formato de hora"
+        description="Cómo se muestran las horas en todo Reflect: 8:22pm o 20:22."
       >
         <div className="mt-3">
           <Select
             value={settings.timeFormat}
             onValueChange={(value) => updateSettings({ timeFormat: timeFormatSchema.parse(value) })}
           >
-            <SelectTrigger aria-label="Time format" className="w-36">
+            <SelectTrigger aria-label="Formato de hora" className="w-36">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

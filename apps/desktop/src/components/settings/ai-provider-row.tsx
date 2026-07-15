@@ -32,7 +32,7 @@ export function AiProviderRow({
 
   const remove = (): void => {
     onRemove(config.id).catch((error: unknown) => {
-      startOperation(`Removing ${name}`).fail(errorMessage(error))
+      startOperation(`Quitando ${name}`).fail(errorMessage(error))
     })
   }
 
@@ -41,13 +41,13 @@ export function AiProviderRow({
       <div className="min-w-0">
         <div className="truncate text-sm font-medium text-text">{name}</div>
         <p className="mt-0.5 text-xs text-text-muted">
-          API key <span className="font-mono">·····{config.keyHint}</span>
+          Clave de API <span className="font-mono">·····{config.keyHint}</span>
         </p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {isDefault ? (
           <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent-soft-text">
-            Default
+            Por defecto
           </span>
         ) : (
           <Button
@@ -57,14 +57,14 @@ export function AiProviderRow({
             onClick={() => onMakeDefault(config.id)}
             className="text-text-secondary hover:bg-surface-hover hover:text-text"
           >
-            Make default
+            Hacer predeterminado
           </Button>
         )}
         <Button
           type="button"
           variant="ghost"
           size="icon-sm"
-          aria-label={`Remove ${name}`}
+          aria-label={`Quitar ${name}`}
           onClick={remove}
           className="text-text-muted hover:bg-surface-hover hover:text-text"
         >

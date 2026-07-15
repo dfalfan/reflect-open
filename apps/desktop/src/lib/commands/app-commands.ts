@@ -53,8 +53,8 @@ const GRAPH_SWITCH_COMMANDS: AppCommand[] = Array.from({ length: 9 }, (_, index)
   const position = index + 1
   return {
     id: `graph.switch${position}`,
-    title: `Switch to graph ${position}`,
-    keywords: ['graph', 'workspace', 'switch', 'recent'],
+    title: `Cambiar al grafo ${position}`,
+    keywords: ['grafo', 'espacio de trabajo', 'cambiar', 'reciente', 'graph', 'workspace'],
     keybinding: `Meta-${position}`,
     run: (context) => context.switchGraph(index),
   }
@@ -64,8 +64,8 @@ const APP_COMMANDS: AppCommand[] = [
   ...GRAPH_SWITCH_COMMANDS,
   {
     id: 'nav.today',
-    title: 'Go to today',
-    keywords: ['daily', 'now'],
+    title: 'Ir a hoy',
+    keywords: ['diaria', 'hoy', 'ahora', 'daily'],
     keybinding: 'Mod-d',
     // ⌘D is a capture gesture, not just navigation: the arrival asks the
     // stream to focus today's editor with the caret at the end of its
@@ -76,29 +76,29 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'nav.allNotes',
-    title: 'All notes',
-    keywords: ['notes', 'list', 'browse', 'library'],
+    title: 'Todas las notas',
+    keywords: ['notas', 'lista', 'explorar', 'biblioteca', 'notes'],
     keybinding: 'Mod-Shift-a',
     run: (context) => context.navigate({ kind: 'allNotes', tag: null }),
   },
   {
     id: 'nav.tasks',
-    title: 'Tasks',
-    keywords: ['todo', 'todos', 'checklist', 'checkbox', 'open'],
+    title: 'Tareas',
+    keywords: ['pendientes', 'tareas', 'lista', 'casilla', 'abrir', 'todo'],
     keybinding: 'Mod-t',
     run: (context) => context.navigate({ kind: 'tasks' }),
   },
   {
     id: 'note.new',
-    title: 'New note',
-    keywords: ['create'],
+    title: 'Nota nueva',
+    keywords: ['crear', 'nueva', 'create'],
     keybinding: 'Mod-n',
     run: openNewNote,
   },
   {
     id: 'note.openInNewWindow',
-    title: 'Open note in new window',
-    keywords: ['window', 'duplicate', 'pop out'],
+    title: 'Abrir nota en ventana nueva',
+    keywords: ['ventana', 'duplicar', 'window'],
     keybinding: 'Mod-Shift-o',
     // `notePath` follows the focused day inside the daily stream. Converting
     // that path back to a route also canonicalizes Today to a dated daily
@@ -114,14 +114,14 @@ const APP_COMMANDS: AppCommand[] = [
   {
     id: 'chat.open',
     title: 'Chat',
-    keywords: ['ai', 'assistant', 'copilot', 'ask'],
+    keywords: ['ia', 'asistente', 'copilot', 'preguntar', 'ai'],
     keybinding: 'Mod-j',
     run: (context) => context.navigate({ kind: 'chat' }),
   },
   {
     id: 'chat.new',
-    title: 'New chat',
-    keywords: ['ai', 'assistant', 'copilot', 'conversation'],
+    title: 'Chat nuevo',
+    keywords: ['ia', 'asistente', 'copilot', 'conversación', 'ai'],
     keybinding: 'Mod-Shift-n',
     run: (context) => {
       if (context.route().kind !== 'chat') {
@@ -132,27 +132,27 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'history.back',
-    title: 'Back',
+    title: 'Atrás',
     keybinding: 'Mod-[',
     run: (context) => context.back(),
   },
   {
     id: 'history.forward',
-    title: 'Forward',
+    title: 'Adelante',
     keybinding: 'Mod-]',
     run: (context) => context.forward(),
   },
   {
     id: 'palette.open',
-    title: 'Search…',
-    keywords: ['find', 'open'],
+    title: 'Buscar…',
+    keywords: ['buscar', 'encontrar', 'abrir', 'find'],
     keybinding: 'Mod-k',
     run: (context) => context.openPalette(),
   },
   {
     id: 'note.togglePin',
-    title: 'Pin or unpin note',
-    keywords: ['pinned', 'favorite', 'bookmark', 'sidebar'],
+    title: 'Fijar o desfijar nota',
+    keywords: ['fijada', 'favorito', 'marcador', 'barra lateral', 'pin'],
     // The original app's pin shortcut. Flips the `pinned` frontmatter flag of
     // the note the current route edits; on search/settings there is no such
     // note and the command is a no-op.
@@ -172,14 +172,14 @@ const APP_COMMANDS: AppCommand[] = [
       } catch (cause) {
         // runCommand has no error channel of its own — an unreported failure
         // here would be a silent ⌘O. Surface it like other background work.
-        startOperation(wasPinned ? 'Unpinning note' : 'Pinning note').fail(errorMessage(cause))
+        startOperation(wasPinned ? 'Desfijando nota' : 'Fijando nota').fail(errorMessage(cause))
       }
     },
   },
   {
     id: 'note.togglePrivate',
-    title: 'Mark or un-mark note as private',
-    keywords: ['privacy', 'lock', 'secret', 'hide', 'ai'],
+    title: 'Marcar o desmarcar nota como privada',
+    keywords: ['privacidad', 'bloquear', 'secreto', 'ocultar', 'ia', 'private'],
     // Flips the `private` frontmatter flag — the hard block on sending the
     // note's content to AI or any other external service — of the note the
     // current route edits. No default keybinding: the palette keeps it
@@ -198,14 +198,14 @@ const APP_COMMANDS: AppCommand[] = [
         wasPrivate = (await getNote(path))?.isPrivate ?? false
         await toggleNotePrivate(path, generation)
       } catch (cause) {
-        startOperation(wasPrivate ? 'Unlocking note' : 'Locking note').fail(errorMessage(cause))
+        startOperation(wasPrivate ? 'Desbloqueando nota' : 'Bloqueando nota').fail(errorMessage(cause))
       }
     },
   },
   {
     id: 'note.publishGist',
-    title: 'Share with private link',
-    keywords: ['gist', 'github', 'share', 'publish', 'private link', 'export'],
+    title: 'Compartir con enlace privado',
+    keywords: ['gist', 'github', 'compartir', 'publicar', 'enlace privado', 'exportar'],
     // Publishes the body of the note the current route edits to a secret
     // GitHub gist (republishing to the same gist thereafter) and copies the
     // link. No default keybinding: the palette keeps it keyboard-reachable
@@ -222,8 +222,8 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'note.attachFile',
-    title: 'Attach file…',
-    keywords: ['upload', 'attachment', 'import', 'pdf', 'document', 'insert'],
+    title: 'Adjuntar archivo…',
+    keywords: ['subir', 'adjunto', 'importar', 'pdf', 'documento', 'insertar'],
     // Native file picker → copies into the graph's `assets/` → a markdown
     // link per file at the caret (the keyboard-native twin of dropping a
     // file on the note). No default keybinding: the palette keeps it
@@ -232,8 +232,8 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'note.copyDeepLink',
-    title: 'Copy deep link',
-    keywords: ['url', 'share', 'clipboard', 'reflect://', 'address'],
+    title: 'Copiar enlace directo',
+    keywords: ['url', 'compartir', 'portapapeles', 'reflect://', 'dirección'],
     // The original app's copy-link shortcut. Copies a `reflect://` address for
     // the note the current route edits — id-shaped so it survives renames,
     // minting the frontmatter id on first copy. `runCopyDeepLink` owns all
@@ -250,8 +250,8 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'note.random',
-    title: 'Open random note',
-    keywords: ['shuffle', 'serendipity'],
+    title: 'Abrir nota al azar',
+    keywords: ['azar', 'aleatorio', 'serendipia'],
     run: async (context) => {
       const path = await randomNotePath()
       if (path !== null) {
@@ -261,8 +261,8 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'template.insert',
-    title: 'Insert template…',
-    keywords: ['snippet', 'boilerplate', 'stamp'],
+    title: 'Insertar plantilla…',
+    keywords: ['fragmento', 'plantilla', 'insertar'],
     // Inserts into the note the current route edits (the focused stream day on
     // daily views); on screens with no note there is nothing to insert into.
     // The picker itself carries the empty state — a "New template" row — so
@@ -276,48 +276,48 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'template.new',
-    title: 'New template',
-    keywords: ['template', 'snippet', 'boilerplate', 'create'],
+    title: 'Plantilla nueva',
+    keywords: ['plantilla', 'fragmento', 'crear', 'template'],
     run: (context) => context.openTemplateCreate(),
   },
   {
     id: 'audioMemo.toggle',
-    title: 'Record audio memo',
-    keywords: ['voice', 'mic', 'dictate', 'transcribe', 'speech', 'capture'],
+    title: 'Grabar memo de audio',
+    keywords: ['voz', 'micrófono', 'dictar', 'transcribir', 'habla', 'capturar'],
     keybinding: 'Mod-Shift-r',
     run: (context) => context.toggleAudioMemo(),
   },
   {
     id: 'theme.toggle',
-    title: 'Toggle theme',
-    keywords: ['dark', 'light', 'appearance'],
+    title: 'Cambiar tema',
+    keywords: ['oscuro', 'claro', 'apariencia', 'tema'],
     run: (context) => context.toggleTheme(),
   },
   {
     id: 'sidebar.toggle',
-    title: 'Toggle sidebar',
-    keywords: ['collapse', 'expand', 'navigation', 'focus'],
+    title: 'Mostrar u ocultar barra lateral',
+    keywords: ['colapsar', 'expandir', 'navegación', 'enfoque', 'barra lateral'],
     keybinding: 'Mod-\\',
     run: (context) => context.toggleSidebar(),
   },
   {
     id: 'settings.open',
-    title: 'Open settings',
-    keywords: ['preferences', 'config', 'options'],
+    title: 'Abrir ajustes',
+    keywords: ['preferencias', 'configuración', 'opciones', 'ajustes'],
     keybinding: 'Mod-,',
     run: (context) => context.navigate({ kind: 'settings' }),
   },
   {
     id: 'shortcuts.show',
-    title: 'Keyboard shortcuts',
-    keywords: ['cheat', 'sheet', 'keys', 'bindings', 'hotkeys', 'help'],
+    title: 'Atajos de teclado',
+    keywords: ['atajos', 'teclas', 'ayuda', 'hotkeys'],
     keybinding: 'Mod-/',
     run: (context) => context.openShortcuts(),
   },
   {
     id: 'semantic.enable',
-    title: 'Enable semantic search',
-    keywords: ['embeddings', 'ai', 'similar', 'model'],
+    title: 'Activar búsqueda semántica',
+    keywords: ['embeddings', 'ia', 'similar', 'modelo', 'semántica'],
     // Downloads the local model (~90MB) — deliberately opt-in, never
     // automatic: the first network fetch is the user's call. Persisting the
     // setting is the entire command — EmbeddingsSync loads the model when the
@@ -327,8 +327,8 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'index.rebuild',
-    title: 'Rebuild search index',
-    keywords: ['reindex', 'refresh'],
+    title: 'Reconstruir índice de búsqueda',
+    keywords: ['reindexar', 'actualizar', 'índice'],
     run: async (context) => {
       const generation = context.generation()
       if (generation === null) {
@@ -339,8 +339,8 @@ const APP_COMMANDS: AppCommand[] = [
   },
   {
     id: 'dev.toggleDevtools',
-    title: 'Developer tools',
-    keywords: ['devtools', 'inspector', 'debug', 'console', 'inspect', 'web inspector'],
+    title: 'Herramientas de desarrollo',
+    keywords: ['devtools', 'inspector', 'depurar', 'consola', 'inspeccionar', 'web inspector'],
     // The web inspector ships in every build (see `src-tauri/src/devtools.rs`),
     // so users can always debug. Plain-browser dev has no native shell — and its
     // own DevTools — so this no-ops there rather than throwing through the

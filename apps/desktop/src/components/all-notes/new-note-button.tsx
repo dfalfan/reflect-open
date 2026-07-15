@@ -17,7 +17,7 @@ export function NewNoteButton(): ReactElement {
       onClick={() => navigate(newNoteRoute())}
       className="flex items-center gap-2 rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-text-on-brand shadow-sm transition-colors duration-100 hover:bg-accent-hover"
     >
-      New note
+      Nota nueva
       {NEW_NOTE_BINDING !== null ? (
         <span aria-hidden className="rounded bg-white/20 px-1 py-px text-[11px] font-medium">
           {formatBindingLabel(NEW_NOTE_BINDING)}

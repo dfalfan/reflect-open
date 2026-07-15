@@ -34,7 +34,7 @@ export function NavigateArrows(): ReactElement {
           <span>
             <button
               type="button"
-              aria-label="Go back"
+              aria-label="Atrás"
               disabled={!canBack}
               onClick={back}
               className={BUTTON_CLASS}
@@ -44,7 +44,7 @@ export function NavigateArrows(): ReactElement {
           </span>
         </TooltipTrigger>
         <TooltipContent>
-          Go back {BACK_BINDING && <ShortcutKeys binding={BACK_BINDING} />}
+          Atrás {BACK_BINDING && <ShortcutKeys binding={BACK_BINDING} />}
         </TooltipContent>
       </Tooltip>
       <Tooltip>
@@ -52,7 +52,7 @@ export function NavigateArrows(): ReactElement {
           <span>
             <button
               type="button"
-              aria-label="Go forward"
+              aria-label="Adelante"
               disabled={!canForward}
               onClick={forward}
               className={BUTTON_CLASS}
@@ -62,7 +62,7 @@ export function NavigateArrows(): ReactElement {
           </span>
         </TooltipTrigger>
         <TooltipContent>
-          Go forward {FORWARD_BINDING && <ShortcutKeys binding={FORWARD_BINDING} />}
+          Adelante {FORWARD_BINDING && <ShortcutKeys binding={FORWARD_BINDING} />}
         </TooltipContent>
       </Tooltip>
     </div>

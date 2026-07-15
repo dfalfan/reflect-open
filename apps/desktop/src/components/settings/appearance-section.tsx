@@ -14,9 +14,9 @@ interface ThemeOption {
 }
 
 const THEME_OPTIONS: ThemeOption[] = [
-  { value: 'system', label: 'System', icon: Monitor },
-  { value: 'light', label: 'Light', icon: Sun },
-  { value: 'dark', label: 'Dark', icon: Moon },
+  { value: 'system', label: 'Sistema', icon: Monitor },
+  { value: 'light', label: 'Claro', icon: Sun },
+  { value: 'dark', label: 'Oscuro', icon: Moon },
 ]
 
 /**
@@ -30,8 +30,8 @@ export function AppearanceSection(): ReactElement {
   return (
     <SettingsSection id="appearance">
       <SettingsField
-        legend="Theme"
-        description="System follows your OS appearance. Saved with your settings."
+        legend="Tema"
+        description="Sistema sigue la apariencia de tu sistema operativo. Se guarda con tus ajustes."
       >
         <div className="mt-3 grid grid-cols-3 gap-2">
           {THEME_OPTIONS.map(({ value, label, icon: Icon }) => {

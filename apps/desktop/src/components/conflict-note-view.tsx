@@ -77,7 +77,7 @@ function ConflictSideView({ side, tone }: ConflictSideViewProps): ReactElement {
       {side.text.length > 0 ? (
         <pre className="whitespace-pre-wrap">{side.text}</pre>
       ) : (
-        <p className="text-xs text-text-muted italic">Empty on this side</p>
+        <p className="text-xs text-text-muted italic">Vacío de este lado</p>
       )}
     </div>
   )

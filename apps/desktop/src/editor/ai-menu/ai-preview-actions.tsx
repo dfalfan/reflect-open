@@ -37,12 +37,12 @@ export function AiPreviewActions({
     <div className="flex items-center">
       <Button variant="ghost" size="sm" onClick={() => onRetry(null)}>
         <RotateCcwIcon data-icon="inline-start" />
-        Retry
+        Reintentar
       </Button>
       {modelOptions.length > 0 ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" aria-label="Retry with another model">
+            <Button variant="ghost" size="sm" aria-label="Reintentar con otro modelo">
               <ChevronDownIcon />
             </Button>
           </DropdownMenuTrigger>
@@ -64,7 +64,7 @@ export function AiPreviewActions({
           size="sm"
           onClick={() => onAcceptAs(mode === 'replace' ? 'append' : 'replace')}
         >
-          {mode === 'replace' ? 'Insert below' : 'Replace selection'}
+          {mode === 'replace' ? 'Insertar abajo' : 'Reemplazar selección'}
         </Button>
       ) : null}
     </div>

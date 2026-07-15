@@ -30,7 +30,7 @@ export function SimilarNotesSection({ path }: SimilarNotesSectionProps): ReactEl
   }
 
   return (
-    <SidebarSection storageKey="similar" title="Similar notes">
+    <SidebarSection storageKey="similar" title="Notas similares">
       <ul className="space-y-1">
         {related.map((hit) => (
           <li key={hit.path}>

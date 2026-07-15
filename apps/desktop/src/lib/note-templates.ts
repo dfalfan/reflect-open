@@ -42,14 +42,14 @@ export async function insertTemplate(
   editor: Pick<NoteEditorHandle, 'insertMarkdown' | 'focus'> | null,
 ): Promise<void> {
   if (editor === null) {
-    startOperation('Inserting template').fail('No open note to insert into')
+    startOperation('Insertando plantilla').fail('No hay ninguna nota abierta donde insertar')
     return
   }
   try {
     editor.insertMarkdown(await templateBody(path))
     editor.focus()
   } catch (cause) {
-    startOperation('Inserting template').fail(errorMessage(cause))
+    startOperation('Insertando plantilla').fail(errorMessage(cause))
   }
 }
 

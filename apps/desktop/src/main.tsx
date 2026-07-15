@@ -1,6 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClientProvider } from '@tanstack/react-query'
+// Side-effect import: sets the app-wide Spanish date-fns locale before any date
+// is formatted. Kept near the top so no earlier module formats a date in English.
+import '@/lib/date-locale'
 import { queryClient } from '@/lib/query-client'
 import { registerAppCommands } from '@/lib/commands/app-commands'
 import { initializeExceptionTelemetry } from '@/lib/exception-telemetry'

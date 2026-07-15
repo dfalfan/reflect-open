@@ -62,12 +62,12 @@ export function TemplatePicker({ context }: TemplatePickerProps): ReactElement |
           closeTemplatePicker()
         }
       }}
-      title="Insert template"
-      description="Choose a template to insert at the cursor"
+      title="Insertar plantilla"
+      description="Elige una plantilla para insertar en el cursor"
     >
-      <CommandInput placeholder="Insert template…" />
+      <CommandInput placeholder="Insertar plantilla…" />
       <CommandList>
-        <CommandEmpty>No templates</CommandEmpty>
+        <CommandEmpty>No hay plantillas</CommandEmpty>
         {templates !== undefined && templates.length > 0 ? (
           <CommandGroup>
             {templates.map((template) => (
@@ -87,7 +87,7 @@ export function TemplatePicker({ context }: TemplatePickerProps): ReactElement |
         <CommandGroup forceMount>
           <CommandItem forceMount value="new-template" onSelect={openTemplateCreate}>
             <FilePlus2 aria-hidden strokeWidth={1.75} className="text-text-muted" />
-            New template
+            Plantilla nueva
           </CommandItem>
         </CommandGroup>
       </CommandList>

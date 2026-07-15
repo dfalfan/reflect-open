@@ -162,7 +162,7 @@ export function AddMeetingDialog({ date, event, onClose }: AddMeetingDialogProps
     >
       <DialogContent showCloseButton={false} className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Add event</DialogTitle>
+          <DialogTitle>Agregar evento</DialogTitle>
           <DialogDescription>
             {formatTimeOfDay(new Date(event.startsAt), settings.timeFormat)}
           </DialogDescription>
@@ -176,7 +176,7 @@ export function AddMeetingDialog({ date, event, onClose }: AddMeetingDialogProps
         >
           <div className="space-y-1.5">
             <label htmlFor="add-meeting-name" className={FIELD_LABEL_CLASS}>
-              Meeting name
+              Nombre de la reunión
             </label>
             <Input
               id="add-meeting-name"
@@ -189,7 +189,7 @@ export function AddMeetingDialog({ date, event, onClose }: AddMeetingDialogProps
             {/* The combobox input's real label is cmdk's hidden one (same
                 text); an htmlFor can't reach a cmdk input. */}
             <div aria-hidden className={FIELD_LABEL_CLASS}>
-              Attendees
+              Asistentes
             </div>
             {attendees.length > 0 && (
               <ul className="flex flex-wrap gap-1.5">
@@ -202,7 +202,7 @@ export function AddMeetingDialog({ date, event, onClose }: AddMeetingDialogProps
                     <button
                       type="button"
                       onClick={() => removeAttendee(attendee.name)}
-                      aria-label={`Remove ${attendee.name}`}
+                      aria-label={`Quitar ${attendee.name}`}
                       className="text-text-muted transition-colors hover:text-text"
                     >
                       <X className="size-3" />
@@ -218,15 +218,15 @@ export function AddMeetingDialog({ date, event, onClose }: AddMeetingDialogProps
               checked={createNote}
               onCheckedChange={(checked) => setCreateNote(checked === true)}
             />
-            Create backlinked note
+            Crear nota con retroenlace
           </label>
           {error !== null && <InlineAlert tone="error">{error}</InlineAlert>}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Cancelar
             </Button>
             <Button type="submit" disabled={!canSubmit}>
-              Add to daily note
+              Agregar a la nota diaria
             </Button>
           </DialogFooter>
         </form>

@@ -242,7 +242,7 @@ export function TasksScreen(): ReactElement {
     <div
       ref={rootRef}
       tabIndex={-1}
-      aria-label="Tasks"
+      aria-label="Tareas"
       className="flex h-full min-h-0 flex-col outline-none"
     >
       <header className="flex flex-none items-center gap-2 border-b border-border py-2.5 pl-2 pr-3 lg:pl-10">
@@ -254,8 +254,8 @@ export function TasksScreen(): ReactElement {
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search..."
-            aria-label="Search tasks"
+            placeholder="Buscar..."
+            aria-label="Buscar tareas"
             className="h-9 border-none bg-transparent pl-8 shadow-none focus-visible:ring-0"
           />
         </div>
@@ -269,11 +269,11 @@ export function TasksScreen(): ReactElement {
             <Button
               type="button"
               variant="ghost"
-              aria-label={`Schedule ${selection.selectedCount}`}
+              aria-label={`Programar ${selection.selectedCount}`}
               className="window-drag-control text-xs text-text-muted"
             >
               <CalendarClock aria-hidden className="size-3.5" />
-              Schedule
+              Programar
               <TaskToolbarCountBadge count={selection.selectedCount} />
             </Button>
           </TaskScheduleCalendar>
@@ -282,13 +282,13 @@ export function TasksScreen(): ReactElement {
           <Button
             type="button"
             variant="ghost"
-            aria-label={`Convert to bullet ${selection.selectedCount}`}
+            aria-label={`Convertir en viñeta ${selection.selectedCount}`}
             onClick={onConvertToBullet}
-            title="Drop the checkbox, keeping the line as a plain bullet — leaves the Tasks list"
+            title="Quita la casilla y deja la línea como una viñeta simple — sale de la lista de Tareas"
             className="window-drag-control text-xs text-text-muted"
           >
             <List aria-hidden className="size-3.5" />
-            Convert to bullet
+            Convertir en viñeta
             <TaskToolbarCountBadge count={selection.selectedCount} />
           </Button>
         ) : null}
@@ -296,12 +296,12 @@ export function TasksScreen(): ReactElement {
           <Button
             type="button"
             variant="ghost"
-            aria-label={`Archive ${recentlyCompleted.length}`}
+            aria-label={`Archivar ${recentlyCompleted.length}`}
             onClick={actions.archive}
             className="window-drag-control text-xs text-text-muted"
           >
             <Archive aria-hidden className="size-3.5" />
-            Archive
+            Archivar
             <TaskToolbarCountBadge count={recentlyCompleted.length} />
           </Button>
         ) : null}
@@ -319,11 +319,11 @@ export function TasksScreen(): ReactElement {
       >
         {isError ? (
           <p role="alert" className="px-4 py-6 text-sm text-text-muted lg:px-12">
-            Couldn’t load tasks.
+            No se pudieron cargar las tareas.
           </p>
         ) : ready && groups.length === 0 ? (
           <p className="px-4 py-6 text-sm text-text-muted lg:px-12">
-            {needle ? 'No matching tasks.' : 'No tasks to show.'}
+            {needle ? 'No hay tareas que coincidan.' : 'No hay tareas para mostrar.'}
           </p>
         ) : (
           <div className="flex flex-col gap-5">

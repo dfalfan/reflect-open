@@ -46,11 +46,11 @@ function backupDot(backup: BackupState): { className: string; label: string } | 
   }
   switch (backup.status.state) {
     case 'syncing':
-      return { className: 'bg-accent motion-safe:animate-pulse', label: 'Backing up' }
+      return { className: 'bg-accent motion-safe:animate-pulse', label: 'Respaldando' }
     case 'offline':
-      return { className: 'bg-amber-500', label: 'Backup waiting for a connection' }
+      return { className: 'bg-amber-500', label: 'El respaldo espera una conexión' }
     case 'error':
-      return { className: 'bg-red-500', label: 'Backup failed — see Settings' }
+      return { className: 'bg-red-500', label: 'Falló el respaldo — revisa Ajustes' }
   }
 }
 
@@ -107,7 +107,7 @@ export function GraphFooter({ graph, context }: GraphFooterProps): ReactElement 
                 ) : null}
                 {indexing ? (
                   <span role="status" className="sr-only">
-                    Indexing
+                    Indexando
                   </span>
                 ) : null}
               </Button>
@@ -115,7 +115,7 @@ export function GraphFooter({ graph, context }: GraphFooterProps): ReactElement 
           </TooltipTrigger>
           <TooltipContent>{graph.root}</TooltipContent>
         </Tooltip>
-        <DropdownMenuContent aria-label="Switch graph" side="top" sideOffset={6}>
+        <DropdownMenuContent aria-label="Cambiar de grafo" side="top" sideOffset={6}>
           {recents.map((recent, index) => {
             const current = recent.root === graph.root
             const binding = graphSwitchBindingFor(index)
@@ -147,9 +147,9 @@ export function GraphFooter({ graph, context }: GraphFooterProps): ReactElement 
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className={MENU_ITEM_CLASS}>
               <GraphSwatch color={currentColor} className="size-3.5 rounded" />
-              <span className="min-w-0 flex-1 truncate">Graph color</span>
+              <span className="min-w-0 flex-1 truncate">Color del grafo</span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent aria-label="Graph color">
+            <DropdownMenuSubContent aria-label="Color del grafo">
               {GRAPH_COLOR_OPTIONS.map((option) => (
                 <DropdownMenuItem
                   key={option.id}
@@ -174,7 +174,7 @@ export function GraphFooter({ graph, context }: GraphFooterProps): ReactElement 
             className={MENU_ITEM_CLASS}
           >
             <LocateFixed aria-hidden strokeWidth={1.75} className="size-3.5 shrink-0" />
-            <span className="min-w-0 flex-1 truncate">Reveal graph in Finder</span>
+            <span className="min-w-0 flex-1 truncate">Mostrar grafo en Finder</span>
           </DropdownMenuItem>
           {/* Graph switching re-roots every window; note windows hide it. */}
           {isMainWindow() ? (
@@ -183,7 +183,7 @@ export function GraphFooter({ graph, context }: GraphFooterProps): ReactElement 
               className={MENU_ITEM_CLASS}
             >
               <FolderOpen aria-hidden strokeWidth={1.75} className="size-3.5 shrink-0" />
-              <span className="min-w-0 flex-1 truncate">Open another graph…</span>
+              <span className="min-w-0 flex-1 truncate">Abrir otro grafo…</span>
             </DropdownMenuItem>
           ) : null}
           <DropdownMenuItem
@@ -191,7 +191,7 @@ export function GraphFooter({ graph, context }: GraphFooterProps): ReactElement 
             className={MENU_ITEM_CLASS}
           >
             <Settings aria-hidden strokeWidth={1.75} className="size-3.5 shrink-0" />
-            <span className="min-w-0 flex-1 truncate">User settings</span>
+            <span className="min-w-0 flex-1 truncate">Ajustes del usuario</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -201,7 +201,7 @@ export function GraphFooter({ graph, context }: GraphFooterProps): ReactElement 
             type="button"
             variant="ghost"
             size="icon-sm"
-            aria-label="Open settings"
+            aria-label="Abrir ajustes"
             aria-current={settingsActive ? 'page' : undefined}
             onClick={() => void runCommand('settings.open', context)}
             className={cn(
@@ -215,7 +215,7 @@ export function GraphFooter({ graph, context }: GraphFooterProps): ReactElement 
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          Settings {SETTINGS_BINDING && <ShortcutKeys binding={SETTINGS_BINDING} />}
+          Ajustes {SETTINGS_BINDING && <ShortcutKeys binding={SETTINGS_BINDING} />}
         </TooltipContent>
       </Tooltip>
     </div>

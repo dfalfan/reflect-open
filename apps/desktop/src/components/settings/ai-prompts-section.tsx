@@ -29,8 +29,8 @@ export function AiPromptsSection(): ReactElement {
     <SettingsSection id="ai-prompts">
       {prompts.length === 0 ? (
         <p className="px-4 py-3.5 text-xs text-text-muted">
-          No saved prompts. Select text in a note and press ⌘⇧J to run the built-in prompts;
-          prompts you save here appear after them.
+          No hay prompts guardados. Selecciona texto en una nota y presiona ⌘⇧J para ejecutar los
+          prompts integrados; los prompts que guardes aquí aparecen después de ellos.
         </p>
       ) : (
         prompts.map((prompt) => (
@@ -46,7 +46,7 @@ export function AiPromptsSection(): ReactElement {
           className="text-accent hover:bg-surface-hover"
         >
           <Plus aria-hidden strokeWidth={1.75} />
-          Add prompt
+          Agregar prompt
         </Button>
       </div>
       {editing !== null ? (

@@ -30,7 +30,7 @@ export function ConnectGithubFinishStep({
   const buttonSize = layout === 'row' ? ('sm' as const) : undefined
   const groupClass = layout === 'row' ? 'flex gap-2' : 'flex flex-col gap-2'
 
-  function changeRepository(label = 'Change repository'): ReactNode {
+  function changeRepository(label = 'Cambiar repositorio'): ReactNode {
     return (
       <Button variant="outline" size={buttonSize} onClick={wizard.backToRepo}>
         {label}
@@ -42,7 +42,7 @@ export function ConnectGithubFinishStep({
     <div className="flex flex-col gap-3">
       {wizard.user !== null ? (
         <p className="text-xs text-text-muted">
-          Signed in as <strong className="text-text">{wizard.user.login}</strong>
+          Sesión iniciada como <strong className="text-text">{wizard.user.login}</strong>
         </p>
       ) : null}
 
@@ -50,22 +50,22 @@ export function ConnectGithubFinishStep({
         <>
           <InlineAlert tone="error">
             <strong>
-              {view.repo.owner}/{view.repo.name} is public.
+              {view.repo.owner}/{view.repo.name} es público.
             </strong>{' '}
-            Anyone on the internet can read everything in this graph, including notes marked
-            private.
+            Cualquier persona en internet puede leer todo lo que hay en este grafo, incluidas las
+            notas marcadas como privadas.
           </InlineAlert>
           <div className={groupClass}>
-            {layout === 'row' ? changeRepository('Choose another repo') : null}
+            {layout === 'row' ? changeRepository('Elegir otro repo') : null}
             <Button
               variant="destructive"
               size={buttonSize}
               disabled={wizard.pending || wizard.user === null}
               onClick={wizard.confirmPublic}
             >
-              Back up to a public repo
+              Respaldar en un repo público
             </Button>
-            {layout === 'stack' ? changeRepository('Choose another repo') : null}
+            {layout === 'stack' ? changeRepository('Elegir otro repo') : null}
           </div>
         </>
       ) : null}
@@ -73,30 +73,30 @@ export function ConnectGithubFinishStep({
       {view.kind === 'createGuide' ? (
         <>
           <p className="text-sm text-text">
-            Create{' '}
+            Crea{' '}
             <strong>
               {view.owner}/{view.name}
             </strong>{' '}
-            on GitHub. Reflect will connect it as soon as it exists.
+            en GitHub. Reflect lo conectará en cuanto exista.
           </p>
           <div className={groupClass}>
             <Button size={buttonSize} onClick={wizard.openCreatePage}>
-              Create on GitHub…
+              Crear en GitHub…
             </Button>
             {changeRepository()}
           </div>
-          <p className="text-xs text-text-muted">Waiting for the repository…</p>
+          <p className="text-xs text-text-muted">Esperando el repositorio…</p>
           {wizard.authKind === 'app' ? (
             <p className="text-xs text-text-muted">
-              If it doesn’t connect,{' '}
+              Si no se conecta,{' '}
               <button type="button" className="underline" onClick={wizard.openInstallPage}>
-                grant the Reflect app access
+                concede acceso a la app de Reflect
               </button>{' '}
-              to just this repository.
+              solo a este repositorio.
             </p>
           ) : (
             <p className="text-xs text-text-muted">
-              If it doesn’t connect, add it to your token’s repository access.
+              Si no se conecta, agrégalo al acceso de repositorios de tu token.
             </p>
           )}
         </>
@@ -105,29 +105,29 @@ export function ConnectGithubFinishStep({
       {view.kind === 'grantAccess' ? (
         <>
           <p className="text-sm text-text">
-            Give Reflect access to{' '}
+            Dale a Reflect acceso a{' '}
             <strong>
               {view.repo.owner}/{view.repo.name}
             </strong>{' '}
-            so it can back up here.
+            para que pueda respaldar aquí.
           </p>
           <div className={groupClass}>
             <Button size={buttonSize} onClick={wizard.openInstallPage}>
-              Grant access on GitHub…
+              Conceder acceso en GitHub…
             </Button>
             {changeRepository()}
           </div>
           {/* Steer to per-repo selection: the backup needs exactly one repo,
               so "All repositories" is needless account-wide risk. */}
           <p className="text-xs text-text-muted">
-            On GitHub, choose <strong>Only select repositories</strong> — Reflect only needs this
-            one.
+            En GitHub, elige <strong>Only select repositories</strong>: Reflect solo necesita
+            este.
           </p>
-          <p className="text-xs text-text-muted">Waiting for access…</p>
+          <p className="text-xs text-text-muted">Esperando el acceso…</p>
         </>
       ) : null}
 
-      {view.kind === 'connecting' ? <p className="text-sm text-text-muted">Connecting…</p> : null}
+      {view.kind === 'connecting' ? <p className="text-sm text-text-muted">Conectando…</p> : null}
 
       {!wizard.pending && wizard.error !== null ? (
         <>

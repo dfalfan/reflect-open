@@ -49,7 +49,7 @@ export function WorkspaceHeader({
             role="status"
             className="text-xs text-[color:var(--text-muted)] motion-safe:animate-pulse"
           >
-            Indexing…
+            Indexando…
           </span>
         ) : null}
         <span className="text-xs text-[color:var(--text-muted)]">v{version ?? '—'}</span>
@@ -58,13 +58,13 @@ export function WorkspaceHeader({
           onClick={onToggleTheme}
           className="rounded-md border border-black/10 px-2.5 py-1 text-xs font-medium dark:border-white/10"
         >
-          {resolvedTheme === 'dark' ? 'Light' : 'Dark'} mode
+          Modo {resolvedTheme === 'dark' ? 'claro' : 'oscuro'}
         </button>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
               type="button"
-              aria-label="Open settings"
+              aria-label="Abrir ajustes"
               onClick={onOpenSettings}
               className="rounded-md border border-black/10 p-1.5 text-[color:var(--text-secondary)] dark:border-white/10"
             >
@@ -72,7 +72,7 @@ export function WorkspaceHeader({
             </button>
           </TooltipTrigger>
           <TooltipContent>
-            Settings {SETTINGS_BINDING && <ShortcutKeys binding={SETTINGS_BINDING} />}
+            Ajustes {SETTINGS_BINDING && <ShortcutKeys binding={SETTINGS_BINDING} />}
           </TooltipContent>
         </Tooltip>
       </div>

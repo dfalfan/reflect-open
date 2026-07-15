@@ -77,7 +77,7 @@ export function DayCalendar({ selectedDate, today }: DayCalendarProps): ReactEle
   const noted = useMemo(() => new Set(notedDates ?? []), [notedDates])
 
   return (
-    <div aria-label="Calendar" className="group min-w-36">
+    <div aria-label="Calendario" className="group min-w-36">
       <header className="flex items-center justify-between px-4 py-4">
         <div className="cursor-default text-sm font-semibold text-text">
           {monthLabel(month)}
@@ -87,7 +87,7 @@ export function DayCalendar({ selectedDate, today }: DayCalendarProps): ReactEle
         <nav className="window-drag-control flex items-center justify-center space-x-1 text-text-muted">
           <button
             type="button"
-            aria-label="Previous month"
+            aria-label="Mes anterior"
             onClick={() => setMonth(addMonths(month, -1))}
             className={HEADER_BUTTON_CLASS}
           >
@@ -97,7 +97,7 @@ export function DayCalendar({ selectedDate, today }: DayCalendarProps): ReactEle
             <TooltipTrigger asChild>
               <button
                 type="button"
-                aria-label="Jump to today"
+                aria-label="Ir a hoy"
                 onClick={() => navigate({ kind: 'today' })}
                 className={HEADER_BUTTON_CLASS}
               >
@@ -105,12 +105,12 @@ export function DayCalendar({ selectedDate, today }: DayCalendarProps): ReactEle
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              Jump to Today {TODAY_BINDING && <ShortcutKeys binding={TODAY_BINDING} />}
+              Ir a hoy {TODAY_BINDING && <ShortcutKeys binding={TODAY_BINDING} />}
             </TooltipContent>
           </Tooltip>
           <button
             type="button"
-            aria-label="Next month"
+            aria-label="Mes siguiente"
             onClick={() => setMonth(addMonths(month, 1))}
             className={HEADER_BUTTON_CLASS}
           >

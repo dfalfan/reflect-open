@@ -43,14 +43,14 @@ export function NoteActionsSection({
   const { applyOptimisticPin, invalidateOptimisticPin } = useOptimisticPinToggle(path, noteRow)
 
   return (
-    <SidebarSection storageKey="note-actions" title="Note actions">
+    <SidebarSection storageKey="note-actions" title="Acciones de la nota">
       <NoteToggleAction
         path={path}
         indexActive={isPinned}
         toggle={toggleNotePinned}
         icon={<PinIcon width={20} height={20} />}
-        labels={{ active: 'Un-pin this note', inactive: 'Pin this note' }}
-        failureLabel="Updating pin"
+        labels={{ active: 'Desfijar esta nota', inactive: 'Fijar esta nota' }}
+        failureLabel="Actualizando fijado"
         keybinding={PIN_KEYBINDING}
         applyOptimistic={applyOptimisticPin}
         onFailure={invalidateOptimisticPin}
@@ -61,12 +61,12 @@ export function NoteActionsSection({
         toggle={toggleNotePrivate}
         icon={<Lock size={14} aria-hidden />}
         labels={{
-          active: 'Unlock note',
-          inactive: 'Lock note',
+          active: 'Desbloquear nota',
+          inactive: 'Bloquear nota',
         }}
-        failureLabel="Updating privacy"
+        failureLabel="Actualizando privacidad"
         keybinding={PRIVATE_KEYBINDING}
-        tooltip="Locks this note out of AI. Backup and sync still include it."
+        tooltip="Bloquea esta nota para que la IA no la use. El respaldo y la sincronización sí la incluyen."
       />
       <NoteGistAction path={path} keybinding={GIST_KEYBINDING} />
       {showTrash ? <NoteTrashAction path={path} /> : null}

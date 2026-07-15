@@ -13,9 +13,9 @@ export function KeyboardShortcutsField(): ReactElement {
   return (
     <div className="flex items-center justify-between gap-4 px-4 py-3.5">
       <div className="min-w-0">
-        <div className="text-sm font-medium text-text">Keyboard shortcuts</div>
+        <div className="text-sm font-medium text-text">Atajos de teclado</div>
         <p className="mt-0.5 text-xs text-text-muted">
-          Show every app and editor shortcut.
+          Muestra todos los atajos de la app y del editor.
         </p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
@@ -24,7 +24,7 @@ export function KeyboardShortcutsField(): ReactElement {
         ) : null}
         <Button type="button" variant="outline" size="sm" onClick={openShortcuts}>
           <Keyboard aria-hidden data-icon="inline-start" strokeWidth={1.75} />
-          Show all
+          Mostrar todos
         </Button>
       </div>
     </div>

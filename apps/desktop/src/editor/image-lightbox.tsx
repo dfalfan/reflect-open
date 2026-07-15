@@ -45,7 +45,7 @@ export function ImageLightbox({
     image.openPath !== null && image.openImage !== null && onOpenImage !== undefined
 
   return (
-    <LightboxDialog open title="Image preview" immersive={mobileSurface} onClose={onClose}>
+    <LightboxDialog open title="Vista previa de imagen" immersive={mobileSurface} onClose={onClose}>
       {mobileSurface ? (
         <div aria-hidden className="absolute inset-0 bg-black" style={dismissDrag.backdropStyle} />
       ) : null}
@@ -58,7 +58,7 @@ export function ImageLightbox({
             type="button"
             variant="ghost"
             size="icon-lg"
-            aria-label="Close"
+            aria-label="Cerrar"
             className="rounded-full bg-white/15 text-white shadow-sm backdrop-blur-xl hover:bg-white/25 active:bg-white/20"
             onClick={onClose}
           >
@@ -79,13 +79,13 @@ export function ImageLightbox({
             onClick={() => onOpenImage(image)}
           >
             <ExternalLinkIcon data-icon="inline-start" />
-            Open
+            Abrir
           </Button>
         </div>
       ) : null}
       <button
         type="button"
-        aria-label="Close image preview"
+        aria-label="Cerrar vista previa de imagen"
         className={cn(
           'absolute inset-0 flex cursor-zoom-out items-center justify-center overflow-hidden bg-transparent',
           mobileSurface ? 'touch-none p-0' : 'p-6',

@@ -86,10 +86,10 @@ export function SyncConflictNotice({ path, className }: SyncConflictNoticeProps)
       <div className="flex gap-2">
         <GitMerge aria-hidden className="mt-0.5 size-3.5 shrink-0" />
         <div className="min-w-0 flex-1">
-          <p className="font-semibold">This note was edited on two devices at once.</p>
+          <p className="font-semibold">Esta nota se editó en dos dispositivos a la vez.</p>
           <p className="mt-0.5">
-            Both versions are highlighted below. Choose what to keep — every version stays
-            recoverable in the backup history.
+            Ambas versiones están resaltadas abajo. Elige qué conservar — cada versión sigue
+            siendo recuperable en el historial de respaldos.
           </p>
         </div>
       </div>
@@ -100,7 +100,7 @@ export function SyncConflictNotice({ path, className }: SyncConflictNoticeProps)
           disabled={busy}
           onClick={() => void resolve('ours')}
         >
-          {named ? `Keep “${labels.ours}”` : 'Keep this device’s version'}
+          {named ? `Conservar “${labels.ours}”` : 'Conservar la versión de este dispositivo'}
         </ResolveButton>
         <ResolveButton
           dot="theirs"
@@ -109,10 +109,10 @@ export function SyncConflictNotice({ path, className }: SyncConflictNoticeProps)
           onClick={() => void resolve('theirs')}
         >
           {manySided
-            ? 'Keep the other versions'
+            ? 'Conservar las otras versiones'
             : named
-              ? `Keep “${labels.theirs}”`
-              : 'Keep the other device’s'}
+              ? `Conservar “${labels.theirs}”`
+              : 'Conservar la del otro dispositivo'}
         </ResolveButton>
         <ResolveButton
           dot="both"
@@ -120,11 +120,11 @@ export function SyncConflictNotice({ path, className }: SyncConflictNoticeProps)
           disabled={busy}
           onClick={() => void resolve('both')}
         >
-          {manySided ? 'Keep all' : 'Keep both'}
+          {manySided ? 'Conservar todas' : 'Conservar ambas'}
         </ResolveButton>
       </div>
       {error !== null ? (
-        <p className="mt-2 text-red-700 dark:text-red-300">Couldn’t resolve: {error}</p>
+        <p className="mt-2 text-red-700 dark:text-red-300">No se pudo resolver: {error}</p>
       ) : null}
     </InlineAlert>
   )

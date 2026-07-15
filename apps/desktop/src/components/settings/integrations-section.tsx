@@ -92,8 +92,8 @@ export function IntegrationsSection(): ReactElement | null {
       {contactsAvailable ? (
         <div>
           <SettingsSwitchField
-            legend="Contacts"
-            description="Suggest a contact's email and phone when a note's title matches their name."
+            legend="Contactos"
+            description="Sugiere el correo y el teléfono de un contacto cuando el título de una nota coincide con su nombre."
             checked={settings.contactsEnabled}
             onCheckedChange={(checked) => {
               if (checked) {
@@ -106,7 +106,7 @@ export function IntegrationsSection(): ReactElement | null {
           {showDenied ? (
             <div className="px-4 pb-3.5">
               <InlineAlert tone="warning">
-                Reflect doesn’t have contacts access.{' '}
+                Reflect no tiene acceso a los contactos.{' '}
                 <button
                   type="button"
                   className="font-medium underline underline-offset-2"
@@ -119,22 +119,22 @@ export function IntegrationsSection(): ReactElement | null {
                     })
                   }}
                 >
-                  Open System Settings
+                  Abrir Configuración del Sistema
                 </button>{' '}
-                to allow it, then return here.
+                para permitirlo, luego vuelve aquí.
               </InlineAlert>
             </div>
           ) : null}
           {showPrompt ? (
             <div className="px-4 pb-3.5">
               <InlineAlert tone="warning">
-                Reflect hasn’t asked for contacts access yet.{' '}
+                Reflect todavía no ha solicitado acceso a los contactos.{' '}
                 <button
                   type="button"
                   className="font-medium underline underline-offset-2"
                   onClick={() => void promptForAccess()}
                 >
-                  Allow contacts access
+                  Permitir acceso a los contactos
                 </button>
               </InlineAlert>
             </div>

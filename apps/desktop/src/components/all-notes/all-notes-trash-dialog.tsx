@@ -84,16 +84,16 @@ export function AllNotesTrashDialog({
         }}
       >
         <DialogTitle>
-          Trash {count} {count === 1 ? 'note' : 'notes'}?
+          ¿Enviar {count} {count === 1 ? 'nota' : 'notas'} a la papelera?
         </DialogTitle>
         <DialogDescription>
-          {count === 1 ? 'It moves' : 'They move'} to your system Trash, where you can restore{' '}
-          {count === 1 ? 'it' : 'them'}.
+          {count === 1 ? 'Se mueve' : 'Se mueven'} a la Papelera del sistema, donde puedes{' '}
+          {count === 1 ? 'restaurarla' : 'restaurarlas'}.
         </DialogDescription>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="ghost" disabled={isTrashing}>
-              Cancel
+              Cancelar
             </Button>
           </DialogClose>
           <Button
@@ -102,7 +102,7 @@ export function AllNotesTrashDialog({
             disabled={isTrashing}
             onClick={() => void onConfirm()}
           >
-            Trash
+            Enviar a la papelera
           </Button>
         </DialogFooter>
       </DialogContent>

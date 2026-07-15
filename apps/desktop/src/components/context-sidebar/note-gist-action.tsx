@@ -68,15 +68,15 @@ export function NoteGistAction({ path, keybinding = null }: NoteGistActionProps)
 
   const isBusy = isPublishing || isUnpublishing
   const label = isUnpublishing
-    ? 'Unpublishing…'
+    ? 'Despublicando…'
     : isPublishing
-    ? 'Publishing…'
+    ? 'Publicando…'
     : published
-      ? 'Unpublish link'
-      : 'Share with private link'
+      ? 'Despublicar enlace'
+      : 'Compartir con enlace privado'
   const tooltip = published
-    ? 'Delete the private GitHub gist for this note'
-    : 'Creates a secret GitHub gist and copies its private link'
+    ? 'Elimina el gist privado de GitHub de esta nota'
+    : 'Crea un gist secreto de GitHub y copia su enlace privado'
   const Icon = published ? CloudOff : CloudUpload
 
   return (

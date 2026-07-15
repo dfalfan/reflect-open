@@ -40,14 +40,14 @@ export function ChatHistoryMenu(): ReactElement | null {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label="Chat history">
+        <Button variant="ghost" size="icon-sm" aria-label="Historial de chat">
           <History aria-hidden />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent aria-label="Chat history" side="top" align="end" sideOffset={6} className="w-72">
+      <DropdownMenuContent aria-label="Historial de chat" side="top" align="end" sideOffset={6} className="w-72">
         {conversations === undefined || conversations.length === 0 ? (
           <DropdownMenuItem disabled className="px-2 py-1.5 text-[13px] text-text-muted">
-            No past chats
+            No hay chats anteriores
           </DropdownMenuItem>
         ) : (
           conversations.map((conversation) => {
@@ -71,7 +71,7 @@ export function ChatHistoryMenu(): ReactElement | null {
                 ) : (
                   <button
                     type="button"
-                    aria-label={`Delete “${conversation.title}”`}
+                    aria-label={`Eliminar “${conversation.title}”`}
                     onClick={(event) => {
                       event.stopPropagation()
                       void deleteConversation(conversation.id)

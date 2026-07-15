@@ -20,8 +20,8 @@ export function ImportSection(): ReactElement {
     const result = await open({
       multiple: false,
       directory: false,
-      title: 'Import Reflect V1 export',
-      filters: [{ name: 'Zip archives', extensions: ['zip'] }],
+      title: 'Importar exportación de Reflect V1',
+      filters: [{ name: 'Archivos Zip', extensions: ['zip'] }],
     })
     const path = typeof result === 'string' ? result : null
     if (path === null) {
@@ -34,7 +34,7 @@ export function ImportSection(): ReactElement {
     <SettingsSection id="import">
       <SettingsField
         legend="Reflect V1"
-        description="Choose the .zip export from Reflect V1. Its notes and attachments are added to this graph; nothing already here is replaced."
+        description="Elige la exportación .zip de Reflect V1. Sus notas y adjuntos se agregan a este grafo; no se reemplaza nada de lo que ya está aquí."
       >
         <div className="mt-2">
           <Button
@@ -45,7 +45,7 @@ export function ImportSection(): ReactElement {
             onClick={() => void chooseAndImport()}
           >
             <FileArchive aria-hidden strokeWidth={1.75} />
-            {running ? 'Importing...' : 'Import zip...'}
+            {running ? 'Importando...' : 'Importar zip...'}
           </Button>
         </div>
       </SettingsField>

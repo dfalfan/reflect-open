@@ -41,18 +41,18 @@ export function RecordingPopover(): ReactElement {
           <div className="flex gap-1.5">
             {memo.canRetry ? (
               <Button size="xs" variant="secondary" onClick={() => memo.retry()}>
-                Retry
+                Reintentar
               </Button>
             ) : null}
             <Button size="xs" variant="ghost" onClick={() => memo.discard()}>
-              Discard
+              Descartar
             </Button>
           </div>
         </div>
       ) : memo.phase === 'transcribing' ? (
         <div className="flex items-center gap-2 text-sm text-text-muted">
           <Spinner />
-          Transcribing…
+          Transcribiendo…
         </div>
       ) : (
         <div className="flex items-center gap-3">

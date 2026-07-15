@@ -30,8 +30,8 @@ export function RebuildIndexField(): ReactElement {
 
   return (
     <SettingsField
-      legend="Rebuild index"
-      description="Reflect keeps a local index of your notes to power search and links. If results ever look stale or incomplete, rebuild it — your notes are never changed."
+      legend="Reconstruir índice"
+      description="Reflect mantiene un índice local de tus notas para impulsar la búsqueda y los enlaces. Si los resultados alguna vez se ven desactualizados o incompletos, reconstrúyelo — tus notas nunca se modifican."
     >
       <div className="mt-3 flex justify-start">
         <Button
@@ -42,7 +42,7 @@ export function RebuildIndexField(): ReactElement {
           onClick={() => void rebuild()}
           className="text-text-secondary"
         >
-          {rebuilding ? 'Rebuilding…' : 'Rebuild index'}
+          {rebuilding ? 'Reconstruyendo…' : 'Reconstruir índice'}
         </Button>
       </div>
     </SettingsField>

@@ -54,9 +54,9 @@ export function PublishedUrlSection({ path }: PublishedUrlSectionProps): ReactEl
     try {
       await navigator.clipboard.writeText(url)
       setCopyState('copied')
-      startOperation('Published URL copied').done()
+      startOperation('URL publicada copiada').done()
     } catch (cause) {
-      startOperation('Copying the published URL').fail(errorMessage(cause))
+      startOperation('Copiando la URL publicada').fail(errorMessage(cause))
     }
   }
 
@@ -83,7 +83,7 @@ export function PublishedUrlSection({ path }: PublishedUrlSectionProps): ReactEl
   const Icon = copyState === 'copied' ? Check : Copy
 
   return (
-    <SidebarSection storageKey="published-url" title="Published URL">
+    <SidebarSection storageKey="published-url" title="URL publicada">
       <div className="flex items-center gap-1.5 px-3 py-1">
         <a
           href={url}
@@ -99,14 +99,14 @@ export function PublishedUrlSection({ path }: PublishedUrlSectionProps): ReactEl
               type="button"
               variant="ghost"
               size="icon-xs"
-              aria-label="Copy published URL"
+              aria-label="Copiar URL publicada"
               onClick={() => void copyUrl()}
               className="text-text-muted hover:text-text"
             >
               <Icon aria-hidden className="size-3.5" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>{copyState === 'copied' ? 'Copied' : 'Copy published URL'}</TooltipContent>
+          <TooltipContent>{copyState === 'copied' ? 'Copiado' : 'Copiar URL publicada'}</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -114,7 +114,7 @@ export function PublishedUrlSection({ path }: PublishedUrlSectionProps): ReactEl
               type="button"
               variant="ghost"
               size="icon-xs"
-              aria-label="Update published gist"
+              aria-label="Actualizar gist publicado"
               onClick={() => void updateGist()}
               disabled={isUpdating}
               className={cn('text-text-muted hover:text-text', row?.gistStale === true && 'text-accent')}
@@ -123,7 +123,7 @@ export function PublishedUrlSection({ path }: PublishedUrlSectionProps): ReactEl
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            {row?.gistStale === true ? 'Update gist with latest note' : 'Update published gist'}
+            {row?.gistStale === true ? 'Actualizar el gist con la última versión de la nota' : 'Actualizar gist publicado'}
           </TooltipContent>
         </Tooltip>
       </div>

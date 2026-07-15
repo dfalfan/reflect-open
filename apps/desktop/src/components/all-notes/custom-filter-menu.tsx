@@ -48,11 +48,11 @@ export function CustomFilterMenu({
   const listed = facets.some((facet) => foldTag(facet.tag) === typedKey)
   const offerTyped = typed !== '' && !listed && isTagName(typed)
 
-  let emptyMessage = 'No matching tags.'
+  let emptyMessage = 'No hay etiquetas que coincidan.'
   if (typed === '') {
-    emptyMessage = 'Type a tag to filter by.'
+    emptyMessage = 'Escribe una etiqueta para filtrar.'
   } else if (!isTagName(typed)) {
-    emptyMessage = 'Not a valid tag name.'
+    emptyMessage = 'No es un nombre de etiqueta válido.'
   }
 
   return (
@@ -74,15 +74,15 @@ export function CustomFilterMenu({
             : 'text-text-secondary hover:bg-surface-hover hover:text-text',
         )}
       >
-        {activeTag !== null ? `#${activeTag}` : 'Custom'}
+        {activeTag !== null ? `#${activeTag}` : 'Personalizado'}
         <ChevronDown aria-hidden strokeWidth={1.75} className="size-3.5 shrink-0" />
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={6} className="w-56 p-0">
-        <Command label="Filter by another tag">
+        <Command label="Filtrar por otra etiqueta">
           <CommandInput
             value={query}
             onValueChange={setQuery}
-            placeholder="Filter by any tag…"
+            placeholder="Filtrar por cualquier etiqueta…"
           />
           <CommandList>
             {/* A force-mounted item never counts as a match, so cmdk would
@@ -111,7 +111,7 @@ export function CustomFilterMenu({
               // no item inside it matches the query, even force-mounted ones.
               <CommandGroup forceMount>
                 <CommandItem forceMount value={`custom:${typed}`} onSelect={() => choose(typed)}>
-                  <span className="min-w-0 flex-1 truncate">Filter by #{typed}</span>
+                  <span className="min-w-0 flex-1 truncate">Filtrar por #{typed}</span>
                 </CommandItem>
               </CommandGroup>
             ) : null}

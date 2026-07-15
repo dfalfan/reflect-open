@@ -94,7 +94,7 @@ export function TaskRow({
   const checkboxToggleControllerRef = useRef<(() => void) | null>(null)
   const checkboxPending = isPending || taskActionPending
   const done = task.checked
-  const label = task.text || 'Empty task'
+  const label = task.text || 'Tarea vacía'
   const selectFromKeyboard = (event: KeyboardEvent<HTMLDivElement>): void => {
     if (event.key !== 'Enter' && event.key !== ' ') {
       return
@@ -129,7 +129,7 @@ export function TaskRow({
       <button
         type="button"
         data-task-row
-        aria-label={task.checked ? `Reopen: ${label}` : `Complete: ${label}`}
+        aria-label={task.checked ? `Reabrir: ${label}` : `Completar: ${label}`}
         disabled={checkboxPending}
         onClick={(event) => {
           event.stopPropagation()

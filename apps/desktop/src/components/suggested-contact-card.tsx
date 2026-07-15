@@ -60,7 +60,7 @@ export function SuggestedContactCard({ path, className }: SuggestedContactCardPr
 
   return (
     <div
-      aria-label="Suggested contact"
+      aria-label="Contacto sugerido"
       className={cn(
         'mb-4 flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2.5 shadow-sm',
         className,
@@ -85,14 +85,14 @@ export function SuggestedContactCard({ path, className }: SuggestedContactCardPr
         disabled={isBusy}
         onClick={() => void resolve(() => ignoreContactSuggestion(path, contact, generation))}
       >
-        Ignore
+        Ignorar
       </Button>
       <Button
         size="xs"
         disabled={isBusy}
         onClick={() => void resolve(() => addContactToNote(path, contact, generation))}
       >
-        Add
+        Agregar
       </Button>
     </div>
   )

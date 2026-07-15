@@ -37,7 +37,7 @@ export function SearchSection(): ReactElement {
         className="inline-flex items-center gap-1.5 rounded-md bg-accent px-2.5 py-1.5 text-xs font-medium text-text-on-brand shadow-sm transition-colors duration-100 hover:bg-accent-hover"
       >
         <Sparkles aria-hidden strokeWidth={1.75} className="size-3.5" />
-        Enable semantic search
+        Activar búsqueda semántica
       </button>
     )
   } else if (status.status === 'ready') {
@@ -45,35 +45,35 @@ export function SearchSection(): ReactElement {
       <div className="flex items-center justify-between gap-4">
         <span className="flex items-center gap-2 text-xs text-text-muted">
           <span aria-hidden className="size-1.5 rounded-full bg-emerald-500" />
-          Model downloaded ({status.model})
+          Modelo descargado ({status.model})
         </span>
         <button
           type="button"
           onClick={() => updateSettings({ semanticSearchEnabled: false })}
           className="shrink-0 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-text-secondary transition-colors duration-100 hover:bg-surface-hover"
         >
-          Disable
+          Desactivar
         </button>
       </div>
     )
   } else if (status.status === 'failed') {
     control = (
       <div>
-        <InlineAlert tone="error">Couldn’t load the model: {status.message}</InlineAlert>
+        <InlineAlert tone="error">No se pudo cargar el modelo: {status.message}</InlineAlert>
         <div className="mt-2 flex items-center gap-2">
           <button
             type="button"
             onClick={() => void ensureEmbeddingsVisibly()}
             className="rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-text-secondary transition-colors duration-100 hover:bg-surface-hover"
           >
-            Try again
+            Intentar de nuevo
           </button>
           <button
             type="button"
             onClick={() => updateSettings({ semanticSearchEnabled: false })}
             className="rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-text-secondary transition-colors duration-100 hover:bg-surface-hover"
           >
-            Disable
+            Desactivar
           </button>
         </div>
       </div>
@@ -88,8 +88,8 @@ export function SearchSection(): ReactElement {
   return (
     <SettingsSection id="search">
       <SettingsField
-        legend="Semantic search"
-        description="Find notes by meaning, not just keywords — smarter ⌘K results and related notes. Runs entirely on this device; enabling downloads a small model (~90 MB) once."
+        legend="Búsqueda semántica"
+        description="Encuentra notas por significado, no solo por palabras clave — resultados de ⌘K más inteligentes y notas relacionadas. Se ejecuta por completo en este dispositivo; al activarla se descarga una vez un modelo pequeño (~90 MB)."
       >
         <div className="mt-3">{control}</div>
       </SettingsField>

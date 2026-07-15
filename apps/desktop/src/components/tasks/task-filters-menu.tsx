@@ -12,11 +12,11 @@ import {
 import type { TaskFilters, TaskFiltersControl } from '@/lib/tasks/task-filters'
 
 const BUCKET_FILTERS: ReadonlyArray<{ key: keyof TaskFilters; label: string }> = [
-  { key: 'pinned', label: 'Pinned tasks' },
-  { key: 'current', label: 'Current tasks' },
-  { key: 'overdue', label: 'Overdue tasks' },
-  { key: 'upcoming', label: 'Upcoming tasks' },
-  { key: 'other', label: 'Other tasks' },
+  { key: 'pinned', label: 'Tareas fijadas' },
+  { key: 'current', label: 'Tareas actuales' },
+  { key: 'overdue', label: 'Tareas vencidas' },
+  { key: 'upcoming', label: 'Tareas próximas' },
+  { key: 'other', label: 'Otras tareas' },
 ]
 
 interface TaskFiltersMenuProps extends TaskFiltersControl {
@@ -42,11 +42,11 @@ export function TaskFiltersMenu({
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="window-drag-control text-xs font-normal text-text-muted">
           <ListFilter aria-hidden className="size-3.5" />
-          Task filters
+          Filtros de tareas
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>Tasks</DropdownMenuLabel>
+        <DropdownMenuLabel>Tareas</DropdownMenuLabel>
         {BUCKET_FILTERS.map(({ key, label }) => (
           <DropdownMenuCheckboxItem
             key={key}
@@ -63,7 +63,7 @@ export function TaskFiltersMenu({
           onCheckedChange={() => toggle('archived')}
           onSelect={(event) => event.preventDefault()}
         >
-          Show archived tasks
+          Mostrar tareas archivadas
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>

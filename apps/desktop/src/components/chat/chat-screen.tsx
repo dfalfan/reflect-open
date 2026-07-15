@@ -27,13 +27,14 @@ export function ChatScreen(): ReactElement {
       <div className="flex h-full items-center justify-center px-6">
         <div className="flex max-w-sm flex-col items-center text-center">
           <MessageSquare aria-hidden strokeWidth={1.5} className="size-8 text-text-muted" />
-          <h2 className="mt-4 text-lg font-semibold text-text">Chat with your notes</h2>
+          <h2 className="mt-4 text-lg font-semibold text-text">Chatea con tus notas</h2>
           <p className="mt-2 text-sm text-text-muted">
-            Add an AI provider to start chatting. Reflect calls the provider directly with your
-            own key — it stays in the system keychain, and private notes are never sent.
+            Agrega un proveedor de IA para empezar a chatear. Reflect llama al proveedor
+            directamente con tu propia clave — se queda en el llavero del sistema, y las notas
+            privadas nunca se envían.
           </p>
           <Button className="mt-5" onClick={() => navigate({ kind: 'settings' })}>
-            Add an AI provider
+            Agregar un proveedor de IA
           </Button>
         </div>
       </div>

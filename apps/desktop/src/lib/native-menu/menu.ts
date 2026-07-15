@@ -66,21 +66,21 @@ export function appMenuLayout(): AppSubmenuLayout[] {
     {
       text: 'Reflect',
       entries: [
-        predefined({ About: null }, 'About Reflect'),
+        predefined({ About: null }, 'Acerca de Reflect'),
         separator(),
-        command('settings.open', 'Settings…'),
+        command('settings.open', 'Ajustes…'),
         separator(),
         predefined('Services'),
         separator(),
-        predefined('Hide', 'Hide Reflect'),
+        predefined('Hide', 'Ocultar Reflect'),
         predefined('HideOthers'),
         predefined('ShowAll'),
         separator(),
-        predefined('Quit', 'Quit Reflect'),
+        predefined('Quit', 'Salir de Reflect'),
       ],
     },
     {
-      text: 'File',
+      text: 'Archivo',
       entries: [
         command('note.new'),
         command('note.attachFile'),
@@ -89,7 +89,7 @@ export function appMenuLayout(): AppSubmenuLayout[] {
       ],
     },
     {
-      text: 'Edit',
+      text: 'Editar',
       entries: [
         predefined('Undo'),
         predefined('Redo'),
@@ -101,7 +101,7 @@ export function appMenuLayout(): AppSubmenuLayout[] {
       ],
     },
     {
-      text: 'View',
+      text: 'Ver',
       entries: [
         command('palette.open'),
         command('nav.today'),
@@ -117,7 +117,7 @@ export function appMenuLayout(): AppSubmenuLayout[] {
       ],
     },
     {
-      text: 'Window',
+      text: 'Ventana',
       nsAppRole: 'windows',
       entries: [
         command('note.openInNewWindow'),
@@ -129,7 +129,7 @@ export function appMenuLayout(): AppSubmenuLayout[] {
       ],
     },
     {
-      text: 'Help',
+      text: 'Ayuda',
       nsAppRole: 'help',
       entries: [command('shortcuts.show')],
     },

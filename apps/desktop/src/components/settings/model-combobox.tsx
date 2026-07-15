@@ -92,7 +92,7 @@ export function ModelCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          aria-label="Default model"
+          aria-label="Modelo predeterminado"
           className="w-full justify-between font-normal"
         >
           <span className="truncate">{aiModelLabel(provider, value)}</span>
@@ -107,16 +107,16 @@ export function ModelCombobox({
         <Command>
           <FilterCountSync countRef={filteredCountRef} />
           <CommandInput
-            placeholder="Search or type a model name…"
+            placeholder="Busca o escribe el nombre de un modelo…"
             value={inputValue}
             onValueChange={setInputValue}
             onKeyDown={handleKeyDown}
           />
           <CommandList>
             <CommandEmpty>
-              Press{' '}
+              Presiona{' '}
               <kbd className="rounded bg-muted px-1 py-0.5 font-mono text-xs">Enter</kbd>{' '}
-              to use &ldquo;{inputValue}&rdquo;
+              para usar &ldquo;{inputValue}&rdquo;
             </CommandEmpty>
             <CommandGroup>
               {models.map((model) => (

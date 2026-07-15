@@ -77,7 +77,7 @@ export function WikiLinkHoverPreview({
           <div className="reflect-daily-subject mb-1">{formatDayLabel(dailyDate, dateFormat)}</div>
         ) : null}
         {empty ? (
-          <p className="text-text-muted italic">Empty note</p>
+          <p className="text-text-muted italic">Nota vacía</p>
         ) : (
           <MarkdownPreview
             content={markdown}

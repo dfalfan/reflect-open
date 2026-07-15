@@ -86,8 +86,8 @@ export function ChatToolChip({ part }: ChatToolChipProps): ReactElement {
     const result = part.result?.tool === 'search' ? part.result : null
     return (
       <ChipFrame pending={pending} icon={<Search aria-hidden className="size-3.5" />}>
-        Searched “{call.query}”
-        {result !== null ? countSuffix(result.hits.length, 'note') : ''}
+        Buscó “{call.query}”
+        {result !== null ? countSuffix(result.hits.length, 'nota') : ''}
         {result !== null ? <NoteLinks notes={result.hits} onOpen={openNote} /> : null}
       </ChipFrame>
     )
@@ -105,15 +105,15 @@ export function ChatToolChip({ part }: ChatToolChipProps): ReactElement {
           #{call.tag}
         </button>
       ) : (
-        (call.tag !== null ? `#${call.tag}` : 'recent')
+        (call.tag !== null ? `#${call.tag}` : 'recientes')
       )
     return (
       <ChipFrame pending={pending} icon={<History aria-hidden className="size-3.5" />}>
-        Listed {tagLabel} notes
+        Listó notas {tagLabel}
         {result !== null
           ? result.error !== null
             ? ` — ${result.error}`
-            : countSuffix(result.notes.length, 'note')
+            : countSuffix(result.notes.length, 'nota')
           : ''}
         {result !== null && result.error === null ? (
           <NoteLinks notes={result.notes} onOpen={openNote} />
@@ -126,8 +126,8 @@ export function ChatToolChip({ part }: ChatToolChipProps): ReactElement {
     const result = part.result?.tool === 'dailies' ? part.result : null
     return (
       <ChipFrame pending={pending} icon={<CalendarDays aria-hidden className="size-3.5" />}>
-        Listed daily notes {call.start} – {call.end}
-        {result !== null ? countSuffix(result.days.length, 'day') : ''}
+        Listó notas diarias {call.start} – {call.end}
+        {result !== null ? countSuffix(result.days.length, 'día') : ''}
         {result !== null ? <NoteLinks notes={result.days} onOpen={openNote} /> : null}
       </ChipFrame>
     )
@@ -148,7 +148,7 @@ export function ChatToolChip({ part }: ChatToolChipProps): ReactElement {
     const assets = result?.assets ?? call.paths.map((path) => ({ path, error: null }))
     return (
       <ChipFrame pending={pending} icon={<Paperclip aria-hidden className="size-3.5" />}>
-        Read{' '}
+        Leyó{' '}
         {assets.map((asset, index) => (
           <Fragment key={`${asset.path}-${index}`}>
             {index > 0 ? ', ' : ''}

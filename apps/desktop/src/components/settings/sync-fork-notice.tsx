@@ -21,9 +21,9 @@ export function SyncForkNotice({ groups }: SyncForkNoticeProps): ReactElement | 
     <div className="text-xs text-amber-700 dark:text-amber-300">
       <p>
         {groups.length === 1
-          ? '1 note was renamed differently on two devices and now exists as separate files'
-          : `${groups.length} notes were renamed differently on two devices and now exist as separate files`}{' '}
-        — merge by hand, then delete the copy you don’t want:
+          ? '1 nota se renombró de forma distinta en dos dispositivos y ahora existe como archivos separados'
+          : `${groups.length} notas se renombraron de forma distinta en dos dispositivos y ahora existen como archivos separados`}{' '}
+        — combínalas a mano, luego elimina la copia que no quieras:
       </p>
       <ul className="mt-1 list-disc pl-4">
         {groups.map((group) => (

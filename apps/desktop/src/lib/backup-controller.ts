@@ -308,7 +308,7 @@ export function createBackupController(options: BackupControllerOptions): Backup
             state: 'error',
             errorKind: 'rejected',
             message:
-              'HTTPS isn’t supported for this host yet — switch the remote to its SSH form: git remote set-url origin git@<host>:<owner>/<repo>.git',
+              'Todavía no se admite HTTPS para este host — cambia el remoto a su forma SSH: git remote set-url origin git@<host>:<owner>/<repo>.git',
           },
         })
         return
@@ -332,7 +332,7 @@ export function createBackupController(options: BackupControllerOptions): Backup
         onLargeFilesSkipped: (files) => {
           // Surface the guardrail loudly: these files are NOT in the backup.
           const names = files.map((file) => file.path).join(', ')
-          startOperation('Backing up').fail(`Too large to back up (kept local): ${names}`)
+          startOperation('Respaldando').fail(`Demasiado grande para respaldar (se mantiene local): ${names}`)
         },
         onRemoteChanges,
       })
@@ -385,7 +385,7 @@ export function createBackupController(options: BackupControllerOptions): Backup
   async function requireToken(): Promise<string> {
     const token = await getGithubToken(providerFetch)
     if (token === null) {
-      throw new ReflectError('auth', 'Connect GitHub first (no credential stored)')
+      throw new ReflectError('auth', 'Conecta GitHub primero (no hay credencial guardada)')
     }
     return token
   }

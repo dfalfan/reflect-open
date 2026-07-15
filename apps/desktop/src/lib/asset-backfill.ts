@@ -38,7 +38,7 @@ async function runBackfill(
   generation: number,
   providers: AiProvidersState,
 ): Promise<ReconcileAssetDescriptionsOutcome> {
-  const operation = startOperation('Describing assets')
+  const operation = startOperation('Describiendo recursos')
   let outcome: ReconcileAssetDescriptionsOutcome
   try {
     outcome = await reconcileAssetDescriptions({
@@ -52,7 +52,7 @@ async function runBackfill(
     // reconcileAssetDescriptions is contracted not to throw, but finalize the
     // operation defensively so an unexpected failure never strands a "running"
     // entry in the operations UI.
-    operation.fail('Failed to describe assets.')
+    operation.fail('No se pudieron describir los recursos.')
     throw cause
   }
   // Make the new descriptions searchable: re-index the notes that reference the
@@ -73,9 +73,9 @@ async function runBackfill(
   if (outcome.stopped === null || outcome.stopped.reason === 'stale') {
     operation.done()
   } else if (outcome.stopped.reason === 'config') {
-    operation.warn('Add an AI provider in Settings to describe assets.')
+    operation.warn('Agrega un proveedor de IA en Ajustes para describir los recursos.')
   } else if (outcome.stopped.reason === 'network') {
-    operation.warn('Some assets could not be described — check your connection and try again.')
+    operation.warn('No se pudieron describir algunos recursos — revisa tu conexión e inténtalo de nuevo.')
   } else {
     operation.fail(outcome.stopped.message)
   }

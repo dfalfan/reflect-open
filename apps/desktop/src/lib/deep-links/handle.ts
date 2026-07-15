@@ -34,7 +34,7 @@ export interface DeepLinkIo {
 export async function handleDeepLink(url: string, io: DeepLinkIo): Promise<void> {
   const link = parseDeepLink(url)
   if (link === null) {
-    startOperation('Opening link').fail(`Unrecognized link: ${truncate(url)}`)
+    startOperation('Abriendo enlace').fail(`Enlace no reconocido: ${truncate(url)}`)
     return
   }
   switch (link.kind) {
@@ -49,21 +49,21 @@ export async function handleDeepLink(url: string, io: DeepLinkIo): Promise<void>
         if (io.isStale?.() === true) {
           return
         }
-        startOperation('Opening link').fail(errorMessage(cause))
+        startOperation('Abriendo enlace').fail(errorMessage(cause))
         return
       }
       if (io.isStale?.() === true) {
         return // the graph switched mid-resolve; the result answers the wrong graph
       }
       if (path === null) {
-        startOperation('Opening link').fail(`Note not found: ${truncate(link.target)}`)
+        startOperation('Abriendo enlace').fail(`Nota no encontrada: ${truncate(link.target)}`)
         return
       }
       io.navigate(routeForPath(path))
       return
     }
     case 'capture': {
-      const label = link.capture === 'task' ? 'Task added to today' : 'Added to today'
+      const label = link.capture === 'task' ? 'Tarea agregada a hoy' : 'Agregado a hoy'
       try {
         // The URL parser enforces the same text constraints, so this parse is
         // belt-and-braces — but it is fallible, and a schema tightening must
@@ -78,7 +78,7 @@ export async function handleDeepLink(url: string, io: DeepLinkIo): Promise<void>
         })
         await captureInboxSpool(`${envelope.id}.json`, JSON.stringify(envelope), io.generation)
       } catch (cause) {
-        startOperation('Saving capture').fail(errorMessage(cause))
+        startOperation('Guardando captura').fail(errorMessage(cause))
         return
       }
       startOperation(label).done()

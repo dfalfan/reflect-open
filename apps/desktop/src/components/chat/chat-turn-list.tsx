@@ -20,7 +20,7 @@ export function ChatTurnList(): ReactElement {
   return (
     <MessageScrollerProvider autoScroll defaultScrollPosition="end">
       <MessageScroller className="min-h-0 flex-1">
-        <MessageScrollerViewport className="px-6" aria-label="Chat conversation">
+        <MessageScrollerViewport className="px-6" aria-label="Conversación de chat">
           {turns.length > 0 ? (
             <div className="mx-auto w-full max-w-2xl">
               <MessageScrollerContent className="gap-6 py-8">

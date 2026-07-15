@@ -115,22 +115,22 @@ export function AllNotesScreen({ tag }: AllNotesScreenProps): ReactElement {
     <div
       ref={rootRef}
       tabIndex={-1}
-      aria-label="All notes"
+      aria-label="Todas las notas"
       className="flex h-full min-h-0 flex-col outline-none"
     >
       <header className="flex flex-none flex-wrap items-center justify-between gap-3 border-b border-border py-4 pl-12 pr-7">
-        <h1 className="text-[15px] font-semibold text-text">Notes</h1>
+        <h1 className="text-[15px] font-semibold text-text">Notas</h1>
         <div className="flex flex-wrap items-center gap-3">
           {selection.selectedCount > 0 ? (
             <Button
               type="button"
               variant="outline"
-              aria-label={`Trash (${selection.selectedCount})`}
+              aria-label={`Enviar a la papelera (${selection.selectedCount})`}
               onClick={openTrashConfirm}
               className="text-text-secondary hover:text-destructive"
             >
               <Trash2 aria-hidden className="size-3.5" />
-              <span>Trash</span>
+              <span>Papelera</span>
               <span
                 aria-hidden
                 className="flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive/10 px-1 text-[10px] font-semibold leading-none tabular-nums text-destructive"

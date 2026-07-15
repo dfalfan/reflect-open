@@ -59,7 +59,7 @@ export const SidebarSortablePinnedRow = memo(function SidebarSortablePinnedRow({
       void openNativeContextMenu({
         items: [
           {
-            text: 'Unpin Note',
+            text: 'Desfijar nota',
             action: () => {
               updatePinnedNotesCache(queryClient, graph.root, (current) =>
                 current?.filter((pinnedNote) => pinnedNote.path !== note.path),
@@ -72,7 +72,7 @@ export const SidebarSortablePinnedRow = memo(function SidebarSortablePinnedRow({
           },
         ],
       }).catch((cause: unknown) => {
-        startOperation('Opening note menu').fail(errorMessage(cause))
+        startOperation('Abriendo el menú de la nota').fail(errorMessage(cause))
       })
     },
     [graph, note.path, queryClient],

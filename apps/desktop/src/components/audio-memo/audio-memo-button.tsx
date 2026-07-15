@@ -26,7 +26,7 @@ export function AudioMemoButton(): ReactElement {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Record audio memo"
+            aria-label="Grabar memo de audio"
             aria-disabled={!memo.available || undefined}
             onClick={() => {
               if (memo.available) {
@@ -42,7 +42,7 @@ export function AudioMemoButton(): ReactElement {
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom">
-          {memo.unavailableReason ?? 'Record audio memo'}
+          {memo.unavailableReason ?? 'Grabar memo de audio'}
         </TooltipContent>
       </Tooltip>
     )
@@ -55,7 +55,7 @@ export function AudioMemoButton(): ReactElement {
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Record audio memo"
+            aria-label="Grabar memo de audio"
             onClick={() => memo.toggle()}
             className="text-text-muted hover:text-text-secondary dark:hover:text-text"
           >
@@ -67,7 +67,7 @@ export function AudioMemoButton(): ReactElement {
     )
   }
 
-  const activeLabel = memo.phase === 'recording' ? 'Stop recording' : 'Discard audio memo'
+  const activeLabel = memo.phase === 'recording' ? 'Detener grabación' : 'Descartar memo de audio'
 
   return (
     <Popover open>

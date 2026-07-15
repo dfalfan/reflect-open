@@ -98,13 +98,13 @@ export function CalendarIntegrationField(): ReactElement | null {
       <div>
         <InlineAlert tone="error">
           {status === 'notDetermined'
-            ? 'Reflect needs permission to read your calendars.'
-            : 'Reflect can’t read your calendars. Allow it under Privacy & Security → Calendars.'}
+            ? 'Reflect necesita permiso para leer tus calendarios.'
+            : 'Reflect no puede leer tus calendarios. Permítelo en Privacidad y seguridad → Calendarios.'}
         </InlineAlert>
         <div className="mt-2">
           {status === 'notDetermined' ? (
             <button type="button" onClick={requestAccess} className={ACTION_BUTTON_CLASS}>
-              Grant access
+              Conceder acceso
             </button>
           ) : (
             <button
@@ -116,7 +116,7 @@ export function CalendarIntegrationField(): ReactElement | null {
               }}
               className={ACTION_BUTTON_CLASS}
             >
-              Open System Settings
+              Abrir Ajustes del Sistema
             </button>
           )}
         </div>
@@ -131,24 +131,24 @@ export function CalendarIntegrationField(): ReactElement | null {
     detail =
       groups.length === 0 ? (
         <p className="text-xs text-text-muted">
-          No calendars found. Add accounts in System Settings → Internet Accounts.
+          No se encontraron calendarios. Agrega cuentas en Ajustes del Sistema → Cuentas de Internet.
         </p>
       ) : (
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-xs text-text-muted">
-            {enabledCount}/{calendars.length} calendars selected
+            {enabledCount}/{calendars.length} calendarios seleccionados
           </p>
           <Dialog>
             <DialogTrigger asChild>
               <Button type="button" variant="outline" size="sm">
-                Choose calendars…
+                Elegir calendarios…
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Choose calendars</DialogTitle>
+                <DialogTitle>Elegir calendarios</DialogTitle>
                 <DialogDescription>
-                  Select the calendars Reflect shows beside your daily note.
+                  Selecciona los calendarios que Reflect muestra junto a tu nota diaria.
                 </DialogDescription>
               </DialogHeader>
               <div className="max-h-[min(28rem,70vh)] overflow-y-auto pr-1">
@@ -193,8 +193,8 @@ export function CalendarIntegrationField(): ReactElement | null {
   return (
     <div>
       <SettingsSwitchField
-        legend="Calendar events"
-        description="Show the day's meetings from Apple Calendar beside the daily note."
+        legend="Eventos del calendario"
+        description="Muestra las reuniones del día desde Apple Calendar junto a la nota diaria."
         checked={settings.calendarEnabled}
         onCheckedChange={handleToggle}
       />

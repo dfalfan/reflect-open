@@ -138,14 +138,14 @@ export function CommandPalette({ context }: CommandPaletteProps): ReactElement |
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Command palette"
+        aria-label="Paleta de comandos"
         className={cn('w-full', splitLayout ? 'max-w-4xl' : 'max-w-xl')}
         onPointerDown={(event) => {
           event.stopPropagation() // clicks inside must not close
         }}
       >
         <Command
-          label="Command palette"
+          label="Paleta de comandos"
           shouldFilter={false}
           value={selectedValue}
           onValueChange={setSelectedValue}
@@ -166,7 +166,7 @@ export function CommandPalette({ context }: CommandPaletteProps): ReactElement |
             autoFocus
             value={query}
             onValueChange={setQuery}
-            placeholder="Search notes, or > for commands…"
+            placeholder="Busca notas, o > para comandos…"
             className="reflect-palette-input"
           />
           <div className={cn(splitLayout && 'flex h-[min(60vh,36rem)]')}>
@@ -175,15 +175,15 @@ export function CommandPalette({ context }: CommandPaletteProps): ReactElement |
             >
               {searchFailed ? (
                 <div role="alert" className="reflect-palette-empty">
-                  Search unavailable — the index didn’t answer.
+                  Búsqueda no disponible — el índice no respondió.
                 </div>
               ) : null}
               {resultsSettled && !searchFailed ? (
-                <Command.Empty className="reflect-palette-empty">No results</Command.Empty>
+                <Command.Empty className="reflect-palette-empty">No hay resultados</Command.Empty>
               ) : null}
               {sections.notes.length > 0 ? (
                 <Command.Group
-                  heading={query.trim() === '' ? 'Recent' : 'Notes'}
+                  heading={query.trim() === '' ? 'Recientes' : 'Notas'}
                   className="reflect-palette-group"
                 >
                   {sections.notes.map((entry) => {
@@ -233,7 +233,7 @@ export function CommandPalette({ context }: CommandPaletteProps): ReactElement |
                 </Command.Group>
               ) : null}
               {sections.commands.length > 0 ? (
-                <Command.Group heading="Commands" className="reflect-palette-group">
+                <Command.Group heading="Comandos" className="reflect-palette-group">
                   {sections.commands.map((command) => {
                     const Icon = commandIcon(command.id)
                     return (
@@ -272,7 +272,7 @@ export function CommandPalette({ context }: CommandPaletteProps): ReactElement |
                   <NotePreview key="note-preview" entry={selectedNote} />
                 ) : (
                   <div className="flex h-full items-center justify-center text-sm text-text-muted">
-                    No note selected
+                    Ninguna nota seleccionada
                   </div>
                 )}
               </div>
@@ -284,13 +284,13 @@ export function CommandPalette({ context }: CommandPaletteProps): ReactElement |
           >
             <span className="flex items-center gap-1.5">
               <Kbd>↑</Kbd>
-              <Kbd>↓</Kbd> Navigate
+              <Kbd>↓</Kbd> Navegar
             </span>
             <span className="flex items-center gap-1.5">
-              <Kbd>↩</Kbd> Open
+              <Kbd>↩</Kbd> Abrir
             </span>
             <span className="flex items-center gap-1.5">
-              <Kbd>esc</Kbd> Close
+              <Kbd>esc</Kbd> Cerrar
             </span>
           </div>
         </Command>

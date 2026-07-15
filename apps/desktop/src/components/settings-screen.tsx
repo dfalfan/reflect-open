@@ -21,8 +21,8 @@ import { TemplatesSection } from './settings/templates-section'
  */
 export function SettingsScreen(): ReactElement {
   return (
-    <div aria-label="Settings">
-      <h1 className="text-lg font-semibold text-text">Settings</h1>
+    <div aria-label="Ajustes">
+      <h1 className="text-lg font-semibold text-text">Ajustes</h1>
       <div className="mt-6">
         <AppearanceSection />
         <EditorSection />

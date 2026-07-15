@@ -4,22 +4,22 @@
  * navigator's labels and jump targets can never drift from the page itself.
  */
 export const SETTINGS_SECTIONS = [
-  { id: 'appearance', title: 'Appearance' },
+  { id: 'appearance', title: 'Apariencia' },
   { id: 'editor', title: 'Editor' },
-  { id: 'date-time', title: 'Date & time' },
-  { id: 'templates', title: 'Note templates' },
-  { id: 'all-notes', title: 'All notes' },
-  { id: 'search', title: 'Search' },
-  { id: 'ai-providers', title: 'AI providers' },
-  { id: 'ai-prompts', title: 'AI prompts' },
+  { id: 'date-time', title: 'Fecha y hora' },
+  { id: 'templates', title: 'Plantillas de nota' },
+  { id: 'all-notes', title: 'Todas las notas' },
+  { id: 'search', title: 'Búsqueda' },
+  { id: 'ai-providers', title: 'Proveedores de IA' },
+  { id: 'ai-prompts', title: 'Prompts de IA' },
   // macOS only — installs files under ~/.agents for terminal coding agents.
-  { id: 'agents', title: 'Agents' },
+  { id: 'agents', title: 'Agentes' },
   // Only shown where the OS frameworks exist — see use-visible-settings-sections.
-  { id: 'integrations', title: 'Integrations' },
-  { id: 'sync', title: 'Sync' },
-  { id: 'import', title: 'Import' },
-  { id: 'about', title: 'About' },
-  { id: 'destructive', title: 'Danger zone' },
+  { id: 'integrations', title: 'Integraciones' },
+  { id: 'sync', title: 'Sincronización' },
+  { id: 'import', title: 'Importar' },
+  { id: 'about', title: 'Acerca de' },
+  { id: 'destructive', title: 'Zona de peligro' },
 ] as const
 
 /** Identifier of one {@link SETTINGS_SECTIONS} entry. */

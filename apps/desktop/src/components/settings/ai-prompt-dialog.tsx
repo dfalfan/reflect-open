@@ -72,11 +72,11 @@ export function AiPromptDialog({ prompt, onSave, onClose }: AiPromptDialogProps)
     >
       <DialogContent showCloseButton={false} className="max-w-md">
         <DialogHeader>
-          <DialogTitle>{prompt === null ? 'Add prompt' : 'Edit prompt'}</DialogTitle>
+          <DialogTitle>{prompt === null ? 'Agregar prompt' : 'Editar prompt'}</DialogTitle>
           <DialogDescription>
-            The prompt runs on the text you select in a note. Use{' '}
-            <code className="font-mono text-xs">{'{{selectedText}}'}</code> where the selection
-            should appear.
+            El prompt se ejecuta sobre el texto que selecciones en una nota. Usa{' '}
+            <code className="font-mono text-xs">{'{{selectedText}}'}</code> donde debería aparecer
+            la selección.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -86,11 +86,11 @@ export function AiPromptDialog({ prompt, onSave, onClose }: AiPromptDialogProps)
           }}
         >
           <label className="flex flex-col gap-1.5">
-            <span className={FIELD_LABEL_CLASS}>Label</span>
+            <span className={FIELD_LABEL_CLASS}>Etiqueta</span>
             <Input
               {...register('label', { required: true })}
               aria-invalid={formState.errors.label !== undefined || undefined}
-              placeholder="Translate to French"
+              placeholder="Traducir al francés"
               autoFocus
             />
           </label>
@@ -100,11 +100,11 @@ export function AiPromptDialog({ prompt, onSave, onClose }: AiPromptDialogProps)
               {...register('body', { required: true })}
               aria-invalid={formState.errors.body !== undefined || undefined}
               rows={5}
-              placeholder={'Translate the following text to French.\n\n{{selectedText}}'}
+              placeholder={'Traduce el siguiente texto al francés.\n\n{{selectedText}}'}
             />
           </label>
           <label className="flex flex-col gap-1.5">
-            <span className={FIELD_LABEL_CLASS}>Result</span>
+            <span className={FIELD_LABEL_CLASS}>Resultado</span>
             <Select
               value={mode}
               onValueChange={(value) => setValue('mode', value as AiPromptMode)}
@@ -113,16 +113,16 @@ export function AiPromptDialog({ prompt, onSave, onClose }: AiPromptDialogProps)
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="replace">Replaces the selection</SelectItem>
-                <SelectItem value="append">Inserted below the selection</SelectItem>
+                <SelectItem value="replace">Reemplaza la selección</SelectItem>
+                <SelectItem value="append">Se inserta debajo de la selección</SelectItem>
               </SelectContent>
             </Select>
           </label>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="ghost" onClick={onClose}>
-              Cancel
+              Cancelar
             </Button>
-            <Button type="submit">{prompt === null ? 'Add prompt' : 'Save'}</Button>
+            <Button type="submit">{prompt === null ? 'Agregar prompt' : 'Guardar'}</Button>
           </div>
         </form>
       </DialogContent>

@@ -22,14 +22,14 @@ export function NoteConflictBanner({
   return (
     <InlineAlert className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
       <span className="min-w-0 flex-1">
-        This note changed on disk while you had unsaved edits.
+        Esta nota cambió en el disco mientras tenías ediciones sin guardar.
       </span>
       <div className="flex gap-2">
         <Button size="xs" variant="outline" onClick={onKeepMine}>
-          Keep mine
+          Conservar la mía
         </Button>
         <Button size="xs" variant="outline" onClick={onLoadTheirs}>
-          Load theirs
+          Cargar la otra
         </Button>
       </div>
     </InlineAlert>

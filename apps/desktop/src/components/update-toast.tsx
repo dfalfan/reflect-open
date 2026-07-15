@@ -22,21 +22,21 @@ export function UpdateToast(): ReactElement | null {
   useEffect(() => {
     switch (state.phase) {
       case 'available':
-        toast.message('Update available', {
+        toast.message('Actualización disponible', {
           id: UPDATE_TOAST_ID,
-          description: `Reflect ${state.version} is ready to install.`,
+          description: `Reflect ${state.version} está lista para instalar.`,
           duration: PERSISTENT_TOAST_MS,
           ...NON_DISMISSIBLE_UPDATE_OPTIONS,
           action: {
-            label: 'Install',
+            label: 'Instalar',
             onClick: () => runToastAction(install),
           },
         })
         break
       case 'downloading':
-        toast.loading('Downloading update', {
+        toast.loading('Descargando actualización', {
           id: UPDATE_TOAST_ID,
-          description: state.percent !== null ? `${state.percent}%` : 'Preparing…',
+          description: state.percent !== null ? `${state.percent}%` : 'Preparando…',
           duration: PERSISTENT_TOAST_MS,
           // Sonner merges options into the existing toast by id, so the
           // "Install" action from the `available` phase persists unless we
@@ -48,26 +48,26 @@ export function UpdateToast(): ReactElement | null {
         })
         break
       case 'ready':
-        toast.success('Update ready', {
+        toast.success('Actualización lista', {
           id: UPDATE_TOAST_ID,
-          description: `Reflect ${state.version} will finish updating after restart.`,
+          description: `Reflect ${state.version} terminará de actualizarse después de reiniciar.`,
           duration: PERSISTENT_TOAST_MS,
           ...NON_DISMISSIBLE_UPDATE_OPTIONS,
           action: {
-            label: 'Restart',
+            label: 'Reiniciar',
             onClick: () => runToastAction(restart),
           },
         })
         break
       case 'error':
         if (state.during === 'install') {
-          toast.error('Update failed', {
+          toast.error('Falló la actualización', {
             id: UPDATE_TOAST_ID,
             description: state.message,
             duration: PERSISTENT_TOAST_MS,
             ...NON_DISMISSIBLE_UPDATE_OPTIONS,
             action: {
-              label: 'Retry install',
+              label: 'Reintentar instalación',
               onClick: () => runToastAction(install),
             },
           })

@@ -43,8 +43,8 @@ export function TemplatesSection(): ReactElement {
   return (
     <SettingsSection id="templates">
       <SettingsField
-        legend="Note templates"
-        description="Markdown files in your graph's templates/ folder, inserted from the ⌘K palette."
+        legend="Plantillas de notas"
+        description="Archivos markdown en la carpeta templates/ de tu grafo, insertados desde la paleta ⌘K."
       >
         {templates !== undefined && templates.length > 0 ? (
           <ul className="mt-3 divide-y divide-border rounded-md border border-border">
@@ -65,7 +65,7 @@ export function TemplatesSection(): ReactElement {
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`Rename ${template.title}`}
+                  aria-label={`Renombrar ${template.title}`}
                   onClick={() => setRenaming(template)}
                 >
                   <Pencil aria-hidden strokeWidth={1.75} />
@@ -73,7 +73,7 @@ export function TemplatesSection(): ReactElement {
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`Delete ${template.title}`}
+                  aria-label={`Eliminar ${template.title}`}
                   onClick={() => setDeleting(template)}
                 >
                   <Trash2 aria-hidden strokeWidth={1.75} />
@@ -85,7 +85,7 @@ export function TemplatesSection(): ReactElement {
         <div className="mt-3">
           <Button variant="outline" size="sm" onClick={openTemplateCreate}>
             <Plus aria-hidden strokeWidth={1.75} />
-            New template
+            Plantilla nueva
           </Button>
         </div>
       </SettingsField>
@@ -135,9 +135,9 @@ function TemplateRenameDialog({ template, onClose }: TemplateDialogProps): React
       }}
     >
       <DialogContent showCloseButton={false} className="max-w-sm">
-        <DialogTitle>Rename template</DialogTitle>
+        <DialogTitle>Renombrar plantilla</DialogTitle>
         <DialogDescription className="sr-only">
-          Renames the template — its title and its file's slug.
+          Renombra la plantilla — su título y el slug de su archivo.
         </DialogDescription>
         <form
           className="flex flex-col gap-3"
@@ -150,7 +150,7 @@ function TemplateRenameDialog({ template, onClose }: TemplateDialogProps): React
             autoFocus
             value={name}
             onChange={(event) => setName(event.target.value)}
-            aria-label="Template name"
+            aria-label="Nombre de la plantilla"
             autoComplete="off"
             spellCheck={false}
           />
@@ -161,10 +161,10 @@ function TemplateRenameDialog({ template, onClose }: TemplateDialogProps): React
           ) : null}
           <DialogFooter>
             <Button type="button" variant="outline" size="sm" onClick={onClose}>
-              Cancel
+              Cancelar
             </Button>
             <Button type="submit" size="sm" disabled={name.trim() === ''}>
-              Rename
+              Renombrar
             </Button>
           </DialogFooter>
         </form>
@@ -183,7 +183,7 @@ function TemplateDeleteDialog({ template, onClose }: TemplateDialogProps): React
     if (generation === undefined) {
       return
     }
-    const operation = startOperation('Trashing template')
+    const operation = startOperation('Enviando plantilla a la papelera')
     setError(null)
     try {
       await deleteOpenNote(template.path, generation)
@@ -205,9 +205,9 @@ function TemplateDeleteDialog({ template, onClose }: TemplateDialogProps): React
       }}
     >
       <DialogContent showCloseButton={false} className="max-w-sm">
-        <DialogTitle>Delete template?</DialogTitle>
+        <DialogTitle>¿Eliminar plantilla?</DialogTitle>
         <DialogDescription>
-          “{template.title}” moves to the trash and can be recovered from there.
+          “{template.title}” se envía a la papelera y puede recuperarse desde allí.
         </DialogDescription>
         {error !== null ? (
           <span role="alert" className="text-xs text-red-600 dark:text-red-400">
@@ -217,7 +217,7 @@ function TemplateDeleteDialog({ template, onClose }: TemplateDialogProps): React
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="outline" size="sm">
-              Cancel
+              Cancelar
             </Button>
           </DialogClose>
           <Button
@@ -228,7 +228,7 @@ function TemplateDeleteDialog({ template, onClose }: TemplateDialogProps): React
               void trash()
             }}
           >
-            Delete
+            Eliminar
           </Button>
         </DialogFooter>
       </DialogContent>

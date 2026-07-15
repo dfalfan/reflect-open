@@ -60,13 +60,13 @@ export function TaskScheduleCalendar({
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent align="end" className="w-auto p-0" aria-label="Schedule">
+      <PopoverContent align="end" className="w-auto p-0" aria-label="Programar">
         <header className="flex items-center justify-between px-4 pt-3 pb-1">
           <div className="text-sm font-semibold text-text">{monthLabel(month)}</div>
           <nav className="flex items-center gap-1 text-text-muted">
             <button
               type="button"
-              aria-label="Previous month"
+              aria-label="Mes anterior"
               onClick={() => setMonth(addMonths(month, -1))}
               className="rounded-md p-0.5 transition-colors hover:bg-surface-hover hover:text-text"
             >
@@ -74,7 +74,7 @@ export function TaskScheduleCalendar({
             </button>
             <button
               type="button"
-              aria-label="Next month"
+              aria-label="Mes siguiente"
               onClick={() => setMonth(addMonths(month, 1))}
               className="rounded-md p-0.5 transition-colors hover:bg-surface-hover hover:text-text"
             >
@@ -122,7 +122,7 @@ export function TaskScheduleCalendar({
             className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-text-muted transition-colors hover:bg-surface-hover hover:text-text focus-visible:outline-none"
           >
             <X className="size-3.5" />
-            Clear date
+            Quitar fecha
           </button>
         </div>
       </PopoverContent>

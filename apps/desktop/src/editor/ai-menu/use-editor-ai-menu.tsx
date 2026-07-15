@@ -158,7 +158,7 @@ export function useEditorAiMenu({
           ? defaultProvider
           : providers.find((entry) => entry.id === modelOverride.configId) ?? null
       if (base === null) {
-        fail('Add an AI provider in Settings to use AI prompts.')
+        fail('Agrega un proveedor de IA en Ajustes para usar los prompts de IA.')
         return
       }
       const config = modelOverride === null ? base : { ...base, model: modelOverride.modelId }
@@ -170,7 +170,7 @@ export function useEditorAiMenu({
         selection = cloudSafeSelection({ path, isPrivate }, context.selectedText)
       } catch (cause) {
         if (isPrivateNoteError(cause)) {
-          fail('This note is marked private, so its content is never sent to an AI provider.')
+          fail('Esta nota está marcada como privada, así que su contenido nunca se envía a un proveedor de IA.')
           return
         }
         throw cause
@@ -179,7 +179,7 @@ export function useEditorAiMenu({
       const apiKey = await getSecret(aiKeySecretName(config.id)).catch(() => null)
       if (runRef.current !== run) return
       if (apiKey === null) {
-        fail('No API key found for this provider — re-add it in Settings → AI providers.')
+        fail('No se encontró la clave de API de este proveedor — vuelve a agregarla en Ajustes → Proveedores de IA.')
         return
       }
 
@@ -229,7 +229,7 @@ export function useEditorAiMenu({
         return [
           {
             id: 'configure-provider',
-            label: 'Add an AI provider in Settings…',
+            label: 'Agregar un proveedor de IA en Ajustes…',
             onSelect: () => navigate({ kind: 'settings' }),
           },
         ]
@@ -246,7 +246,7 @@ export function useEditorAiMenu({
         items.push({
           id: 'ad-hoc-query',
           label: adHoc,
-          detail: 'Run as a prompt',
+          detail: 'Ejecutar como prompt',
           onSelect: (context) =>
             runPrompt({ id: 'ad-hoc-query', label: adHoc, body: adHoc, mode: 'replace' }, context),
         })

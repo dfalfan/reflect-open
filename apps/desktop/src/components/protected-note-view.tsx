@@ -16,9 +16,9 @@ export function ProtectedNoteView({ content }: ProtectedNoteViewProps): ReactEle
   return (
     <div>
       <InlineAlert className="mb-4">
-        This note contains markdown the editor can’t yet reproduce faithfully (for
-        example task lists), so it’s open read-only to protect your file. Edit it in
-        another tool for now.
+        Esta nota contiene markdown que el editor aún no puede reproducir fielmente (por
+        ejemplo listas de tareas), así que se abre en modo de solo lectura para proteger tu
+        archivo. Edítala en otra herramienta por ahora.
       </InlineAlert>
       <pre className="reflect-protected-note whitespace-pre-wrap text-sm leading-relaxed">
         {content}
