@@ -160,6 +160,13 @@ export function EditorSection(): ReactElement {
       />
 
       <SettingsSwitchField
+        legend="Notas como hojas"
+        description="Cada nota flota como una hoja de papel sobre un fondo gris. En las notas diarias, el vacío entre hojas separa los días; al apagarlo, vuelve la línea divisoria."
+        checked={settings.paperSheets}
+        onCheckedChange={(checked) => updateSettings({ paperSheets: checked })}
+      />
+
+      <SettingsSwitchField
         legend="Corrector ortográfico"
         description="Subraya las palabras mal escritas mientras escribes."
         checked={settings.editorSpellCheck}

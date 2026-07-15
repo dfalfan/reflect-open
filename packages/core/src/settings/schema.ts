@@ -85,6 +85,16 @@ export const editorFullWidthSchema = z.boolean().catch(false)
 export const dailyStreamTodayOnlySchema = z.boolean().catch(false)
 
 /**
+ * Whether notes render as sheets of paper floating on a gutter, rather than as
+ * one flat surface running edge to edge. On by default. It governs both views
+ * at once: in the daily stream each day becomes its own sheet and the void
+ * between them separates the days; a regular note becomes a single sheet. Off
+ * restores the flat surface, and the daily stream falls back to a hairline rule
+ * between days. Display-only — no `.md` file changes either way.
+ */
+export const paperSheetsSchema = z.boolean().catch(true)
+
+/**
  * The clamp range for a user-adjustable sidebar width, in CSS pixels. Shared
  * between the schema (so a hand-edited document can't wreck the layout) and
  * the drag interaction (so the handle stops where the schema would clamp).
@@ -423,6 +433,7 @@ export const settingsSchema = z
     editorTextSize: editorTextSizeSchema,
     editorFullWidth: editorFullWidthSchema,
     dailyStreamTodayOnly: dailyStreamTodayOnlySchema,
+    paperSheets: paperSheetsSchema,
     sidebarWidth: sidebarWidthSchema,
     contextSidebarWidth: contextSidebarWidthSchema,
     semanticSearchEnabled: semanticSearchEnabledSchema,

@@ -1,5 +1,7 @@
 import type { ReactElement, ReactNode } from 'react'
 import { NotePane } from '@/components/note-pane'
+import { cn } from '@/lib/utils'
+import { useSettings } from '@/providers/settings-provider'
 import { ScrollRestored } from '@/routing/scroll-restore'
 
 interface SingleNoteViewProps {
@@ -20,17 +22,31 @@ interface SingleNoteViewProps {
 
 /**
  * One note filling the viewport: the note route's layout, shared with the
- * secondary note window (which renders dailies this way too). The vertical
- * padding lives on the inner column — not the scroll container — so
- * `min-h-full` fills the viewport exactly, and the flex chain stretches the
- * editor over any leftover space. The reading gutter is the editor's own
- * padding, so clicking anywhere in the note body (blank side margins
- * included) focuses it.
+ * secondary note window (which renders dailies this way too). The note is a
+ * sheet floating on the gutter, the same shape the daily stream gives every
+ * day — there each day is a sheet, here there is only ever one.
+ *
+ * The gutter is the scroll container's padding, so the sheet's `min-h-full`
+ * resolves against the already-padded box: sheet plus gutter is exactly one
+ * viewport, nothing overflows, and the flex chain still stretches the editor
+ * over any leftover space. With `paperSheets` off the padding moves back to the
+ * inner column and the same arithmetic holds, minus the gutter. The reading
+ * gutter is the editor's own padding, so clicking anywhere in the note body
+ * focuses it.
  */
 export function SingleNoteView({ path, dailyDate, heading }: SingleNoteViewProps): ReactElement {
+  const { settings } = useSettings()
+  const sheets = settings.paperSheets
   return (
-    <ScrollRestored className="h-full overflow-auto px-0">
-      <div className="mx-auto flex min-h-full w-full max-w-full flex-col pt-24 pb-8">
+    <ScrollRestored
+      className={cn('h-full overflow-auto', sheets ? 'bg-surface-gutter px-4 py-6' : 'px-0')}
+    >
+      <div
+        className={cn(
+          'mx-auto flex min-h-full w-full max-w-full flex-col pt-24 pb-8',
+          sheets && 'rounded-lg bg-surface shadow-md',
+        )}
+      >
         {heading}
         <NotePane
           path={path}

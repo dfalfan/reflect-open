@@ -36,6 +36,7 @@ Cascade layer order, low to high priority.
   --color-surface: var(--surface);
   --color-surface-sunken: var(--surface-sunken);
   --color-surface-app: var(--surface-app);
+  --color-surface-gutter: var(--surface-gutter);
   --color-surface-hover: var(--surface-hover);
   --color-surface-active: var(--surface-active);
   --color-surface-inverse: var(--surface-inverse);

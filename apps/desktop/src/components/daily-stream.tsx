@@ -225,6 +225,8 @@ export function DailyStream({ target }: DailyStreamProps): ReactElement {
     }
   }, [settings.dailyStreamTodayOnly, dayWindow])
 
+  const sheets = settings.paperSheets
+
   // One daily row — the date subject plus its lazy editor. Shared by the
   // virtualized stream and the single-day view so both render an identical day;
   // `index` is virtua's measurement key (omitted in single-day mode, which has
@@ -242,31 +244,39 @@ export function DailyStream({ target }: DailyStreamProps): ReactElement {
       pendingFocus !== null && pendingFocus.date === date ? pendingFocus.selection : null
     const autoFocus = focusSelection !== null
     return (
+      // With sheets on, the row is the gutter around its sheet rather than the
+      // sheet itself, and the void between days is what separates them. The gap
+      // rides on padding, not a margin, so the virtualizer measures it as part
+      // of the item; top-only, so the space above the first sheet and the space
+      // between any two are the same 24px. With sheets off, the row is the day
+      // itself again and a hairline rule does the separating.
       <section
         key={date}
         data-index={index}
-        className="border-b border-border pt-24 pb-6"
+        className={cn(sheets ? 'px-4 pt-6' : 'border-b border-border pt-24 pb-6')}
         // Focus entering this row (clicking its editor, tabbing in) makes it the
         // day the sidebar describes.
         onFocusCapture={() => setFocusedDailyDate(date)}
       >
-        {/* V1 renders the date as the note's H1-sized subject, with today's
-            tinted brand (its `highlightSubject`). */}
-        <h2 className={cn('reflect-daily-subject mb-3', CONTENT_GUTTER, isToday && 'text-accent')}>
-          {formatDayLabel(date, settings.dateFormat)}
-        </h2>
-        <NotePane
-          path={dailyPath(date)}
-          dailyDate={date}
-          registerHandle={registerHandle}
-          onExitBoundary={handleExitBoundary}
-          lazy
-          autoFocus={autoFocus}
-          autoFocusSelection={focusSelection ?? 'start'}
-          onAutoFocused={consumeFocus}
-          gutterClassName={CONTENT_GUTTER}
-          editorClassName={isPast ? 'min-h-[100px]' : 'min-h-[60vh]'}
-        />
+        <div className={cn(sheets && 'rounded-lg bg-surface pt-24 pb-6 shadow-md')}>
+          {/* V1 renders the date as the note's H1-sized subject, with today's
+              tinted brand (its `highlightSubject`). */}
+          <h2 className={cn('reflect-daily-subject mb-3', CONTENT_GUTTER, isToday && 'text-accent')}>
+            {formatDayLabel(date, settings.dateFormat)}
+          </h2>
+          <NotePane
+            path={dailyPath(date)}
+            dailyDate={date}
+            registerHandle={registerHandle}
+            onExitBoundary={handleExitBoundary}
+            lazy
+            autoFocus={autoFocus}
+            autoFocusSelection={focusSelection ?? 'start'}
+            onAutoFocused={consumeFocus}
+            gutterClassName={CONTENT_GUTTER}
+            editorClassName={isPast ? 'min-h-[100px]' : 'min-h-[60vh]'}
+          />
+        </div>
       </section>
     )
   }
@@ -278,7 +288,7 @@ export function DailyStream({ target }: DailyStreamProps): ReactElement {
     return (
       <div
         data-testid="daily-stream"
-        className="h-full overflow-auto"
+        className={cn('h-full overflow-auto', sheets && 'bg-surface-gutter')}
         onScroll={(event) => saveScrollState(event.currentTarget.scrollTop)}
         onPointerDownCapture={() => {
           focusPending.current = null
@@ -295,7 +305,7 @@ export function DailyStream({ target }: DailyStreamProps): ReactElement {
   return (
     <div
       data-testid="daily-stream"
-      className="h-full overflow-auto"
+      className={cn('h-full overflow-auto', sheets && 'bg-surface-gutter')}
       onScroll={(event) => saveScrollState(event.currentTarget.scrollTop)}
       // An explicit click/touch picks its own focus target — a focus still
       // pending for a day whose editor hasn't mounted yet must not steal the

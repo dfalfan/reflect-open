@@ -69,6 +69,7 @@
   --surface:          #ffffff;            /* cards, editor canvas        */
   --surface-sunken:   var(--coolgray-50); /* sidebar, rails              */
   --surface-app:      #f8fafa;            /* whole-app background        */
+  --surface-gutter:   var(--coolgray-100);/* void between daily sheets   */
   --surface-hover:    rgba(229,231,235,.5);/* menu/list hover (gray-200/50)*/
   --surface-active:   rgba(229,231,235,.5);/* today's calendar square     */
   --surface-inverse:  hsl(222.2 47.4% 11.2%);/* selected calendar square  */
@@ -116,6 +117,10 @@
   --surface:          #0b1020;
   --surface-sunken:   rgba(31,41,55,.3);
   --surface-app:      #0a0f1e;            /* hsl(224 49% 8%)             */
+  --surface-gutter:   #05070f;            /* hsl(224 49% 4%) — a step below
+                                             --surface-app: shadows barely
+                                             read on dark, so the gutter has
+                                             to carry the separation alone  */
   --surface-hover:    rgba(255,255,255,.03);
   --surface-active:   rgba(55,65,81,.5);  /* gray-700/50                 */
   --surface-inverse:  var(--indigo-500);
