@@ -1,4 +1,12 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState, type ReactElement } from 'react'
+import {
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+  type ReactElement,
+} from 'react'
 import { Virtualizer, type VirtualizerHandle } from 'virtua'
 import { dailyPath } from '@reflect/core'
 import { NotePane } from '@/components/note-pane'
@@ -33,6 +41,17 @@ const CONTENT_GUTTER = 'reflect-content-gutter'
 
 /** The size guess virtua uses for a row it has not measured yet. */
 export const ESTIMATED_DAY_HEIGHT = 220
+
+/**
+ * Renders `render()` — a render-prop seam. The single-day view's row reads the
+ * `focusPending` ref, which the stream reads only inside the Virtualizer's child
+ * callback (a deferred scope). Calling the same row builder directly in render
+ * would read a ref during render; routing it through this opaque prop keeps the
+ * read in a callback, matching the stream's shape.
+ */
+function DeferredRow({ render }: { render: () => ReactElement }): ReactElement {
+  return render()
+}
 
 /**
  * The daily stream (Plan 06b): a virtualized chronological run of days — past
@@ -86,6 +105,12 @@ export function DailyStream({ target }: DailyStreamProps): ReactElement {
   const consumeFocus = useCallback(() => {
     focusPending.current = null
   }, [])
+
+  // Single-day mode has no virtualizer, so the anchor effect's `scrollToIndex`
+  // (which, in stream mode, forces virtua to re-render the target row and pick
+  // up the freshly-set `focusPending`) no-ops. This forces the one re-render
+  // that lets the rendered day read `focusPending.current` after the effect.
+  const [, bumpFocusRender] = useReducer((tick: number) => tick + 1, 0)
 
   // Report the day the user is editing to the context sidebar: the route stays
   // on the day navigated to, but focus moves freely between stream rows, and the
@@ -176,7 +201,96 @@ export function DailyStream({ target }: DailyStreamProps): ReactElement {
       selection: arrivalFocusEditorRef.current ? 'end' : 'start',
     }
     virtualizerRef.current?.scrollToIndex(indexOfDate(dayWindow, target), { align: 'start' })
+    // Single-day mode: no scroll to trigger virtua's re-render, so the just-set
+    // focus needs a render of its own to take effect (a no-op extra render in
+    // stream mode, where virtua already re-renders on the scroll above).
+    bumpFocusRender()
   }, [arrivalSeq, entryId, dayWindow, savedScroll])
+
+  // Turning `dailyStreamTodayOnly` off is not a router arrival, so the anchor
+  // effect above doesn't fire — and React reuses the scroll container's DOM node
+  // across the single-day↔stream swap, so the freshly-mounted virtualizer would
+  // inherit the single-day scroll position (leaving today off-screen, future
+  // days on top). Re-pin the target day (today, with past days above) whenever
+  // the stream reappears from single-day mode. Not on the reverse transition:
+  // the single-day view has no virtualizer, and `scrollToIndex` there no-ops.
+  const wasTodayOnly = useRef(settings.dailyStreamTodayOnly)
+  useLayoutEffect(() => {
+    const leftSingleDay = wasTodayOnly.current && !settings.dailyStreamTodayOnly
+    wasTodayOnly.current = settings.dailyStreamTodayOnly
+    if (leftSingleDay) {
+      virtualizerRef.current?.scrollToIndex(indexOfDate(dayWindow, targetDateRef.current), {
+        align: 'start',
+      })
+    }
+  }, [settings.dailyStreamTodayOnly, dayWindow])
+
+  // One daily row — the date subject plus its lazy editor. Shared by the
+  // virtualized stream and the single-day view so both render an identical day;
+  // `index` is virtua's measurement key (omitted in single-day mode, which has
+  // no virtualizer). Cross-day arrow navigation still registers its handle, but
+  // in single-day mode `handleExitBoundary` finds no mounted neighbor and the
+  // key no-ops at the window edge — exactly the "no other days" intent.
+  const renderDay = (date: string, index?: number): ReactElement => {
+    const isToday = date === today
+    // V1's daily-note sizing: past days hug their content (an empty day
+    // collapses to a short row), while today and future days reserve most of a
+    // viewport of writing room. ISO dates compare lexically.
+    const isPast = date < today
+    const pendingFocus = focusPending.current
+    const focusSelection =
+      pendingFocus !== null && pendingFocus.date === date ? pendingFocus.selection : null
+    const autoFocus = focusSelection !== null
+    return (
+      <section
+        key={date}
+        data-index={index}
+        className="border-b border-border py-6"
+        // Focus entering this row (clicking its editor, tabbing in) makes it the
+        // day the sidebar describes.
+        onFocusCapture={() => setFocusedDailyDate(date)}
+      >
+        {/* V1 renders the date as the note's H1-sized subject, with today's
+            tinted brand (its `highlightSubject`). */}
+        <h2 className={cn('reflect-daily-subject mb-3', CONTENT_GUTTER, isToday && 'text-accent')}>
+          {formatDayLabel(date, settings.dateFormat)}
+        </h2>
+        <NotePane
+          path={dailyPath(date)}
+          dailyDate={date}
+          registerHandle={registerHandle}
+          onExitBoundary={handleExitBoundary}
+          lazy
+          autoFocus={autoFocus}
+          autoFocusSelection={focusSelection ?? 'start'}
+          onAutoFocused={consumeFocus}
+          gutterClassName={CONTENT_GUTTER}
+          editorClassName={isPast ? 'min-h-[100px]' : 'min-h-[60vh]'}
+        />
+      </section>
+    )
+  }
+
+  // Single-day mode (settings.dailyStreamTodayOnly): show only the day the user
+  // opened — no stream, no neighbor days, no virtualizer. `targetDate` is today
+  // on the `today` route and follows a calendar/link navigation otherwise.
+  if (settings.dailyStreamTodayOnly) {
+    return (
+      <div
+        data-testid="daily-stream"
+        className="h-full overflow-auto"
+        onScroll={(event) => saveScrollState(event.currentTarget.scrollTop)}
+        onPointerDownCapture={() => {
+          focusPending.current = null
+          pendingFocusRef.current = null
+        }}
+      >
+        <DeferredRow render={() => renderDay(targetDate)} />
+        {/* Trailing room so a short day isn't pinned to the viewport bottom */}
+        <div aria-hidden className="h-60" />
+      </div>
+    )
+  }
 
   return (
     <div
@@ -199,48 +313,7 @@ export function DailyStream({ target }: DailyStreamProps): ReactElement {
         bufferSize={2 * ESTIMATED_DAY_HEIGHT}
         shift={true}
       >
-        {(_, index) => {
-          const date = dateAtIndex(dayWindow, index)
-          const isToday = date === today
-          // V1's daily-note sizing: past days hug their content (an empty day
-          // collapses to a short row), while today and future days reserve
-          // most of a viewport of writing room. ISO dates compare lexically.
-          const isPast = date < today
-          const pendingFocus = focusPending.current
-          const focusSelection =
-            pendingFocus !== null && pendingFocus.date === date ? pendingFocus.selection : null
-          const autoFocus = focusSelection !== null
-          return (
-            <section
-              key={date}
-              data-index={index}
-              className="border-b border-border py-6"
-              // Focus entering this row (clicking its editor, tabbing in) makes
-              // it the day the sidebar describes.
-              onFocusCapture={() => setFocusedDailyDate(date)}
-            >
-              {/* V1 renders the date as the note's H1-sized subject, with
-                  today's tinted brand (its `highlightSubject`). */}
-              <h2
-                className={cn('reflect-daily-subject mb-3', CONTENT_GUTTER, isToday && 'text-accent')}
-              >
-                {formatDayLabel(date, settings.dateFormat)}
-              </h2>
-              <NotePane
-                path={dailyPath(date)}
-                dailyDate={date}
-                registerHandle={registerHandle}
-                onExitBoundary={handleExitBoundary}
-                lazy
-                autoFocus={autoFocus}
-                autoFocusSelection={focusSelection ?? 'start'}
-                onAutoFocused={consumeFocus}
-                gutterClassName={CONTENT_GUTTER}
-                editorClassName={isPast ? 'min-h-[100px]' : 'min-h-[60vh]'}
-              />
-            </section>
-          )
-        }}
+        {(_, index) => renderDay(dateAtIndex(dayWindow, index), index)}
       </Virtualizer>
       {/* Trailing room so the last day isn't pinned to the viewport bottom */}
       <div aria-hidden className="h-60" />

@@ -17,18 +17,18 @@ interface MarkdownSyntaxOption {
 const MARKDOWN_SYNTAX_OPTIONS: MarkdownSyntaxOption[] = [
   {
     value: 'hide',
-    label: 'Hide',
-    description: 'Always hidden',
+    label: 'Ocultar',
+    description: 'Siempre oculta',
   },
   {
     value: 'hybrid',
-    label: 'Hybrid',
-    description: 'Only around the cursor',
+    label: 'Híbrido',
+    description: 'Solo alrededor del cursor',
   },
   {
     value: 'show',
-    label: 'Show',
-    description: 'Always visible',
+    label: 'Mostrar',
+    description: 'Siempre visible',
   },
 ]
 
@@ -41,18 +41,18 @@ interface TextSizeOption {
 const TEXT_SIZE_OPTIONS: TextSizeOption[] = [
   {
     value: 'small',
-    label: 'Small',
-    description: 'Compact',
+    label: 'Pequeño',
+    description: 'Compacto',
   },
   {
     value: 'medium',
-    label: 'Medium',
-    description: 'Default',
+    label: 'Mediano',
+    description: 'Predeterminado',
   },
   {
     value: 'large',
-    label: 'Large',
-    description: 'Comfortable',
+    label: 'Grande',
+    description: 'Cómodo',
   },
 ]
 
@@ -62,8 +62,8 @@ export function EditorSection(): ReactElement {
   return (
     <SettingsSection id="editor">
       <SettingsField
-        legend="Markdown syntax"
-        description="How literal markdown characters (**, `, etc.) are displayed while editing."
+        legend="Sintaxis Markdown"
+        description="Cómo se muestran los caracteres literales de markdown (**, `, etc.) mientras editas."
       >
         <div className="mt-3 @container">
           <div className="grid grid-cols-1 gap-2 @xl:grid-cols-3">
@@ -104,8 +104,8 @@ export function EditorSection(): ReactElement {
       </SettingsField>
 
       <SettingsField
-        legend="Text size"
-        description="The reading size of the note editor."
+        legend="Tamaño del texto"
+        description="El tamaño de lectura del editor de notas."
       >
         <div className="mt-3 @container">
           <div className="grid grid-cols-1 gap-2 @xl:grid-cols-3">
@@ -146,29 +146,36 @@ export function EditorSection(): ReactElement {
       </SettingsField>
 
       <SettingsSwitchField
-        legend="Full-width notes"
-        description="Stretch note text across the window with a small edge margin."
+        legend="Notas a todo el ancho"
+        description="Extiende el texto de la nota por toda la ventana con un pequeño margen en los bordes."
         checked={settings.editorFullWidth}
         onCheckedChange={(checked) => updateSettings({ editorFullWidth: checked })}
       />
 
       <SettingsSwitchField
-        legend="Spell check"
-        description="Underline misspelled words while you type."
+        legend="Mostrar solo un día en las notas diarias"
+        description="Colapsa la vista diaria al día que abres, ocultando el flujo de los demás días."
+        checked={settings.dailyStreamTodayOnly}
+        onCheckedChange={(checked) => updateSettings({ dailyStreamTodayOnly: checked })}
+      />
+
+      <SettingsSwitchField
+        legend="Corrector ortográfico"
+        description="Subraya las palabras mal escritas mientras escribes."
         checked={settings.editorSpellCheck}
         onCheckedChange={(checked) => updateSettings({ editorSpellCheck: checked })}
       />
 
       <SettingsSwitchField
-        legend="Start with a bullet"
-        description="New and empty notes open with a single bullet point, ready to type."
+        legend="Empezar con una viñeta"
+        description="Las notas nuevas y vacías se abren con una sola viñeta, lista para escribir."
         checked={settings.editorDefaultBullet}
         onCheckedChange={(checked) => updateSettings({ editorDefaultBullet: checked })}
       />
 
       <SettingsSwitchField
-        legend="Bullet after a heading"
-        description="Pressing Return at the end of a heading starts a new bullet."
+        legend="Viñeta después de un encabezado"
+        description="Al presionar Enter al final de un encabezado se inicia una nueva viñeta."
         checked={settings.editorBulletAfterHeading}
         onCheckedChange={(checked) => updateSettings({ editorBulletAfterHeading: checked })}
       />

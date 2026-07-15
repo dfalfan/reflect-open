@@ -75,6 +75,16 @@ export type EditorTextSize = z.infer<typeof editorTextSizeSchema>
 export const editorFullWidthSchema = z.boolean().catch(false)
 
 /**
+ * Whether the daily-notes view shows only the day you navigated to (today, or
+ * the date you opened) instead of the full chronological stream of days. Off by
+ * default — the stream is Reflect's normal daily view. On collapses it to a
+ * single day: no neighbor days above or below, no cross-day scroll. Display-only
+ * — the underlying `daily/*.md` files are untouched, and any day is still one
+ * calendar click or `⌘D` away.
+ */
+export const dailyStreamTodayOnlySchema = z.boolean().catch(false)
+
+/**
  * The clamp range for a user-adjustable sidebar width, in CSS pixels. Shared
  * between the schema (so a hand-edited document can't wreck the layout) and
  * the drag interaction (so the handle stops where the schema would clamp).
@@ -412,6 +422,7 @@ export const settingsSchema = z
     editorBulletAfterHeading: editorBulletAfterHeadingSchema,
     editorTextSize: editorTextSizeSchema,
     editorFullWidth: editorFullWidthSchema,
+    dailyStreamTodayOnly: dailyStreamTodayOnlySchema,
     sidebarWidth: sidebarWidthSchema,
     contextSidebarWidth: contextSidebarWidthSchema,
     semanticSearchEnabled: semanticSearchEnabledSchema,
