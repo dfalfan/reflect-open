@@ -22,7 +22,8 @@ interface AllNotesTableProps {
   registerScrollToIndex: (scrollToIndex: (index: number) => void) => void
 }
 
-const ESTIMATED_ROW_HEIGHT = 48
+/** Must track the row's `h-10` so the virtualizer's estimates stay honest. */
+const ESTIMATED_ROW_HEIGHT = 40
 
 /**
  * The All Notes table: a sticky header row over virtualized note rows. The

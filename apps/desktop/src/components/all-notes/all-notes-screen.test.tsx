@@ -47,7 +47,7 @@ vi.mock('@/lib/windows/open-in-new-window', async (importOriginal) => ({
 // installVirtuaTestEnv supplies those: the scroll container reports a tall
 // viewport and each row (an <li>) the estimated row height, so even a 1000-row
 // list windows down to a handful of mounted rows.
-installVirtuaTestEnv((element) => (element.tagName === 'LI' ? 48 : 768))
+installVirtuaTestEnv((element) => (element.tagName === 'LI' ? 40 : 768))
 Element.prototype.scrollTo ??= () => {}
 Element.prototype.scrollIntoView ??= () => {} // cmdk scrolls the selected item
 

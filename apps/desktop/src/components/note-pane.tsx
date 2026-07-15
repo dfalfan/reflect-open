@@ -208,6 +208,20 @@ export function NotePaneComponent({
         if (autoFocusSelection === 'end') {
           handle.setSelection('end')
         }
+        // meowdown draws its own caret and re-measures it on selection
+        // changes and editor updates — but this focus ran during React's
+        // commit, before the pane's layout settled, so that first measurement
+        // can be stale and the caret paints offset from the text until the
+        // next update. Re-apply the selection two frames later (layout is
+        // real by then; `setSelection` always dispatches) to force one more
+        // measurement. Guarded so a pane torn down mid-flight is left alone.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (registeredHandle.current?.handle === handle) {
+              handle.setSelection(autoFocusSelection)
+            }
+          })
+        })
         onAutoFocused?.()
       }
     },

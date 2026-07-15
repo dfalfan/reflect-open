@@ -271,6 +271,9 @@ html:root {
   --meowdown-heading: var(--text);
   --meowdown-muted: var(--text-secondary);
   --meowdown-accent: var(--accent);
+  /* The caret inherits meowdown's accent by default — a loud brand-purple
+     bar. A quiet gray reads calmer than both the accent and full ink. */
+  --meowdown-caret: var(--text-secondary);
   --meowdown-mark: var(--text-muted);
   --meowdown-bullet: var(--text-muted); /* resting bullet dot; collapsed stays themed */
   --meowdown-border: var(--border);
@@ -380,6 +383,15 @@ html:root {
 .reflect-editor h3 { font-size: var(--text-base, 1rem); } /* 16px */
 .reflect-editor h1:first-child { margin-top: 0; }
 .reflect-editor .reflect-note-title { @apply text-note-subject; }
+
+/* meowdown's virtual caret ships 2px wide; 1.5px stays crisp on retina and
+   reads closer to a native caret. Color comes from --meowdown-caret above.
+   The caret layer is the editor element's SIBLING (meowdown inserts it
+   `afterend` of the ProseMirror mount), hence the `~`, mirroring meowdown's
+   own stylesheet. */
+.reflect-editor ~ .md-virtual-caret-layer .md-virtual-caret {
+  width: 1.5px;
+}
 
 /* The new-note flow's name field: ghost "Untitled" over the seeded empty H1
    (`editor/title-placeholder.ts`) without occupying layout, so the caret
