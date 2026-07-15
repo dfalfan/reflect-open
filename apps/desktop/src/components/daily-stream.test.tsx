@@ -224,7 +224,7 @@ describe('DailyStream', () => {
       </StreamProviders>,
     )
 
-    const placeholders = await view.findAllByText('Loading note…')
+    const placeholders = await view.findAllByText('Cargando nota…')
     expect(placeholders.length).toBeGreaterThan(0)
     for (const placeholder of placeholders) {
       expect(placeholder.className).toContain('reflect-note-loading')
