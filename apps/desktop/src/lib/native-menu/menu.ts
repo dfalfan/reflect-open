@@ -105,7 +105,9 @@ export function appMenuLayout(): AppSubmenuLayout[] {
       entries: [
         command('palette.open'),
         command('nav.today'),
-        command('nav.allNotes'),
+        command('nav.inbox'),
+        command('nav.personal'),
+        command('nav.trabajo'),
         command('chat.open'),
         separator(),
         command('history.back'),

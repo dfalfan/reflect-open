@@ -33,7 +33,7 @@ describe('useTagNavigation', () => {
   it('opens All Notes filtered by the clicked tag', () => {
     const view = renderHost()
     act(() => lastHandler?.('book'))
-    expect(JSON.parse(currentRoute(view))).toEqual({ kind: 'allNotes', tag: 'book' })
+    expect(JSON.parse(currentRoute(view))).toEqual({ kind: 'allNotes', section: null, tag: 'book' })
     view.unmount()
   })
 })

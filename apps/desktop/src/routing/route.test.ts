@@ -20,15 +20,34 @@ describe('routeForPath', () => {
 })
 
 describe('routesEqual', () => {
-  it('compares allNotes routes by their tag filter', () => {
-    expect(routesEqual({ kind: 'allNotes', tag: null }, { kind: 'allNotes', tag: null })).toBe(true)
-    expect(routesEqual({ kind: 'allNotes', tag: 'book' }, { kind: 'allNotes', tag: 'book' })).toBe(
-      true,
-    )
-    expect(routesEqual({ kind: 'allNotes', tag: 'book' }, { kind: 'allNotes', tag: null })).toBe(
+  it('compares allNotes routes by their section and tag filter', () => {
+    expect(
+      routesEqual(
+        { kind: 'allNotes', section: 'inbox', tag: null },
+        { kind: 'allNotes', section: 'inbox', tag: null },
+      ),
+    ).toBe(true)
+    expect(
+      routesEqual(
+        { kind: 'allNotes', section: 'inbox', tag: 'book' },
+        { kind: 'allNotes', section: 'inbox', tag: 'book' },
+      ),
+    ).toBe(true)
+    expect(
+      routesEqual(
+        { kind: 'allNotes', section: 'inbox', tag: 'book' },
+        { kind: 'allNotes', section: 'inbox', tag: null },
+      ),
+    ).toBe(false)
+    expect(
+      routesEqual(
+        { kind: 'allNotes', section: 'personal', tag: null },
+        { kind: 'allNotes', section: 'trabajo', tag: null },
+      ),
+    ).toBe(false)
+    expect(routesEqual({ kind: 'allNotes', section: 'inbox', tag: null }, { kind: 'today' })).toBe(
       false,
     )
-    expect(routesEqual({ kind: 'allNotes', tag: null }, { kind: 'today' })).toBe(false)
   })
 
   it('treats singleton screens as equal to themselves', () => {
@@ -51,7 +70,7 @@ describe('notePathForRoute', () => {
   it('is null on screens that edit no note', () => {
     expect(notePathForRoute({ kind: 'search', query: 'x' }, TODAY)).toBeNull()
     expect(notePathForRoute({ kind: 'settings' }, TODAY)).toBeNull()
-    expect(notePathForRoute({ kind: 'allNotes', tag: null }, TODAY)).toBeNull()
+    expect(notePathForRoute({ kind: 'allNotes', section: 'inbox', tag: null }, TODAY)).toBeNull()
     expect(notePathForRoute({ kind: 'chat' }, TODAY)).toBeNull()
   })
 })

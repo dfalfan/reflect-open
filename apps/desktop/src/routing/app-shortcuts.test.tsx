@@ -287,7 +287,7 @@ describe('app shortcuts', () => {
     const { result } = shortcutsHook()
 
     act(() => press('a', { shiftKey: true }))
-    expect(result.current.router.route).toEqual({ kind: 'allNotes', tag: null })
+    expect(result.current.router.route).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
   })
 
   it('⌘⇧N starts a fresh chat when the chat route is active', () => {

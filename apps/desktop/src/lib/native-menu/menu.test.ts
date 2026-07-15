@@ -78,14 +78,16 @@ describe('appMenuLayout', () => {
       'note.new',
       'palette.open',
       'nav.today',
-      'nav.allNotes',
+      'nav.inbox',
+      'nav.personal',
+      'nav.trabajo',
       'history.back',
       'history.forward',
       'shortcuts.show',
     ]) {
       expect(referenced).toContain(commandId)
     }
-    expect(keybindingFor('nav.allNotes')).toBe('Mod-Shift-a')
+    expect(keybindingFor('nav.inbox')).toBe('Mod-Shift-a')
   })
 
   it('lists each command at most once across the whole menu', () => {

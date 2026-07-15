@@ -106,7 +106,7 @@ function noteRow(isPrivate: boolean): NoteRow {
 describe('keybindingFor', () => {
   it('returns the binding UI hints derive from', () => {
     expect(keybindingFor('nav.today')).toBe('Mod-d')
-    expect(keybindingFor('nav.allNotes')).toBe('Mod-Shift-a')
+    expect(keybindingFor('nav.inbox')).toBe('Mod-Shift-a')
     expect(keybindingFor('palette.open')).toBe('Mod-k')
   })
 
@@ -226,7 +226,7 @@ describe('app commands', () => {
     const clearScrollState = vi.fn()
     const { context } = fakeContext({
       clearScrollState,
-      route: () => ({ kind: 'allNotes', tag: null }),
+      route: () => ({ kind: 'allNotes', section: 'inbox', tag: null }),
     })
     await command('note.new').run(context)
     expect(clearScrollState).not.toHaveBeenCalled()

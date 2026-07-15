@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { hasBridge, listNotes, listNoteTags } from '@reflect/core'
+import { hasBridge, listNotes, listNoteTags, type NoteSection } from '@reflect/core'
 import { Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useNoteLinkNavigation } from '@/hooks/use-note-link-navigation'
@@ -19,14 +19,27 @@ import { NewNoteButton } from './new-note-button'
 import { useAllNotesKeyboard } from './use-all-notes-keyboard'
 
 interface AllNotesScreenProps {
-  /** Active tag filter carried by the route (`null` = all non-daily notes). */
+  /**
+   * The section this screen lists (`null` = the cross-section tag view — the
+   * one surface that spans all three, reached by tag clicks, never from the
+   * sidebar).
+   */
+  section: NoteSection | null
+  /** Active tag filter carried by the route (`null` = the whole section). */
   tag: string | null
 }
 
+/** The section headings, in the sidebar's display casing. */
+const SECTION_LABELS: Record<NoteSection, string> = {
+  inbox: 'Inbox',
+  personal: 'Personal',
+  trabajo: 'Trabajo',
+}
+
 /**
- * The All Notes screen (a routed view, like settings): every non-daily note,
- * newest first, filterable by tag. The active tag lives on the route so
- * back/forward and "open a note, come back" keep the filter. Daily notes are
+ * The notes screen (a routed view, like settings): one section's non-daily
+ * notes, newest first, filterable by tag. Section and tag live on the route so
+ * back/forward and "open a note, come back" keep both. Daily notes are
  * deliberately absent — the stream is their home.
  *
  * Rows are multi-selectable (V1 parity): click to select (⌘ toggle, Shift
@@ -38,7 +51,7 @@ interface AllNotesScreenProps {
  * so the header and filter bar stay put while the virtualized table scrolls,
  * wired to the router's per-entry scroll memory by hand.
  */
-export function AllNotesScreen({ tag }: AllNotesScreenProps): ReactElement {
+export function AllNotesScreen({ section, tag }: AllNotesScreenProps): ReactElement {
   const { graph } = useGraph()
   const { navigate } = useRouter()
   const navigateNoteLink = useNoteLinkNavigation()
@@ -53,13 +66,13 @@ export function AllNotesScreen({ tag }: AllNotesScreenProps): ReactElement {
   const enabled = hasBridge() && graph !== null
 
   const { data: notes } = useQuery({
-    queryKey: allNotesQueryKey(graph?.root, tag),
-    queryFn: () => listNotes({ tag }),
+    queryKey: allNotesQueryKey(graph?.root, section, tag),
+    queryFn: () => listNotes({ section, tag }),
     enabled,
   })
   const { data: facets } = useQuery({
-    queryKey: allNotesTagsQueryKey(graph?.root),
-    queryFn: () => listNoteTags(),
+    queryKey: allNotesTagsQueryKey(graph?.root, section),
+    queryFn: () => listNoteTags({ section }),
     enabled,
   })
 
@@ -75,8 +88,8 @@ export function AllNotesScreen({ tag }: AllNotesScreenProps): ReactElement {
     [navigateNoteLink],
   )
   const handleFilterSelect = useCallback(
-    (next: string | null) => navigate({ kind: 'allNotes', tag: next }),
-    [navigate],
+    (next: string | null) => navigate({ kind: 'allNotes', section, tag: next }),
+    [navigate, section],
   )
 
   // The bulk-trash confirm: the screen owns whether it's open and which paths it
@@ -115,11 +128,13 @@ export function AllNotesScreen({ tag }: AllNotesScreenProps): ReactElement {
     <div
       ref={rootRef}
       tabIndex={-1}
-      aria-label="Todas las notas"
+      aria-label={section === null ? 'Notas' : SECTION_LABELS[section]}
       className="flex h-full min-h-0 flex-col outline-none"
     >
       <header className="flex flex-none flex-wrap items-center justify-between gap-3 border-b border-border py-4 pl-12 pr-7">
-        <h1 className="text-[15px] font-semibold text-text">Notas</h1>
+        <h1 className="text-[15px] font-semibold text-text">
+          {section === null ? 'Notas' : SECTION_LABELS[section]}
+        </h1>
         <div className="flex flex-wrap items-center gap-3">
           {selection.selectedCount > 0 ? (
             <Button

@@ -99,7 +99,7 @@ export function ChatToolChip({ part }: ChatToolChipProps): ReactElement {
       call.tag !== null && isTagName(call.tag) ? (
         <button
           type="button"
-          onClick={() => navigate({ kind: 'allNotes', tag: call.tag })}
+          onClick={() => navigate({ kind: 'allNotes', section: null, tag: call.tag })}
           className="underline-offset-2 hover:text-text hover:underline"
         >
           #{call.tag}

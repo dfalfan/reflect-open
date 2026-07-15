@@ -68,7 +68,13 @@ export function MobileShell(): ReactElement {
     if (next === 'all') {
       // The double-tap is a search gesture: land on the tab with its search
       // input focused (the Daily tab's capture double-tap, All-flavored).
-      navigate({ kind: 'allNotes', tag: null }, doubleTap ? { focusEditor: true } : undefined)
+      // Mobile keeps the cross-section list (`section: null`) until it gets a
+      // sectioned pass of its own — a phone that could only see the inbox
+      // would hide most of the graph.
+      navigate(
+        { kind: 'allNotes', section: null, tag: null },
+        doubleTap ? { focusEditor: true } : undefined,
+      )
       return
     }
 

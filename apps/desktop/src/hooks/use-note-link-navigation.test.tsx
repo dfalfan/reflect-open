@@ -39,7 +39,7 @@ function RouteProbe(): ReactElement {
 function ReopenCurrentRoute(): ReactElement {
   const { navigate } = useRouter()
   return (
-    <button type="button" onClick={() => navigate({ kind: 'allNotes', tag: null })}>
+    <button type="button" onClick={() => navigate({ kind: 'allNotes', section: 'inbox', tag: null })}>
       Reopen current route
     </button>
   )
@@ -52,7 +52,7 @@ interface HarnessProps {
 
 function Harness({ scopeKey, visible = true }: HarnessProps): ReactElement {
   return (
-    <RouterProvider initialRoute={{ kind: 'allNotes', tag: null }}>
+    <RouterProvider initialRoute={{ kind: 'allNotes', section: 'inbox', tag: null }}>
       {visible ? <Links scopeKey={scopeKey} /> : null}
       <ReopenCurrentRoute />
       <RouteProbe />
@@ -91,7 +91,7 @@ describe('useNoteLinkNavigation', () => {
         path: 'notes/alpha.md',
       }),
     )
-    expect(route(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(route(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
   })
 
   it('falls back to current-window navigation when a secondary window is declined', async () => {
@@ -158,7 +158,7 @@ describe('useNoteLinkNavigation', () => {
       rejectOpen(new Error('window creation failed'))
     })
 
-    expect(route(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(route(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
   })
 
   it('does not fall back after another control re-navigates to the same route', async () => {
@@ -177,7 +177,7 @@ describe('useNoteLinkNavigation', () => {
       finishOpen?.(false)
     })
 
-    expect(route(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(route(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
   })
 
   it('does not fall back after the host surface changes scope', async () => {
@@ -196,7 +196,7 @@ describe('useNoteLinkNavigation', () => {
       finishOpen?.(false)
     })
 
-    expect(route(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(route(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
   })
 
   it('does not navigate after the link host unmounts', async () => {
@@ -215,6 +215,6 @@ describe('useNoteLinkNavigation', () => {
       finishOpen?.(false)
     })
 
-    expect(route(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(route(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
   })
 })

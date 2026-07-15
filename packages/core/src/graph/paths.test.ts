@@ -8,6 +8,9 @@ import {
   isNotePath,
   isTemplatePath,
   notePath,
+  sectionDir,
+  sectionNotePath,
+  sectionOfPath,
   templatePath,
 } from './paths'
 
@@ -59,5 +62,29 @@ describe('graph paths', () => {
   it('extracts the date from a daily path, else null', () => {
     expect(dateFromDailyPath('daily/2026-06-09.md')).toBe('2026-06-09')
     expect(dateFromDailyPath('notes/foo.md')).toBeNull()
+  })
+
+  it('builds section directories and note paths, with the inbox at the notes/ root', () => {
+    expect(sectionDir('inbox')).toBe('notes')
+    expect(sectionDir('personal')).toBe('notes/personal')
+    expect(sectionDir('trabajo')).toBe('notes/trabajo')
+    expect(sectionNotePath('inbox', 'idea')).toBe('notes/idea.md')
+    expect(sectionNotePath('trabajo', 'reunion')).toBe('notes/trabajo/reunion.md')
+  })
+
+  it('derives the section from a path — loose notes/ files and strays are inbox', () => {
+    expect(sectionOfPath('notes/idea.md')).toBe('inbox')
+    expect(sectionOfPath('notes/personal/viaje.md')).toBe('personal')
+    expect(sectionOfPath('notes/trabajo/reunion.md')).toBe('trabajo')
+    // A stray subfolder that isn't a section still counts as inbox, so no
+    // note can fall outside every section.
+    expect(sectionOfPath('notes/otra-carpeta/x.md')).toBe('inbox')
+    // A file merely *named* like a section is not in it — the boundary is the
+    // slash, not the prefix.
+    expect(sectionOfPath('notes/personal-stuff.md')).toBe('inbox')
+    // Outside notes/, there is no section.
+    expect(sectionOfPath('daily/2026-06-09.md')).toBeNull()
+    expect(sectionOfPath('templates/journal.md')).toBeNull()
+    expect(sectionOfPath('assets/pasted.png')).toBeNull()
   })
 })

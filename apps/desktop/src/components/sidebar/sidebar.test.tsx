@@ -192,20 +192,29 @@ describe('Sidebar', () => {
     expect(view.queryByRole('button', { name: /nota nueva/i })).toBeNull()
   })
 
-  it('All notes stays active while editing a slug-named note', () => {
+  it('lights the section row of the note being edited', () => {
+    // A loose notes/ file is filed in the inbox — the root IS the inbox.
     const { view } = renderSidebar(undefined, { kind: 'note', path: 'notes/meeting.md' })
-    expect(
-      view.getByRole('button', { name: /todas las notas/i }).getAttribute('aria-current'),
-    ).toBe('page')
+    expect(view.getByRole('button', { name: /inbox/i }).getAttribute('aria-current')).toBe('page')
+    expect(view.getByRole('button', { name: /personal/i }).getAttribute('aria-current')).toBeNull()
+    expect(view.getByRole('button', { name: /trabajo/i }).getAttribute('aria-current')).toBeNull()
   })
 
-  it('"All notes" stays dark for the untitled placeholder', () => {
+  it('lights Personal — not Inbox — for a note filed under notes/personal/', () => {
+    const { view } = renderSidebar(undefined, { kind: 'note', path: 'notes/personal/viaje.md' })
+    expect(view.getByRole('button', { name: /personal/i }).getAttribute('aria-current')).toBe(
+      'page',
+    )
+    expect(view.getByRole('button', { name: /inbox/i }).getAttribute('aria-current')).toBeNull()
+  })
+
+  it('every section row stays dark for the untitled placeholder', () => {
     // A brand-new note is still an untitled placeholder: it hasn't earned its
-    // way into the collection, so the row that names the collection stays dark.
+    // way into any section yet, so no row lights for it.
     const { view } = renderSidebar(undefined, { kind: 'note', path: untitledNotePath() })
-    expect(
-      view.getByRole('button', { name: /todas las notas/i }).getAttribute('aria-current'),
-    ).toBeNull()
+    expect(view.getByRole('button', { name: /inbox/i }).getAttribute('aria-current')).toBeNull()
+    expect(view.getByRole('button', { name: /personal/i }).getAttribute('aria-current')).toBeNull()
+    expect(view.getByRole('button', { name: /trabajo/i }).getAttribute('aria-current')).toBeNull()
   })
 
   it('the search affordance opens the palette', async () => {
@@ -292,7 +301,7 @@ describe('Sidebar', () => {
     const roadmap = await view.findByRole('button', { name: 'Roadmap' })
     await waitFor(() => expect(roadmap.getAttribute('aria-current')).toBe('page'))
     expect(
-      view.getByRole('button', { name: /todas las notas/i }).getAttribute('aria-current'),
+      view.getByRole('button', { name: /inbox/i }).getAttribute('aria-current'),
     ).toBeNull()
   })
 

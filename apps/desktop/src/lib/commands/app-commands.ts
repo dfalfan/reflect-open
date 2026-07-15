@@ -75,11 +75,23 @@ const APP_COMMANDS: AppCommand[] = [
     run: (context) => context.navigate({ kind: 'today' }, { focusEditor: true }),
   },
   {
-    id: 'nav.allNotes',
-    title: 'Todas las notas',
-    keywords: ['notas', 'lista', 'explorar', 'biblioteca', 'notes'],
+    id: 'nav.inbox',
+    title: 'Inbox',
+    keywords: ['notas', 'inbox', 'entrada', 'lista', 'explorar', 'biblioteca', 'notes'],
     keybinding: 'Mod-Shift-a',
-    run: (context) => context.navigate({ kind: 'allNotes', tag: null }),
+    run: (context) => context.navigate({ kind: 'allNotes', section: 'inbox', tag: null }),
+  },
+  {
+    id: 'nav.personal',
+    title: 'Personal',
+    keywords: ['notas', 'personal', 'seccion'],
+    run: (context) => context.navigate({ kind: 'allNotes', section: 'personal', tag: null }),
+  },
+  {
+    id: 'nav.trabajo',
+    title: 'Trabajo',
+    keywords: ['notas', 'trabajo', 'seccion', 'work'],
+    run: (context) => context.navigate({ kind: 'allNotes', section: 'trabajo', tag: null }),
   },
   {
     id: 'nav.tasks',

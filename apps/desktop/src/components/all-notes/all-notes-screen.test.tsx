@@ -131,14 +131,19 @@ function OperationsProbe(): ReactElement {
 
 function RoutedScreen(): ReactElement {
   const { route } = useRouter()
-  return <AllNotesScreen tag={route.kind === 'allNotes' ? route.tag : null} />
+  return (
+    <AllNotesScreen
+      section={route.kind === 'allNotes' ? route.section : 'inbox'}
+      tag={route.kind === 'allNotes' ? route.tag : null}
+    />
+  )
 }
 
 /** Navigates to the already-active route — the sidebar-click-while-here case. */
 function ReArrive(): ReactElement {
   const { navigate } = useRouter()
   return (
-    <button type="button" data-testid="re-arrive" onClick={() => navigate({ kind: 'allNotes', tag: null })}>
+    <button type="button" data-testid="re-arrive" onClick={() => navigate({ kind: 'allNotes', section: 'inbox', tag: null })}>
       re-arrive
     </button>
   )
@@ -149,7 +154,7 @@ function renderScreen(
 ) {
   return render(
     <QueryClientProvider client={client}>
-      <RouterProvider initialRoute={{ kind: 'allNotes', tag: null }}>
+      <RouterProvider initialRoute={{ kind: 'allNotes', section: 'inbox', tag: null }}>
         <RoutedScreen />
         <RouteProbe />
         <OperationsProbe />
@@ -231,7 +236,7 @@ describe('AllNotesScreen', () => {
         path: 'notes/health.md',
       }),
     )
-    expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
     expect(view.queryByRole('button', { name: /Enviar a la papelera \(/ })).toBeNull()
     view.unmount()
   })
@@ -253,7 +258,7 @@ describe('AllNotesScreen', () => {
       }),
     )
     expect(openRouteInNewWindow).toHaveBeenCalledTimes(1)
-    expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
     view.unmount()
   })
 
@@ -264,7 +269,7 @@ describe('AllNotesScreen', () => {
     expect(view.getByRole('button', { name: '#person' })).toBeDefined()
     fireEvent.click(view.getByRole('button', { name: '#book' }))
 
-    expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: 'book' })
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: 'book' })
     await view.findByText('No hay notas con la etiqueta #book.')
     expect(view.queryByText('Health Stacked')).toBeNull()
     view.unmount()
@@ -363,7 +368,7 @@ describe('AllNotesScreen', () => {
 
     fireEvent.click(view.getByRole('option', { name: /#travel/ }))
 
-    expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: 'travel' })
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: 'travel' })
     await view.findByText('Tokyo Gâteau')
     expect(view.queryByText('Health Stacked')).toBeNull()
     // The trigger adopts the active custom tag.
@@ -388,7 +393,7 @@ describe('AllNotesScreen', () => {
     fireEvent.change(input, { target: { value: '#zettel' } })
     fireEvent.click(await view.findByRole('option', { name: 'Filtrar por #zettel' }))
 
-    expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: 'zettel' })
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: 'zettel' })
     await view.findByText('No hay notas con la etiqueta #zettel.')
     view.unmount()
   })
@@ -408,7 +413,7 @@ describe('AllNotesScreen', () => {
     expect(view.queryByRole('option', { name: /Filtrar por/ })).toBeNull()
 
     fireEvent.click(view.getByRole('option', { name: /#travel/ }))
-    expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: 'travel' })
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: 'travel' })
     view.unmount()
   })
 })
@@ -420,7 +425,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
 
     // Clicking the row body (the snippet, not a button) selects without opening.
     fireEvent.click(view.getByText('Shop your health goals.'))
-    expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
     const trashButton = view.getByRole('button', { name: /Enviar a la papelera \(1\)/ })
     expect(trashButton).toBeDefined()
     expect(view.getByRole('group', { name: 'Filtrar por etiqueta' }).previousElementSibling).toBe(trashButton)
@@ -475,7 +480,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
   it('drives selection from the keyboard and opens with Return', async () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
-    const surface = view.getByLabelText('Todas las notas')
+    const surface = view.getByLabelText('Inbox')
 
     fireEvent.keyDown(surface, { key: 'ArrowDown' }) // selects the first row
     expect(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ })).toBeDefined()
@@ -489,7 +494,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
   it('clears the selection on Escape', async () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
-    const surface = view.getByLabelText('Todas las notas')
+    const surface = view.getByLabelText('Inbox')
 
     fireEvent.click(view.getByText('Shop your health goals.'))
     expect(view.queryByRole('button', { name: /Enviar a la papelera \(1\)/ })).not.toBeNull()
@@ -531,7 +536,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
   it('opens the confirm dialog from the ⌘⌫ shortcut', async () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
-    const surface = view.getByLabelText('Todas las notas')
+    const surface = view.getByLabelText('Inbox')
 
     fireEvent.click(view.getByText('Shop your health goals.'))
     fireEvent.keyDown(surface, { key: 'Backspace', metaKey: true })
@@ -549,7 +554,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     fireEvent.click(view.getByText('Shop your health goals.'))
     fireEvent.keyDown(view.getByRole('button', { name: /Nota nueva/ }), { key: 'Enter' })
 
-    expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: null })
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
     view.unmount()
   })
 

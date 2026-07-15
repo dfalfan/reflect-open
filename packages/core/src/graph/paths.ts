@@ -42,6 +42,48 @@ export function notePath(slug: string): string {
   return `${NOTES_DIR}/${slug}.md`
 }
 
+/**
+ * The three fixed sections regular notes are filed into. Sections are
+ * folders under `notes/` — the loose root IS the inbox (capture lands there;
+ * `notePath` builds inbox paths), and the other two are subdirectories. Living
+ * under `notes/` is deliberate: every native walk (watcher, iCloud scope, CLI
+ * discovery) already recurses below `notes/`, so sections are purely a
+ * TypeScript concern. A note's section is derived from its path, never stored.
+ */
+export const NOTE_SECTIONS = ['inbox', 'personal', 'trabajo'] as const
+export type NoteSection = (typeof NOTE_SECTIONS)[number]
+
+/** The section subdirectories under `notes/` (the inbox has none — it's the root). */
+export const SECTION_SUBDIRS = ['personal', 'trabajo'] as const satisfies readonly NoteSection[]
+
+/** Graph-relative directory a section's notes live in (no trailing slash). */
+export function sectionDir(section: NoteSection): string {
+  return section === 'inbox' ? NOTES_DIR : `${NOTES_DIR}/${section}`
+}
+
+/** Graph-relative path to a regular note in a section, for a filename slug. */
+export function sectionNotePath(section: NoteSection, slug: string): string {
+  return `${sectionDir(section)}/${slug}.md`
+}
+
+/**
+ * The section a graph-relative path belongs to, or `null` for paths outside
+ * `notes/` (dailies, templates, assets). Anything under `notes/` that isn't in
+ * a section subdirectory — including hypothetical stray subfolders — counts as
+ * inbox, so no note can fall outside every section.
+ */
+export function sectionOfPath(path: string): NoteSection | null {
+  if (!path.startsWith(`${NOTES_DIR}/`)) {
+    return null
+  }
+  for (const section of SECTION_SUBDIRS) {
+    if (path.startsWith(`${NOTES_DIR}/${section}/`)) {
+      return section
+    }
+  }
+  return 'inbox'
+}
+
 /** Graph-relative path to a template for a filename slug (without `.md`). */
 export function templatePath(slug: string): string {
   return `${TEMPLATES_DIR}/${slug}.md`

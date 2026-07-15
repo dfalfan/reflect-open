@@ -94,6 +94,24 @@ describe('listNotes', () => {
     expect(tagArgs['params']).toEqual(['note'])
   })
 
+  it('narrows both queries to one section by path prefix — the inbox is "not in any section subdir"', async () => {
+    mockInvoke.mockResolvedValueOnce([]).mockResolvedValueOnce([])
+    await listNotes({ section: 'trabajo' })
+    const [, args] = mockInvoke.mock.calls[0]!
+    const sql = String(args['sql'])
+    expect(sql).toContain('notes.path LIKE ?')
+    expect(args['params']).toEqual(['note', 'notes/trabajo/%'])
+
+    mockInvoke.mockReset().mockResolvedValueOnce([]).mockResolvedValueOnce([])
+    await listNotes({ section: 'inbox' })
+    const [, inboxArgs] = mockInvoke.mock.calls[0]!
+    const inboxSql = String(inboxArgs['sql'])
+    // The loose notes/ root is the inbox: expressed as exclusion so stray
+    // subfolders still land there, matching sectionOfPath.
+    expect(inboxSql).toContain('notes.path NOT LIKE ?')
+    expect(inboxArgs['params']).toEqual(['note', 'notes/personal/%', 'notes/trabajo/%'])
+  })
+
   it('narrows both queries to one tag via tag-first joins on the stored folded tag_key', async () => {
     mockInvoke
       .mockResolvedValueOnce([

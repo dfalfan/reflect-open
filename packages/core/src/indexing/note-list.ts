@@ -1,19 +1,20 @@
-import { sql } from 'kysely'
+import { sql, type RawBuilder, type SqlBool } from 'kysely'
+import { SECTION_SUBDIRS, sectionDir, type NoteSection } from '../graph/paths'
 import { foldTag } from '../markdown'
 import { db } from './db'
 import { recallOrder } from './filtered-search'
 
 /**
- * The All Notes list: every regular note, pinned first then newest, optionally
- * narrowed to one tag. Daily notes are excluded by design — the stream is
- * their home — and templates are boilerplate, not graph content;
+ * The notes list: every regular note, pinned first then newest, optionally
+ * narrowed to one section and/or one tag. Daily notes are excluded by design —
+ * the stream is their home — and templates are boilerplate, not graph content;
  * `kind = 'note'` expresses both (mirroring the original app's `isDaily = 0`).
  * Uncapped: the screen virtualizes, the row
  * snippet is the stored `preview` column (derived once at index time), and
  * neither query carries a per-row parameter, so list size has no SQL ceiling.
  */
 
-/** One row of the All Notes list. */
+/** One row of the notes list. */
 export interface NoteListEntry {
   path: string
   title: string
@@ -30,6 +31,25 @@ export interface NoteListEntry {
 export interface NoteListOptions {
   /** Only notes carrying this tag (case-insensitive). `null` lists all. */
   tag?: string | null
+  /** Only notes filed in this section. `null` spans all three. */
+  section?: NoteSection | null
+}
+
+/**
+ * The WHERE expression narrowing `notes` rows to one section by path prefix.
+ * `kind = 'note'` already confines rows to `notes/`, so the inbox — the loose
+ * root — is "not in any section subdirectory" rather than its own prefix; that
+ * also sweeps hypothetical stray subfolders into the inbox, matching
+ * `sectionOfPath`.
+ */
+function sectionWhere(section: NoteSection): RawBuilder<SqlBool> {
+  if (section === 'inbox') {
+    const conditions = SECTION_SUBDIRS.map(
+      (subdir) => sql<SqlBool>`notes.path NOT LIKE ${`${sectionDir(subdir)}/%`}`,
+    )
+    return sql<SqlBool>`(${sql.join(conditions, sql` AND `)})`
+  }
+  return sql<SqlBool>`notes.path LIKE ${`${sectionDir(section)}/%`}`
 }
 
 /**
@@ -38,6 +58,7 @@ export interface NoteListOptions {
  */
 export async function listNotes(options: NoteListOptions = {}): Promise<NoteListEntry[]> {
   const tag = options.tag ?? null
+  const section = options.section ?? null
 
   let listQuery =
     tag === null
@@ -66,6 +87,9 @@ export async function listNotes(options: NoteListOptions = {}): Promise<NoteList
             'notes.pinnedOrder',
           ])
           .distinct()
+  if (section !== null) {
+    listQuery = listQuery.where(sectionWhere(section))
+  }
   for (const order of recallOrder(true)) {
     listQuery = listQuery.orderBy(order)
   }
@@ -78,18 +102,14 @@ export async function listNotes(options: NoteListOptions = {}): Promise<NoteList
   // Tags for the same note set, via the same predicates — a join rather than a
   // `note_path IN (…)` list, which would put a per-row parameter between the
   // list and SQLite's bound-parameter ceiling.
-  const tagRows =
+  let tagQuery =
     tag === null
-      ? await db
+      ? db
           .selectFrom('tags')
           .innerJoin('notes', 'notes.path', 'tags.notePath')
           .where('notes.kind', '=', 'note')
           .select(['tags.notePath', 'tags.tag'])
-          // Order on the folded key so a row's tags read in the same alphabetical
-          // order as the facet list, regardless of display casing.
-          .orderBy('tags.tagKey')
-          .execute()
-      : await db
+      : db
           .selectFrom('tags')
           .innerJoin('notes', 'notes.path', 'tags.notePath')
           .innerJoin('tags as filterTags', 'filterTags.notePath', 'notes.path')
@@ -97,8 +117,12 @@ export async function listNotes(options: NoteListOptions = {}): Promise<NoteList
           .where('notes.kind', '=', 'note')
           .select(['tags.notePath', 'tags.tag'])
           .distinct()
-          .orderBy('tags.tagKey')
-          .execute()
+  if (section !== null) {
+    tagQuery = tagQuery.where(sectionWhere(section))
+  }
+  // Order on the folded key so a row's tags read in the same alphabetical
+  // order as the facet list, regardless of display casing.
+  const tagRows = await tagQuery.orderBy('tags.tagKey').execute()
   const tagsByPath = new Map<string, string[]>()
   for (const row of tagRows) {
     const tags = tagsByPath.get(row.notePath)
@@ -179,19 +203,26 @@ export interface NoteTagFacet {
   count: number
 }
 
+export interface NoteTagsOptions {
+  /** Only count notes filed in this section. `null` spans all three. */
+  section?: NoteSection | null
+}
+
 /**
  * Every tag carried by at least one non-daily note, with how many such notes
  * carry it, alphabetical. Grouped on the stored `tag_key`, matching the tag
  * filter (and the `#tag` search token): `#Book` and `#book` are one facet,
  * displayed with one deterministic casing.
  */
-export async function listNoteTags(): Promise<NoteTagFacet[]> {
-  return db
+export async function listNoteTags(options: NoteTagsOptions = {}): Promise<NoteTagFacet[]> {
+  const section = options.section ?? null
+  let query = db
     .selectFrom('tags')
     .innerJoin('notes', 'notes.path', 'tags.notePath')
     .where('notes.kind', '=', 'note')
     .select([sql<string>`min(tags.tag)`.as('tag'), sql<number>`count(*)`.as('count')])
-    .groupBy('tags.tagKey')
-    .orderBy('tags.tagKey')
-    .execute()
+  if (section !== null) {
+    query = query.where(sectionWhere(section))
+  }
+  return query.groupBy('tags.tagKey').orderBy('tags.tagKey').execute()
 }

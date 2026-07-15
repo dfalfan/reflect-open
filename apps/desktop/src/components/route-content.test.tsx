@@ -279,8 +279,8 @@ describe('RouteContent', () => {
   })
 
   it('renders the All Notes screen for the allNotes route, not the stream', async () => {
-    const view = renderRoute({ kind: 'allNotes', tag: null })
-    expect(view.getByLabelText('Todas las notas')).toBeDefined()
+    const view = renderRoute({ kind: 'allNotes', section: 'inbox', tag: null })
+    expect(view.getByLabelText('Inbox')).toBeDefined()
     expect(view.queryByTestId('daily-stream')).toBeNull()
     // The pinned filter tabs come from settings; the table header renders
     // once the (empty) index query settles.

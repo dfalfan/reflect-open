@@ -7,14 +7,17 @@
  * note route carries `path` — the reserved frontmatter `id` can join it later
  * without breaking the shape.
  */
-import { dailyPath, dateFromDailyPath, isDaily } from '@reflect/core'
+import { dailyPath, dateFromDailyPath, isDaily, type NoteSection } from '@reflect/core'
 import { isIsoDate } from '@/lib/dates'
 
 export type Route =
   | { kind: 'today' }
   | { kind: 'daily'; date: string }
   | { kind: 'note'; path: string }
-  | { kind: 'allNotes'; tag: string | null }
+  // `section: null` is the cross-section view: it has no sidebar row (there is
+  // no "all" destination) but tag clicks land there, because a tag is a query
+  // over the whole graph, not a folder.
+  | { kind: 'allNotes'; section: NoteSection | null; tag: string | null }
   | { kind: 'search'; query: string }
   | { kind: 'tasks' }
   | { kind: 'chat' }
@@ -42,8 +45,10 @@ export function routesEqual(a: Route, b: Route): boolean {
       return a.date === (b as Extract<Route, { kind: 'daily' }>).date
     case 'note':
       return a.path === (b as Extract<Route, { kind: 'note' }>).path
-    case 'allNotes':
-      return a.tag === (b as Extract<Route, { kind: 'allNotes' }>).tag
+    case 'allNotes': {
+      const other = b as Extract<Route, { kind: 'allNotes' }>
+      return a.section === other.section && a.tag === other.tag
+    }
     case 'search':
       return a.query === (b as Extract<Route, { kind: 'search' }>).query
   }

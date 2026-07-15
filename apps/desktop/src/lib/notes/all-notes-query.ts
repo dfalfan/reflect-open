@@ -1,4 +1,4 @@
-import { foldTag } from '@reflect/core'
+import { foldTag, type NoteSection } from '@reflect/core'
 import { INDEX_QUERY_SCOPE } from '@/lib/query-client'
 
 /**
@@ -16,15 +16,16 @@ import { INDEX_QUERY_SCOPE } from '@/lib/query-client'
 const ALL_NOTES = 'all-notes'
 const ALL_NOTES_TAGS = 'all-notes-tags'
 
-/** The list query key for one tag filter (`null` = all non-daily notes). */
+/** The list query key for one section + tag filter (`null` = unnarrowed). */
 export function allNotesQueryKey(
   root: string | undefined,
+  section: NoteSection | null,
   tag: string | null,
-): [string, string | undefined, string, string | null] {
-  return [INDEX_QUERY_SCOPE, root, ALL_NOTES, tag === null ? null : foldTag(tag)]
+): [string, string | undefined, string, NoteSection | null, string | null] {
+  return [INDEX_QUERY_SCOPE, root, ALL_NOTES, section, tag === null ? null : foldTag(tag)]
 }
 
-/** The shared prefix of every All Notes list variant — for bulk cache patches. */
+/** The shared prefix of every notes-list variant — for bulk cache patches. */
 export function allNotesListPrefix(root: string | undefined): [string, string | undefined, string] {
   return [INDEX_QUERY_SCOPE, root, ALL_NOTES]
 }
@@ -32,6 +33,7 @@ export function allNotesListPrefix(root: string | undefined): [string, string | 
 /** The tag-facet query key (the Custom filter menu's tag list + counts). */
 export function allNotesTagsQueryKey(
   root: string | undefined,
-): [string, string | undefined, string] {
-  return [INDEX_QUERY_SCOPE, root, ALL_NOTES_TAGS]
+  section: NoteSection | null,
+): [string, string | undefined, string, NoteSection | null] {
+  return [INDEX_QUERY_SCOPE, root, ALL_NOTES_TAGS, section]
 }

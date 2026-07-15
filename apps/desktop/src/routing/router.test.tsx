@@ -309,7 +309,7 @@ describe('router', () => {
     it('rewrites the current route and history entries when a note moves', () => {
       const { result } = routerHook()
       act(() => result.current.navigate({ kind: 'note', path: 'notes/01abc.md' }))
-      act(() => result.current.navigate({ kind: 'allNotes', tag: null }))
+      act(() => result.current.navigate({ kind: 'allNotes', section: 'inbox', tag: null }))
       act(() => result.current.navigate({ kind: 'note', path: 'notes/01abc.md' }))
       const arrivalsBefore = result.current.arrivalSeq
       const entryBefore = result.current.entryId
@@ -327,7 +327,7 @@ describe('router', () => {
       // The earlier history entry followed too: back over the rename lands
       // on the file's real home, never the dead path.
       act(() => result.current.back())
-      expect(result.current.route).toEqual({ kind: 'allNotes', tag: null })
+      expect(result.current.route).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
       act(() => result.current.back())
       expect(result.current.route).toEqual({ kind: 'note', path: 'notes/meeting-notes.md' })
     })

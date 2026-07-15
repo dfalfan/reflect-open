@@ -1,8 +1,13 @@
 import type { ReactElement } from 'react'
-import { isUntitledNotePath, type GraphInfo } from '@reflect/core'
-import { ListChecks, MessageSquare } from 'lucide-react'
+import {
+  isUntitledNotePath,
+  NOTE_SECTIONS,
+  sectionOfPath,
+  type GraphInfo,
+  type NoteSection,
+} from '@reflect/core'
+import { Briefcase, Inbox, ListChecks, MessageSquare, User, type LucideIcon } from 'lucide-react'
 import { AudioMemoButton } from '@/components/audio-memo/audio-memo-button'
-import { ListIcon } from '@/components/icons/list-icon'
 import { PencilIcon } from '@/components/icons/pencil-icon'
 import { usePinnedNotes } from '@/hooks/use-pinned-notes'
 import { keybindingFor } from '@/lib/commands/app-commands'
@@ -23,6 +28,23 @@ interface SidebarProps {
   graph: GraphInfo
   /** Commands run with this — the same context the palette/shortcuts use. */
   context: CommandContext
+}
+
+/** The section rows' display labels, icons, and palette commands, by section. */
+const SECTION_LABELS: Record<NoteSection, string> = {
+  inbox: 'Inbox',
+  personal: 'Personal',
+  trabajo: 'Trabajo',
+}
+const SECTION_ICONS: Record<NoteSection, LucideIcon> = {
+  inbox: Inbox,
+  personal: User,
+  trabajo: Briefcase,
+}
+const SECTION_COMMANDS: Record<NoteSection, string> = {
+  inbox: 'nav.inbox',
+  personal: 'nav.personal',
+  trabajo: 'nav.trabajo',
 }
 
 /**
@@ -100,27 +122,41 @@ export function Sidebar({ graph, context }: SidebarProps): ReactElement {
             onClick={() => void runCommand('nav.today', context)}
           />
 
-          {/* The rows above are the day-to-day surfaces; the collection below is
-              where you go looking. The rule carries the gap on padding, so the
+          {/* The rows above are the day-to-day surfaces; the sections below are
+              where notes get filed. The rule carries the gap on padding, so the
               nav's `space-y-1` can't collapse it unevenly. */}
           <div className="py-2">
             <hr className="border-border" />
           </div>
 
-          <SidebarItem
-            icon={<ListIcon className="shrink-0" />}
-            label="Todas las notas"
-            binding={keybindingFor('nav.allNotes') ?? undefined}
-            // A named note lives in the All Notes collection, so keep this row
-            // lit while editing one. An untitled placeholder hasn't earned its
-            // way in yet — nothing lights for it, the same as before this row
-            // outlived the "New note" row that used to own that highlight.
-            active={
-              route.kind === 'allNotes' ||
-              (route.kind === 'note' && !isUntitledNotePath(route.path) && !hasActivePinnedNote)
-            }
-            onClick={() => void runCommand('nav.allNotes', context)}
-          />
+          {/* One row per section. A row lights for its own listing and while
+              editing a note filed in it. An untitled placeholder hasn't earned
+              its way into any section yet — nothing lights for it, the same as
+              before these rows outlived the "New note" row that used to own
+              that highlight. */}
+          {NOTE_SECTIONS.map((section) => {
+            const SectionIcon = SECTION_ICONS[section]
+            return (
+              <SidebarItem
+                key={section}
+                icon={
+                  <span className={lucideBox}>
+                    <SectionIcon aria-hidden strokeWidth={1.75} className="size-4" />
+                  </span>
+                }
+                label={SECTION_LABELS[section]}
+                binding={keybindingFor(SECTION_COMMANDS[section]) ?? undefined}
+                active={
+                  (route.kind === 'allNotes' && route.section === section) ||
+                  (route.kind === 'note' &&
+                    !isUntitledNotePath(route.path) &&
+                    !hasActivePinnedNote &&
+                    sectionOfPath(route.path) === section)
+                }
+                onClick={() => void runCommand(SECTION_COMMANDS[section], context)}
+              />
+            )
+          })}
         </nav>
       </div>
 
