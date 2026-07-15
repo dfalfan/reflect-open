@@ -183,13 +183,14 @@ reflect-open/
 └── turbo.json, pnpm-workspace.yaml
 ```
 
-**Related repo — Meowdown:** the local checkout lives at `~/repos/meowdown`. It's
-the hybrid/live-preview Markdown editor this app uses through `@meowdown/core` and
-`@meowdown/react`. When investigating editor behavior, markdown round-tripping,
-keybindings, slash menus, wiki links, task checkboxes, paste/drop handling, or
-mobile editor quirks, check that repo too. Note that Meowdown is a third-party
-upstream — if a root cause lives there, the options are a PR against Meowdown or a
-local workaround here; decide with Daniel rather than assuming.
+**Meowdown** is the hybrid/live-preview Markdown editor this app uses through
+`@meowdown/core` and `@meowdown/react` — a plain npm dependency here (there is no
+local checkout; the `~/repos/meowdown` path older docs mention belonged to the
+original developer's machine). When investigating editor behavior, markdown
+round-tripping, keybindings, wiki links, or paste/drop handling, read its dist
+under `node_modules`. If a root cause lives in Meowdown, the options are a PR
+upstream or a local wrapper at the seam (`apps/desktop/src/editor/roundtrip.ts`
+is the precedent); decide with Daniel rather than assuming.
 
 **Design system**
 
