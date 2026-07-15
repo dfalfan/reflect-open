@@ -42,6 +42,12 @@ vi.mock('@/lib/windows/open-in-new-window', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/lib/windows/open-in-new-window')>()),
   openRouteInNewWindow,
 }))
+// The peek dialog mounts the full editable pane; the real one is a ProseMirror
+// editor jsdom can't measure, and the pane has its own tests — the screen test
+// only cares which path the peek shows.
+vi.mock('@/components/note-pane', () => ({
+  NotePane: ({ path }: { path: string }) => <div data-testid="peek-note-pane">{path}</div>,
+}))
 
 // jsdom computes no layout, so virtua can't measure its viewport or rows.
 // installVirtuaTestEnv supplies those: the scroll container reports a tall
@@ -237,12 +243,38 @@ describe('AllNotesScreen', () => {
     view.unmount()
   })
 
-  it('opens a note when its row is clicked', async () => {
+  it('peeks a note in place when its row is clicked', async () => {
     const view = renderScreen()
 
     fireEvent.click(await view.findByRole('button', { name: /Health Stacked/ }))
 
+    const pane = await view.findByTestId('peek-note-pane')
+    expect(pane.textContent).toBe('notes/health.md')
+    // The peek floats over the list; the route must not move.
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
+    view.unmount()
+  })
+
+  it('expands the peek into the note route', async () => {
+    const view = renderScreen()
+
+    fireEvent.click(await view.findByRole('button', { name: /Health Stacked/ }))
+    await view.findByTestId('peek-note-pane')
+    fireEvent.click(view.getByRole('button', { name: 'Abrir en la vista completa' }))
+
     expect(probedRoute(view)).toEqual({ kind: 'note', path: 'notes/health.md' })
+    view.unmount()
+  })
+
+  it('closes the peek back onto the untouched list', async () => {
+    const view = renderScreen()
+
+    fireEvent.click(await view.findByRole('button', { name: /Health Stacked/ }))
+    await view.findByTestId('peek-note-pane')
+    fireEvent.click(view.getByRole('button', { name: 'Cerrar' }))
+
+    await waitFor(() => expect(view.queryByTestId('peek-note-pane')).toBeNull())
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
     view.unmount()
   })
 
@@ -491,16 +523,18 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     view.unmount()
   })
 
-  it('opens a note on double-click', async () => {
+  it('peeks a note on double-click', async () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
     fireEvent.doubleClick(rowBody(view, 'Health Stacked'))
-    expect(probedRoute(view)).toEqual({ kind: 'note', path: 'notes/health.md' })
+    const pane = await view.findByTestId('peek-note-pane')
+    expect(pane.textContent).toBe('notes/health.md')
+    expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
     view.unmount()
   })
 
-  it('drives selection from the keyboard and opens with Return', async () => {
+  it('drives selection from the keyboard and peeks with Return', async () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
     const surface = view.getByLabelText('Inbox')
@@ -509,7 +543,8 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     expect(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ })).toBeDefined()
 
     fireEvent.keyDown(surface, { key: 'Enter' })
-    expect(probedRoute(view)).toEqual({ kind: 'note', path: 'notes/health.md' })
+    const pane = await view.findByTestId('peek-note-pane')
+    expect(pane.textContent).toBe('notes/health.md')
     expect(openRouteInNewWindow).not.toHaveBeenCalled()
     view.unmount()
   })
@@ -577,6 +612,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     fireEvent.click(rowBody(view, 'Health Stacked'))
     fireEvent.keyDown(view.getByRole('button', { name: /Nota nueva/ }), { key: 'Enter' })
 
+    expect(view.queryByTestId('peek-note-pane')).toBeNull()
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', section: 'inbox', tag: null })
     view.unmount()
   })

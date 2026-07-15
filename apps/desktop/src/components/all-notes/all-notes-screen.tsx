@@ -3,9 +3,10 @@ import { useQuery } from '@tanstack/react-query'
 import { hasBridge, listNotes, listNoteTags, type NoteSection } from '@reflect/core'
 import { Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { NotePeekDialog } from '@/components/note-peek-dialog'
 import { useNoteLinkNavigation } from '@/hooks/use-note-link-navigation'
 import { allNotesQueryKey, allNotesTagsQueryKey } from '@/lib/notes/all-notes-query'
-import type { NewWindowClickEvent } from '@/lib/windows/open-in-new-window'
+import { isNewWindowClick, type NewWindowClickEvent } from '@/lib/windows/open-in-new-window'
 import { useListSelection } from '@/lib/selection/use-list-selection'
 import { useScrollRestoration } from '@/lib/use-scroll-restoration'
 import { useScrollToIndexBridge } from '@/lib/use-scroll-to-index-bridge'
@@ -44,8 +45,11 @@ const SECTION_LABELS: Record<NoteSection, string> = {
  *
  * Rows are multi-selectable (V1 parity): click to select (⌘ toggle, Shift
  * range), the indicator gutter toggles, the subject or a double-click opens.
- * Keyboard shortcuts act on the selection — ↑/↓ (Shift to extend), ⌘A select
- * all, Return open, ⌘⌫ trash (to the OS trash, after a confirm), Esc clear.
+ * Opening peeks the note in a centered dialog (Notion-style) rather than
+ * navigating; ⌘-click still opens a secondary window, and the peek's expand
+ * button hands the note to its real route. Keyboard shortcuts act on the
+ * selection — ↑/↓ (Shift to extend), ⌘A select all, Return open (the peek),
+ * ⌘⌫ trash (to the OS trash, after a confirm), Esc clear.
  *
  * Owns its scroll container (the daily stream's shape, not `ScrollRestored`'s)
  * so the header and filter bar stay put while the virtualized table scrolls,
@@ -82,9 +86,22 @@ export function AllNotesScreen({ section, tag }: AllNotesScreenProps): ReactElem
   // The flat, render-order paths the selection and its shortcuts act on.
   const orderedPaths = useMemo(() => (notes ?? []).map((note) => note.path), [notes])
   const selection = useListSelection(orderedPaths)
+  // Opening a note peeks it in place; only the ⌘-click new-window gesture
+  // (and the peek's own expand button) leaves the list.
+  const [peekPath, setPeekPath] = useState<string | null>(null)
   const openNote = useCallback(
-    (path: string, event?: NewWindowClickEvent) =>
-      navigateNoteLink(routeForPath(path), event),
+    (path: string, event?: NewWindowClickEvent) => {
+      if (isNewWindowClick(event)) {
+        navigateNoteLink(routeForPath(path), event)
+        return
+      }
+      setPeekPath(path)
+    },
+    [navigateNoteLink],
+  )
+  const closePeek = useCallback(() => setPeekPath(null), [])
+  const expandPeek = useCallback(
+    (path: string) => navigateNoteLink(routeForPath(path)),
     [navigateNoteLink],
   )
   const handleFilterSelect = useCallback(
@@ -179,6 +196,8 @@ export function AllNotesScreen({ section, tag }: AllNotesScreenProps): ReactElem
           registerScrollToIndex={registerScrollToIndex}
         />
       </div>
+
+      <NotePeekDialog path={peekPath} onClose={closePeek} onExpand={expandPeek} />
 
       <AllNotesTrashDialog
         open={confirmingTrash}
