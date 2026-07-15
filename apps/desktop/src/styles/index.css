@@ -67,8 +67,9 @@ Cascade layer order, low to high priority.
   /* 12px chrome text (V1's `text-xs`; the DS `--text-xs` is 13px). */
   --text-2xs: var(--ds-text-2xs);
   --text-2xs--line-height: 1.25;
-  /* Shared subject size for regular-note titles and daily-note dates. */
-  --text-note-subject: var(--text-xl);
+  /* Shared subject size for regular-note titles and daily-note dates. The DS
+     scale reserves --text-2xl for exactly this role ("prose H1"). */
+  --text-note-subject: var(--text-2xl);
   /* Shortcut-glyph font, via the same --ds-* indirection as the shadows. */
   --font-shortcut: var(--ds-font-shortcut);
 
@@ -371,9 +372,9 @@ html:root {
 /* The leading H1 is the document title: the regular-note subject, matching
    the daily date subject. H2 and H3 step down the type scale so a section
    heading reads as subordinate to the title, not a second one: auto-appended
-   sections (`## [[Links]]`, `## [[Audio memos]]`) land at H2, one size below the
+   sections (`## [[Links]]`, `## [[Audio memos]]`) land at H2, well below the
    subject; H3 sits at body size, carried by weight rather than scale. */
-.reflect-editor h1 { @apply text-note-subject; } /* text-xl, 20px */
+.reflect-editor h1 { @apply text-note-subject; } /* text-2xl, 24px */
 .reflect-editor h2 { font-size: var(--text-lg, 1.125rem); } /* 18px */
 .reflect-editor h3 { font-size: var(--text-base, 1rem); } /* 16px */
 .reflect-editor h1:first-child { margin-top: 0; }

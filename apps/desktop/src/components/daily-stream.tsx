@@ -245,7 +245,7 @@ export function DailyStream({ target }: DailyStreamProps): ReactElement {
       <section
         key={date}
         data-index={index}
-        className="border-b border-border py-6"
+        className="border-b border-border pt-24 pb-6"
         // Focus entering this row (clicking its editor, tabbing in) makes it the
         // day the sidebar describes.
         onFocusCapture={() => setFocusedDailyDate(date)}
