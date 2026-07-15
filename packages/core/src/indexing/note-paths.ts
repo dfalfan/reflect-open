@@ -1,5 +1,11 @@
 import { noteExists } from '../graph/commands'
-import { notePath, templatePath } from '../graph/paths'
+import {
+  notePath,
+  sectionNotePath,
+  sectionOfPath,
+  templatePath,
+  type NoteSection,
+} from '../graph/paths'
 import { slugForTitle } from '../markdown/slug'
 import { db } from './db'
 
@@ -94,12 +100,34 @@ export async function templateSlugPathForTitle(
  * Where `path`'s file should live for `title` (the rename pipeline's target,
  * Plan 17): the slug path with a collision suffix — or `path` unchanged when
  * its name already matches, so a note never moves onto (or collides with)
- * itself.
+ * itself. The target stays in the note's own section: a title edit renames
+ * the file, it never re-files it (paths outside `notes/` fall back to the
+ * inbox builder, preserving the pre-section behavior).
  */
 export async function slugPathForTitle(
   path: string,
   title: string,
   taken: (candidate: string) => Promise<boolean> = pathTaken,
 ): Promise<string> {
-  return probeNotePath(slugForTitle(title), taken, path)
+  const section = sectionOfPath(path) ?? 'inbox'
+  return probeNotePath(slugForTitle(title), taken, path, (slug) =>
+    sectionNotePath(section, slug),
+  )
+}
+
+/**
+ * Where `path`'s file should land when filed into `section` (the move
+ * gesture's target): the same filename in the section's directory, with the
+ * shared collision suffix when that name is taken there. The note's own path
+ * counts as free, so filing a note into its current section is a no-op the
+ * caller can detect by `target === path`.
+ */
+export async function sectionPathForNote(
+  path: string,
+  section: NoteSection,
+  taken: (candidate: string) => Promise<boolean> = pathTaken,
+): Promise<string> {
+  const filename = path.slice(path.lastIndexOf('/') + 1)
+  const slug = filename.endsWith('.md') ? filename.slice(0, -'.md'.length) : filename
+  return probeNotePath(slug, taken, path, (candidate) => sectionNotePath(section, candidate))
 }

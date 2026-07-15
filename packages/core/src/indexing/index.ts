@@ -34,6 +34,7 @@ export { hashContent } from './hash'
 export {
   availableTemplatePath,
   slugPathForTitle,
+  sectionPathForNote,
   templateSlugPathForTitle,
 } from './note-paths'
 export { listTemplates, type TemplateEntry } from './template-list'

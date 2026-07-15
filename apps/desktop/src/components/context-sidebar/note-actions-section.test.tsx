@@ -13,6 +13,8 @@ const getNote = vi.hoisted(() => vi.fn())
 const toggleNotePinned = vi.hoisted(() => vi.fn(async () => true))
 const toggleNotePrivate = vi.hoisted(() => vi.fn(async () => true))
 const deleteOpenNote = vi.hoisted(() => vi.fn(async () => {}))
+const sectionPathForNote = vi.hoisted(() => vi.fn())
+const moveNoteCarryingSession = vi.hoisted(() => vi.fn(async () => {}))
 const operationFail = vi.hoisted(() => vi.fn())
 const startOperation = vi.hoisted(() =>
   vi.fn(() => ({ progress: vi.fn(), done: vi.fn(), fail: operationFail })),
@@ -22,11 +24,13 @@ vi.mock('@reflect/core', async (importOriginal) => ({
   hasBridge: () => true,
   getPinnedNotes,
   getNote,
+  sectionPathForNote,
 }))
 vi.mock('@/lib/note-pin', () => ({ toggleNotePinned }))
 vi.mock('@/lib/note-private', () => ({ toggleNotePrivate }))
 vi.mock('@/lib/note-delete', () => ({ deleteOpenNote }))
 vi.mock('@/lib/operations', () => ({ startOperation }))
+vi.mock('@/editor/move-note', () => ({ moveNoteCarryingSession }))
 vi.mock('@/providers/graph-provider', () => ({
   useGraph: () => ({ graph: { root: '/g', name: 'g', generation: 7 } }),
 }))
@@ -52,6 +56,8 @@ beforeEach(() => {
   toggleNotePinned.mockReset().mockResolvedValue(true)
   toggleNotePrivate.mockReset().mockResolvedValue(true)
   deleteOpenNote.mockReset().mockResolvedValue(undefined)
+  sectionPathForNote.mockReset()
+  moveNoteCarryingSession.mockReset().mockResolvedValue(undefined)
   startOperation.mockClear()
   operationFail.mockClear()
 })
@@ -214,6 +220,59 @@ describe('NoteActionsSection trash action', () => {
   it('does not offer trash for daily notes even if enabled', () => {
     const view = renderSection('daily/2026-06-10.md', true)
     expect(view.queryByRole('button', { name: 'Enviar a la papelera' })).toBeNull()
+    view.unmount()
+  })
+})
+
+describe('NoteActionsSection move to section', () => {
+  it('offers the two sections the note is not in', () => {
+    const view = renderSection('notes/a.md')
+    expect(view.getByRole('button', { name: 'Mover a Personal' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'Mover a Trabajo' })).toBeTruthy()
+    expect(view.queryByRole('button', { name: 'Mover a Inbox' })).toBeNull()
+    view.unmount()
+  })
+
+  it('offers Inbox and Trabajo for a note filed in Personal', () => {
+    const view = renderSection('notes/personal/viaje.md')
+    expect(view.getByRole('button', { name: 'Mover a Inbox' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'Mover a Trabajo' })).toBeTruthy()
+    expect(view.queryByRole('button', { name: 'Mover a Personal' })).toBeNull()
+    view.unmount()
+  })
+
+  it('offers no move rows for a daily note — dailies are not fileable', () => {
+    const view = renderSection('daily/2026-06-10.md')
+    expect(view.queryByRole('button', { name: /Mover a/ })).toBeNull()
+    view.unmount()
+  })
+
+  it('moves through the collision probe and the session-carrying move', async () => {
+    sectionPathForNote.mockResolvedValue('notes/trabajo/a.md')
+    const view = renderSection('notes/a.md')
+    await userEvent.click(view.getByRole('button', { name: 'Mover a Trabajo' }))
+    await waitFor(() => {
+      expect(sectionPathForNote).toHaveBeenCalledWith('notes/a.md', 'trabajo')
+      expect(moveNoteCarryingSession).toHaveBeenCalledWith('notes/a.md', 'notes/trabajo/a.md', 7)
+    })
+    view.unmount()
+  })
+
+  it('skips the move entirely when the probe reports a no-op', async () => {
+    sectionPathForNote.mockResolvedValue('notes/a.md')
+    const view = renderSection('notes/a.md')
+    await userEvent.click(view.getByRole('button', { name: 'Mover a Personal' }))
+    await waitFor(() => expect(sectionPathForNote).toHaveBeenCalled())
+    expect(moveNoteCarryingSession).not.toHaveBeenCalled()
+    view.unmount()
+  })
+
+  it('reports a refused move through the operation, not a crash', async () => {
+    sectionPathForNote.mockResolvedValue('notes/personal/a.md')
+    moveNoteCarryingSession.mockRejectedValueOnce(new Error('destination occupied'))
+    const view = renderSection('notes/a.md')
+    await userEvent.click(view.getByRole('button', { name: 'Mover a Personal' }))
+    await waitFor(() => expect(operationFail).toHaveBeenCalledWith('destination occupied'))
     view.unmount()
   })
 })

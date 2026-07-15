@@ -181,6 +181,7 @@ export {
   nextAliases,
   availableTemplatePath,
   slugPathForTitle,
+  sectionPathForNote,
   templateSlugPathForTitle,
   listTemplates,
   type TemplateEntry,

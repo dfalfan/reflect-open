@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   availableTemplatePath,
-  slugPathForTitle,
+  slugPathForTitle, sectionPathForNote,
   templateSlugPathForTitle,
 } from './note-paths'
 
@@ -74,5 +74,46 @@ describe('slugPathForTitle', () => {
     await expect(
       slugPathForTitle('notes/01abc.md', 'Meeting', async () => true),
     ).rejects.toThrow(/no available note path/)
+  })
+
+  it('keeps the rename inside the note’s section — a title edit never re-files', async () => {
+    await expect(
+      slugPathForTitle('notes/trabajo/01abc.md', 'Reunión CIMA', taken([])),
+    ).resolves.toBe('notes/trabajo/reunión-cima.md')
+    // Collisions probe within the section too.
+    await expect(
+      slugPathForTitle('notes/personal/01abc.md', 'Viaje', taken(['notes/personal/viaje.md'])),
+    ).resolves.toBe('notes/personal/viaje-2.md')
+    // And a same-named note in ANOTHER section is not a collision.
+    await expect(
+      slugPathForTitle('notes/personal/01abc.md', 'Viaje', taken(['notes/viaje.md'])),
+    ).resolves.toBe('notes/personal/viaje.md')
+  })
+})
+
+describe('sectionPathForNote', () => {
+  const taken = (occupied: string[]) => async (path: string) => occupied.includes(path)
+
+  it('files the note under the section keeping its filename', async () => {
+    await expect(
+      sectionPathForNote('notes/reunion.md', 'trabajo', taken([])),
+    ).resolves.toBe('notes/trabajo/reunion.md')
+    await expect(
+      sectionPathForNote('notes/trabajo/reunion.md', 'inbox', taken([])),
+    ).resolves.toBe('notes/reunion.md')
+  })
+
+  it('suffixes when the name is taken in the target section', async () => {
+    await expect(
+      sectionPathForNote('notes/reunion.md', 'trabajo', taken(['notes/trabajo/reunion.md'])),
+    ).resolves.toBe('notes/trabajo/reunion-2.md')
+  })
+
+  it('is a detectable no-op when the note is already in the section', async () => {
+    const probe = vi.fn(taken([]))
+    await expect(
+      sectionPathForNote('notes/trabajo/reunion.md', 'trabajo', probe),
+    ).resolves.toBe('notes/trabajo/reunion.md')
+    expect(probe).not.toHaveBeenCalled()
   })
 })

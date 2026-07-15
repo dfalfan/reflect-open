@@ -8,6 +8,7 @@ import { toggleNotePinned } from '@/lib/note-pin'
 import { toggleNotePrivate } from '@/lib/note-private'
 import { useOptimisticPinToggle } from '@/lib/notes/use-optimistic-pin-toggle'
 import { NoteGistAction } from './note-gist-action'
+import { NoteMoveAction } from './note-move-action'
 import { NoteTrashAction } from './note-trash-action'
 import { NoteToggleAction } from './note-toggle-action'
 import { SidebarSection } from './sidebar-section'
@@ -69,6 +70,7 @@ export function NoteActionsSection({
         tooltip="Bloquea esta nota para que la IA no la use. El respaldo y la sincronización sí la incluyen."
       />
       <NoteGistAction path={path} keybinding={GIST_KEYBINDING} />
+      <NoteMoveAction path={path} />
       {showTrash ? <NoteTrashAction path={path} /> : null}
     </SidebarSection>
   )
