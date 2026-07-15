@@ -149,7 +149,7 @@ describe('publishNoteToGist', () => {
   it('refuses an empty note', async () => {
     readNote.mockResolvedValue('---\npinned: true\n---\n')
     await expect(publishNoteToGist('notes/a.md', 3)).rejects.toMatchObject({
-      message: expect.stringMatching(/empty/i),
+      message: expect.stringMatching(/vacía/i),
     })
     expect(createGist).not.toHaveBeenCalled()
   })
@@ -159,7 +159,7 @@ describe('publishNoteToGist', () => {
     getGithubToken.mockResolvedValue(null)
     await expect(publishNoteToGist('notes/a.md', 3)).rejects.toMatchObject({
       kind: 'auth',
-      message: expect.stringMatching(/connect github/i),
+      message: expect.stringMatching(/conecta github/i),
     })
   })
 
@@ -167,7 +167,7 @@ describe('publishNoteToGist', () => {
     readNote.mockResolvedValue('---\nfoo: [unclosed\n---\nbody')
     await expect(publishNoteToGist('notes/a.md', 3)).rejects.toMatchObject({
       kind: 'parse',
-      message: expect.stringMatching(/invalid frontmatter/i),
+      message: expect.stringMatching(/frontmatter inválido/i),
     })
     expect(createGist).not.toHaveBeenCalled()
     expect(updateGist).not.toHaveBeenCalled()
@@ -262,7 +262,7 @@ describe('unpublishNoteGist', () => {
 
     await expect(unpublishNoteGist('notes/a.md', 3)).rejects.toMatchObject({
       kind: 'auth',
-      message: expect.stringMatching(/connect github/i),
+      message: expect.stringMatching(/conecta github/i),
     })
     expect(deleteGist).not.toHaveBeenCalled()
   })
@@ -284,8 +284,8 @@ describe('runGistPublish', () => {
     await expect(runGistPublish('notes/a.md', 3)).resolves.toBe(PUBLISHED.htmlUrl)
 
     expect(writeText).toHaveBeenCalledWith(PUBLISHED.htmlUrl)
-    expect(startOperation).toHaveBeenCalledWith('Publishing gist')
-    expect(startOperation).toHaveBeenCalledWith('Gist link copied')
+    expect(startOperation).toHaveBeenCalledWith('Publicando gist')
+    expect(startOperation).toHaveBeenCalledWith('Enlace del gist copiado')
     expect(operationDone).toHaveBeenCalledTimes(2)
     expect(operationFail).not.toHaveBeenCalled()
   })
@@ -315,7 +315,7 @@ describe('runGistPublish', () => {
     getGithubToken.mockResolvedValue(null)
     await expect(runGistPublish('notes/a.md', 3)).resolves.toBeNull()
 
-    expect(operationFail).toHaveBeenCalledWith(expect.stringMatching(/connect github/i))
+    expect(operationFail).toHaveBeenCalledWith(expect.stringMatching(/conecta github/i))
     expect(writeText).not.toHaveBeenCalled()
   })
 
@@ -325,9 +325,9 @@ describe('runGistPublish', () => {
     // The publish landed: the url comes back so the UI flips to its published state.
     await expect(runGistPublish('notes/a.md', 3)).resolves.toBe(PUBLISHED.htmlUrl)
 
-    expect(startOperation).toHaveBeenCalledWith('Publishing gist')
-    expect(startOperation).toHaveBeenCalledWith('Copying the gist link')
-    expect(startOperation).not.toHaveBeenCalledWith('Gist link copied')
+    expect(startOperation).toHaveBeenCalledWith('Publicando gist')
+    expect(startOperation).toHaveBeenCalledWith('Copiando el enlace del gist')
+    expect(startOperation).not.toHaveBeenCalledWith('Enlace del gist copiado')
     expect(operationDone).toHaveBeenCalledTimes(1) // the publish itself
     expect(operationFail).toHaveBeenCalledWith(expect.stringMatching(/not focused/i))
   })
@@ -339,7 +339,7 @@ describe('runGistUnpublish', () => {
 
     await expect(runGistUnpublish('notes/a.md', 3)).resolves.toBe(true)
 
-    expect(startOperation).toHaveBeenCalledWith('Unpublishing gist')
+    expect(startOperation).toHaveBeenCalledWith('Despublicando gist')
     expect(operationDone).toHaveBeenCalled()
     expect(getNoteRowOverlay('notes/a.md', 3)).toMatchObject({ gistUrl: null, gistStale: false })
   })
@@ -350,7 +350,7 @@ describe('runGistUnpublish', () => {
 
     await expect(runGistUnpublish('notes/a.md', 3)).resolves.toBe(false)
 
-    expect(operationFail).toHaveBeenCalledWith(expect.stringMatching(/connect github/i))
+    expect(operationFail).toHaveBeenCalledWith(expect.stringMatching(/conecta github/i))
     expect(getNoteRowOverlay('notes/a.md', 3)).toBeNull()
   })
 
@@ -375,7 +375,7 @@ describe('runGistUnpublish', () => {
     await expect(runGistPublish('notes/a.md', 3)).resolves.toBeNull()
     expect(createGist).not.toHaveBeenCalled()
     expect(updateGist).not.toHaveBeenCalled()
-    expect(operationFail).toHaveBeenCalledWith(expect.stringMatching(/current gist operation/i))
+    expect(operationFail).toHaveBeenCalledWith(expect.stringMatching(/operación de gist actual/i))
 
     resolveDelete()
     await expect(unpublish).resolves.toBe(true)

@@ -67,22 +67,22 @@ describe('SyncConflictNotice', () => {
     renderNotice()
 
     await Promise.resolve() // let the query settle
-    expect(screen.queryByText(/edited on two devices/i)).toBeNull()
+    expect(screen.queryByText(/se editó en dos dispositivos/i)).toBeNull()
   })
 
   it('offers mine/theirs/both resolutions for a conflicted note', async () => {
     vi.mocked(getNote).mockResolvedValue(NOTE)
     renderNotice()
 
-    expect(await screen.findByText(/edited on two devices/i)).toBeTruthy()
+    expect(await screen.findByText(/se editó en dos dispositivos/i)).toBeTruthy()
 
-    fireEvent.click(screen.getByRole('button', { name: /keep this device’s version/i }))
+    fireEvent.click(screen.getByRole('button', { name: /conservar la versión de este dispositivo/i }))
     expect(resolution.resolve).toHaveBeenCalledWith('ours')
 
-    fireEvent.click(screen.getByRole('button', { name: /keep the other device’s/i }))
+    fireEvent.click(screen.getByRole('button', { name: /conservar la del otro dispositivo/i }))
     expect(resolution.resolve).toHaveBeenCalledWith('theirs')
 
-    fireEvent.click(screen.getByRole('button', { name: /keep both/i }))
+    fireEvent.click(screen.getByRole('button', { name: /conservar ambas/i }))
     expect(resolution.resolve).toHaveBeenCalledWith('both')
   })
 
@@ -91,9 +91,9 @@ describe('SyncConflictNotice', () => {
     vi.mocked(getNote).mockResolvedValue(NOTE)
     renderNotice()
 
-    expect(await screen.findByText(/choose what to keep/i)).toBeTruthy()
+    expect(await screen.findByText(/elige qué conservar/i)).toBeTruthy()
 
-    fireEvent.click(screen.getByRole('button', { name: /keep this device’s version/i }))
+    fireEvent.click(screen.getByRole('button', { name: /conservar la versión de este dispositivo/i }))
     expect(resolution.resolve).toHaveBeenCalledWith('ours')
   })
 
@@ -105,9 +105,9 @@ describe('SyncConflictNotice', () => {
     renderNotice()
 
     // `theirs` splices in every non-first side — naming one device would lie.
-    expect(await screen.findByRole('button', { name: 'Keep the other versions' })).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Keep all' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'Conservar las otras versiones' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Conservar todas' })).toBeTruthy()
     // The first side is still a single device, so it stays named.
-    expect(screen.getByRole('button', { name: 'Keep “Mac”' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Conservar “Mac”' })).toBeTruthy()
   })
 })

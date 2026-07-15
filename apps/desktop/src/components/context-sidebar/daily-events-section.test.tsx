@@ -176,7 +176,7 @@ describe('DailyEventsSection', () => {
     renderSection()
     fireEvent.click(await screen.findByRole('button', { name: /standup/i }))
 
-    const name = await screen.findByLabelText<HTMLInputElement>('Meeting name')
+    const name = await screen.findByLabelText<HTMLInputElement>('Nombre de la reunión')
     expect(name.value).toBe('Standup')
     // Suggested attendees: people who haven't declined, excluding the user.
     expect(screen.getByText('Ada Lovelace')).toBeTruthy()
@@ -191,10 +191,10 @@ describe('DailyEventsSection', () => {
     renderSection()
     fireEvent.click(await screen.findByRole('button', { name: /standup/i }))
 
-    const attendee = await screen.findByLabelText<HTMLInputElement>('Attendees')
+    const attendee = await screen.findByLabelText<HTMLInputElement>('Asistentes')
     fireEvent.change(attendee, { target: { value: 'Grace Hopper' } })
     fireEvent.keyDown(attendee, { key: 'Enter' })
-    fireEvent.click(screen.getByRole('button', { name: /add to daily note/i }))
+    fireEvent.click(screen.getByRole('button', { name: /agregar a la nota diaria/i }))
 
     await waitFor(() =>
       expect(addMeetingToDaily).toHaveBeenCalledWith({
@@ -207,7 +207,7 @@ describe('DailyEventsSection', () => {
         generation: 3,
       }),
     )
-    await waitFor(() => expect(screen.queryByLabelText('Meeting name')).toBeNull())
+    await waitFor(() => expect(screen.queryByLabelText('Nombre de la reunión')).toBeNull())
   })
 
   it('passes invite emails and the contacts gate through to the action', async () => {
@@ -231,7 +231,7 @@ describe('DailyEventsSection', () => {
     fireEvent.click(await screen.findByRole('button', { name: /standup/i }))
 
     await screen.findByText('Ada Lovelace')
-    fireEvent.click(screen.getByRole('button', { name: /add to daily note/i }))
+    fireEvent.click(screen.getByRole('button', { name: /agregar a la nota diaria/i }))
 
     await waitFor(() =>
       expect(addMeetingToDaily).toHaveBeenCalledWith(
@@ -267,7 +267,7 @@ describe('DailyEventsSection', () => {
     await screen.findByText('Ada Lovelace')
     expect(screen.queryByText('ada@example.com')).toBeNull()
 
-    fireEvent.click(screen.getByRole('button', { name: /add to daily note/i }))
+    fireEvent.click(screen.getByRole('button', { name: /agregar a la nota diaria/i }))
     await waitFor(() =>
       expect(addMeetingToDaily).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -289,8 +289,8 @@ describe('DailyEventsSection', () => {
     renderSection()
     fireEvent.click(await screen.findByRole('button', { name: /standup/i }))
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Remove Ada Lovelace' }))
-    fireEvent.click(screen.getByRole('button', { name: /add to daily note/i }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Quitar Ada Lovelace' }))
+    fireEvent.click(screen.getByRole('button', { name: /agregar a la nota diaria/i }))
 
     await waitFor(() =>
       expect(addMeetingToDaily).toHaveBeenCalledWith(
@@ -305,9 +305,9 @@ describe('DailyEventsSection', () => {
     renderSection()
     fireEvent.click(await screen.findByRole('button', { name: /standup/i }))
 
-    fireEvent.click(await screen.findByRole('button', { name: /add to daily note/i }))
+    fireEvent.click(await screen.findByRole('button', { name: /agregar a la nota diaria/i }))
 
     await waitFor(() => expect(screen.getByText(/disk full/i)).toBeTruthy())
-    expect(screen.getByLabelText('Meeting name')).toBeTruthy()
+    expect(screen.getByLabelText('Nombre de la reunión')).toBeTruthy()
   })
 })

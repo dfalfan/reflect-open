@@ -64,7 +64,7 @@ function renderSection(): void {
 }
 
 function calendarSwitch(): HTMLElement {
-  return screen.getByRole('switch', { name: /calendar events/i })
+  return screen.getByRole('switch', { name: /eventos del calendario/i })
 }
 
 beforeEach(() => {
@@ -88,7 +88,7 @@ describe('CalendarIntegrationField', () => {
   it('starts switched off with no calendar detail', async () => {
     renderSection()
     await waitFor(() => expect(calendarSwitch().getAttribute('aria-checked')).toBe('false'))
-    expect(screen.queryByText(/calendars/i)).toBeNull()
+    expect(screen.queryByText(/calendarios/i)).toBeNull()
   })
 
   it('enabling requests access, persists the setting, and opens the calendar chooser dialog', async () => {
@@ -100,13 +100,13 @@ describe('CalendarIntegrationField', () => {
     await waitFor(() =>
       expect(saved.at(-1)).toMatchObject({ calendarEnabled: true, calendarIds: [] }),
     )
-    await waitFor(() => expect(screen.getByText('0/2 calendars selected')).toBeTruthy())
+    await waitFor(() => expect(screen.getByText('0/2 calendarios seleccionados')).toBeTruthy())
     expect(screen.queryByText('Google')).toBeNull()
     expect(screen.queryByText('iCloud')).toBeNull()
 
-    fireEvent.click(screen.getByRole('button', { name: /choose calendars/i }))
+    fireEvent.click(screen.getByRole('button', { name: /elegir calendarios/i }))
 
-    expect(await screen.findByRole('dialog', { name: 'Choose calendars' })).toBeTruthy()
+    expect(await screen.findByRole('dialog', { name: 'Elegir calendarios' })).toBeTruthy()
     expect(screen.getByText('Google')).toBeTruthy()
     expect(screen.getByText('iCloud')).toBeTruthy()
     expect(screen.getByRole('checkbox', { name: 'Work' })).toBeTruthy()
@@ -120,7 +120,7 @@ describe('CalendarIntegrationField', () => {
     renderSection()
 
     await waitFor(() => expect(calendarSwitch().getAttribute('aria-checked')).toBe('true'))
-    expect(screen.queryByText(/no calendars found/i)).toBeNull()
+    expect(screen.queryByText(/no se encontraron calendarios/i)).toBeNull()
   })
 
   it('shows the empty state once an empty list has actually loaded', async () => {
@@ -129,21 +129,21 @@ describe('CalendarIntegrationField', () => {
     calendarsResponse = async () => []
     renderSection()
 
-    await waitFor(() => expect(screen.getByText(/no calendars found/i)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/no se encontraron calendarios/i)).toBeTruthy())
   })
 
   it('toggling a calendar persists its id and updates the count', async () => {
     stored = { calendarEnabled: true }
     authStatus = 'fullAccess'
     renderSection()
-    await screen.findByText('0/2 calendars selected')
-    fireEvent.click(screen.getByRole('button', { name: /choose calendars/i }))
+    await screen.findByText('0/2 calendarios seleccionados')
+    fireEvent.click(screen.getByRole('button', { name: /elegir calendarios/i }))
     const work = await screen.findByRole('checkbox', { name: 'Work' })
 
     fireEvent.click(work)
 
     await waitFor(() => expect(saved.at(-1)).toMatchObject({ calendarIds: ['cal-work'] }))
-    await waitFor(() => expect(screen.getByText('1/2 calendars selected')).toBeTruthy())
+    await waitFor(() => expect(screen.getByText('1/2 calendarios seleccionados')).toBeTruthy())
   })
 
   it('counts only ids the Mac still knows, ignoring stale ones', async () => {
@@ -151,7 +151,7 @@ describe('CalendarIntegrationField', () => {
     authStatus = 'fullAccess'
     renderSection()
 
-    await waitFor(() => expect(screen.getByText('1/2 calendars selected')).toBeTruthy())
+    await waitFor(() => expect(screen.getByText('1/2 calendarios seleccionados')).toBeTruthy())
   })
 
   it('denied access shows the explanation and deep-links to System Settings', async () => {
@@ -159,8 +159,8 @@ describe('CalendarIntegrationField', () => {
     authStatus = 'denied'
     renderSection()
 
-    const open = await screen.findByRole('button', { name: /open system settings/i })
-    expect(screen.getByText(/can’t read your calendars/i)).toBeTruthy()
+    const open = await screen.findByRole('button', { name: /abrir ajustes del sistema/i })
+    expect(screen.getByText(/no puede leer tus calendarios/i)).toBeTruthy()
 
     fireEvent.click(open)
     await waitFor(() =>
@@ -176,12 +176,12 @@ describe('CalendarIntegrationField', () => {
     const { invoked } = installFakeBridge()
     renderSection()
 
-    const grant = await screen.findByRole('button', { name: /grant access/i })
+    const grant = await screen.findByRole('button', { name: /conceder acceso/i })
     fireEvent.click(grant)
 
     await waitFor(() => expect(invoked).toContain('calendar_request_access'))
     // The grant resolved and the invalidated auth query re-ran: the calendar
     // list replaces the permission explanation.
-    await waitFor(() => expect(screen.getByText('0/2 calendars selected')).toBeTruthy())
+    await waitFor(() => expect(screen.getByText('0/2 calendarios seleccionados')).toBeTruthy())
   })
 })

@@ -25,9 +25,9 @@ const mockFlow = vi.mocked(runDeviceFlow)
 /** Switch the step from the device-flow lead to PAT entry. */
 async function switchToPat(): Promise<void> {
   fireEvent.click(
-    await screen.findByRole('button', { name: /use a personal access token instead/i }),
+    await screen.findByRole('button', { name: /usar un token de acceso personal en su lugar/i }),
   )
-  await screen.findByLabelText('Personal access token')
+  await screen.findByLabelText('Token de acceso personal')
 }
 
 /** Render with no stored credential and a flow that stays at the code view. */
@@ -38,7 +38,7 @@ async function renderCodeView(): Promise<void> {
     return new Promise(() => {}) // polling stays in flight
   })
   render(<GithubAuthStep onAuthed={vi.fn()} />)
-  fireEvent.click(await screen.findByRole('button', { name: 'Sign in with GitHub' }))
+  fireEvent.click(await screen.findByRole('button', { name: 'Iniciar sesión con GitHub' }))
   await screen.findByText('ABCD-1234')
 }
 
@@ -115,10 +115,10 @@ describe('GithubAuthStep', () => {
     render(<GithubAuthStep onAuthed={onAuthed} />)
     await switchToPat()
 
-    fireEvent.change(screen.getByLabelText('Personal access token'), {
+    fireEvent.change(screen.getByLabelText('Token de acceso personal'), {
       target: { value: '  github_pat_abc  ' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Save token' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar token' }))
 
     await waitFor(() =>
       expect(onAuthed).toHaveBeenCalledWith({ login: 'alex', avatarUrl: null }),
@@ -139,10 +139,10 @@ describe('GithubAuthStep', () => {
     render(<GithubAuthStep onAuthed={onAuthed} />)
     await switchToPat()
 
-    fireEvent.change(screen.getByLabelText('Personal access token'), {
+    fireEvent.change(screen.getByLabelText('Token de acceso personal'), {
       target: { value: 'github_pat_typo' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Save token' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar token' }))
 
     expect(await screen.findByText(/rejected the token/i)).toBeTruthy()
     expect(onAuthed).not.toHaveBeenCalled()
@@ -155,9 +155,9 @@ describe('GithubAuthStep', () => {
     render(<GithubAuthStep onAuthed={onAuthed} />)
     await switchToPat()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Save token' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar token' }))
 
-    expect(await screen.findByText('Paste a token first.')).toBeTruthy()
+    expect(await screen.findByText('Primero pega un token.')).toBeTruthy()
     expect(onAuthed).not.toHaveBeenCalled()
   })
 
@@ -189,10 +189,10 @@ describe('GithubAuthStep', () => {
     render(<GithubAuthStep onAuthed={onAuthed} />)
     await switchToPat()
 
-    fireEvent.change(screen.getByLabelText('Personal access token'), {
+    fireEvent.change(screen.getByLabelText('Token de acceso personal'), {
       target: { value: 'github_pat_new' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Save token' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar token' }))
     await waitFor(() => expect(onAuthed).toHaveBeenCalledTimes(1))
 
     // The old credential turns out valid too — its late arrival must not
@@ -216,7 +216,7 @@ describe('GithubAuthStep', () => {
     // open (and steal focus from the visible code) until it's in hand.
     expect(openedUrls).not.toHaveBeenCalled()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Copy code and open GitHub' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Copiar código y abrir GitHub' }))
 
     await waitFor(() =>
       expect(openedUrls).toHaveBeenCalledWith('https://github.com/login/device'),
@@ -225,7 +225,7 @@ describe('GithubAuthStep', () => {
     expect(writeText.mock.invocationCallOrder[0]!).toBeLessThan(
       openedUrls.mock.invocationCallOrder[0]!,
     )
-    expect(await screen.findByText(/code copied/i)).toBeTruthy()
+    expect(await screen.findByText(/código copiado/i)).toBeTruthy()
   })
 
   it('surfaces the device URL when the browser cannot be opened', async () => {
@@ -236,10 +236,10 @@ describe('GithubAuthStep', () => {
     await renderCodeView()
     expect(screen.queryByText(/login\/device/)).toBeNull()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Copy code and open GitHub' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Copiar código y abrir GitHub' }))
 
     expect(
-      await screen.findByText(/visit https:\/\/github\.com\/login\/device yourself/i),
+      await screen.findByText(/visita https:\/\/github\.com\/login\/device tú mismo/i),
     ).toBeTruthy()
   })
 
@@ -249,13 +249,13 @@ describe('GithubAuthStep', () => {
     })
     await renderCodeView()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Copy code and open GitHub' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Copiar código y abrir GitHub' }))
 
     // The user is told to copy by hand first; only then does GitHub open.
-    expect(await screen.findByText(/select the code above/i)).toBeTruthy()
+    expect(await screen.findByText(/selecciona el código de arriba/i)).toBeTruthy()
     expect(openedUrls).not.toHaveBeenCalled()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open GitHub' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir GitHub' }))
     await waitFor(() =>
       expect(openedUrls).toHaveBeenCalledWith('https://github.com/login/device'),
     )

@@ -38,7 +38,7 @@ afterEach(() => {
 describe('DescribeAssetsField', () => {
   it('reflects and toggles the automatic OCR setting', () => {
     render(<DescribeAssetsField />)
-    const toggle = screen.getByRole('switch', { name: /ocr new assets automatically/i })
+    const toggle = screen.getByRole('switch', { name: /ocr automático de recursos nuevos/i })
     expect(toggle.getAttribute('aria-checked')).toBe('true')
     fireEvent.click(toggle)
     expect(updateSettings).toHaveBeenCalledWith({ describeAssets: false })
@@ -47,19 +47,21 @@ describe('DescribeAssetsField', () => {
   it('disables the backfill until an AI provider is configured', () => {
     settingsRef.current = { ...settingsRef.current, aiProviders: [], defaultAiProviderId: null }
     render(<DescribeAssetsField />)
-    expect(screen.getByRole('button', { name: /backfill assets/i }).hasAttribute('disabled')).toBe(true)
-    expect(screen.queryByText(/add an ai provider to enable this/i)).not.toBeNull()
+    expect(
+      screen.getByRole('button', { name: /procesar recursos existentes/i }).hasAttribute('disabled'),
+    ).toBe(true)
+    expect(screen.queryByText(/agrega un proveedor de ia para activar esto/i)).not.toBeNull()
   })
 
   it('confirms the cost before running the backfill, then runs it pinned to the graph', () => {
     render(<DescribeAssetsField />)
-    fireEvent.click(screen.getByRole('button', { name: /backfill assets/i }))
+    fireEvent.click(screen.getByRole('button', { name: /procesar recursos existentes/i }))
 
     // The cost warning appears; nothing is sent until the user confirms.
-    expect(screen.queryByText(/backfill assets\?/i)).not.toBeNull()
+    expect(screen.queryByText(/¿procesar los recursos existentes\?/i)).not.toBeNull()
     expect(backfill).not.toHaveBeenCalled()
 
-    fireEvent.click(screen.getByRole('button', { name: /^backfill assets$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^procesar recursos$/i }))
     expect(backfill).toHaveBeenCalledWith(5, {
       providers: [PROVIDER],
       defaultProviderId: 'cfg',
@@ -68,8 +70,8 @@ describe('DescribeAssetsField', () => {
 
   it('cancels without sending anything', () => {
     render(<DescribeAssetsField />)
-    fireEvent.click(screen.getByRole('button', { name: /backfill assets/i }))
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }))
+    fireEvent.click(screen.getByRole('button', { name: /procesar recursos existentes/i }))
+    fireEvent.click(screen.getByRole('button', { name: /cancelar/i }))
     expect(backfill).not.toHaveBeenCalled()
   })
 })

@@ -24,7 +24,7 @@ describe('UpdateField', () => {
     update.state = { phase: 'error', message: 'signature verification failed', during: 'install' }
     render(<UpdateField />)
     expect(screen.getByRole('alert').textContent).toMatch(/signature verification failed/)
-    await userEvent.click(screen.getByRole('button', { name: 'Retry install' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Reintentar instalación' }))
     expect(update.install).toHaveBeenCalledTimes(1)
     expect(update.checkNow).not.toHaveBeenCalled()
   })
@@ -32,7 +32,7 @@ describe('UpdateField', () => {
   it('re-checks after a check failure', async () => {
     update.state = { phase: 'error', message: 'release endpoint unreachable', during: 'check' }
     render(<UpdateField />)
-    await userEvent.click(screen.getByRole('button', { name: 'Check for updates' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Buscar actualizaciones' }))
     expect(update.checkNow).toHaveBeenCalledTimes(1)
     expect(update.install).not.toHaveBeenCalled()
   })

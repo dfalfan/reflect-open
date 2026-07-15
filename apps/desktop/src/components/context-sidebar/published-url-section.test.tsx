@@ -72,7 +72,7 @@ afterEach(() => {
 describe('PublishedUrlSection', () => {
   it('renders nothing for an unpublished note', () => {
     const view = renderSection()
-    expect(view.queryByText('Published URL')).toBeNull()
+    expect(view.queryByText('URL publicada')).toBeNull()
   })
 
   it('shows the published gist URL for a published note', () => {
@@ -80,7 +80,7 @@ describe('PublishedUrlSection', () => {
     useNoteRow.mockReturnValue(noteRow({ gistUrl: url }))
 
     const view = renderSection()
-    expect(view.getByText('Published URL')).toBeTruthy()
+    expect(view.getByText('URL publicada')).toBeTruthy()
     expect(view.getByRole('link', { name: url }).getAttribute('href')).toBe(url)
   })
 
@@ -100,10 +100,10 @@ describe('PublishedUrlSection', () => {
     useNoteRow.mockReturnValue(noteRow({ gistUrl: url }))
 
     const view = renderSection()
-    await userEvent.click(view.getByRole('button', { name: 'Copy published URL' }))
+    await userEvent.click(view.getByRole('button', { name: 'Copiar URL publicada' }))
 
     expect(writeText).toHaveBeenCalledWith(url)
-    expect(startOperation).toHaveBeenCalledWith('Published URL copied')
+    expect(startOperation).toHaveBeenCalledWith('URL publicada copiada')
     expect(operationDone).toHaveBeenCalled()
   })
 
@@ -112,7 +112,7 @@ describe('PublishedUrlSection', () => {
     useNoteRow.mockReturnValue(noteRow({ gistUrl: url }))
 
     const view = renderSection()
-    await userEvent.click(view.getByRole('button', { name: 'Update published gist' }))
+    await userEvent.click(view.getByRole('button', { name: 'Actualizar gist publicado' }))
 
     expect(runGistPublish).toHaveBeenCalledWith('notes/a.md', 7)
   })
@@ -122,9 +122,9 @@ describe('PublishedUrlSection', () => {
     useNoteRow.mockReturnValue(noteRow({ gistUrl: url, gistStale: true }))
 
     const view = renderSection()
-    expect(view.getByRole('button', { name: 'Copy published URL' })).toBeTruthy()
-    expect(view.getByRole('button', { name: 'Update published gist' })).toBeTruthy()
-    expect(view.getByRole('button', { name: 'Update published gist' }).className).toContain('text-accent')
+    expect(view.getByRole('button', { name: 'Copiar URL publicada' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'Actualizar gist publicado' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'Actualizar gist publicado' }).className).toContain('text-accent')
   })
 
   it('surfaces copy failures through the operations status', async () => {
@@ -133,9 +133,9 @@ describe('PublishedUrlSection', () => {
     useNoteRow.mockReturnValue(noteRow({ gistUrl: url }))
 
     const view = renderSection()
-    await userEvent.click(view.getByRole('button', { name: 'Copy published URL' }))
+    await userEvent.click(view.getByRole('button', { name: 'Copiar URL publicada' }))
 
-    await waitFor(() => expect(startOperation).toHaveBeenCalledWith('Copying the published URL'))
+    await waitFor(() => expect(startOperation).toHaveBeenCalledWith('Copiando la URL publicada'))
     expect(operationFail).toHaveBeenCalled()
   })
 })

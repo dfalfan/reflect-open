@@ -17,9 +17,11 @@ describe('ProtectedNoteView', () => {
     const view = render(<ProtectedNoteView content={CONTENT} />)
     const alert = view.getByRole('alert')
     expect(alert.textContent).toContain(
-      'This note contains markdown the editor can’t yet reproduce faithfully',
+      'Esta nota contiene markdown que el editor aún no puede reproducir fielmente',
     )
-    expect(alert.textContent).toContain('open read-only to protect your file')
+    expect(alert.textContent).toContain(
+      'se abre en modo de solo lectura para proteger tu archivo',
+    )
     view.unmount()
   })
 

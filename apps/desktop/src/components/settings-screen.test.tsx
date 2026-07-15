@@ -140,21 +140,21 @@ afterEach(() => {
 describe('SettingsScreen', () => {
   it('shows update controls when the native bridge is available', () => {
     renderScreen()
-    expect(screen.getByRole('button', { name: /check for updates/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /buscar actualizaciones/i })).toBeTruthy()
   })
 
   it('confirms before forgetting the open graph from saved graphs', async () => {
     graph.current = { root: '/graphs/work', name: 'Work', generation: 1 }
     renderScreen()
 
-    const section = screen.getByRole('region', { name: 'Danger zone' })
-    fireEvent.click(within(section).getByRole('button', { name: /forget graph/i }))
+    const section = screen.getByRole('region', { name: 'Zona de peligro' })
+    fireEvent.click(within(section).getByRole('button', { name: /olvidar grafo/i }))
 
-    const dialog = screen.getByRole('dialog', { name: /forget graph/i })
+    const dialog = screen.getByRole('dialog', { name: /olvidar grafo/i })
     expect(within(dialog).getByText('/graphs/work')).toBeTruthy()
     expect(graph.forget).not.toHaveBeenCalled()
 
-    fireEvent.click(within(dialog).getByRole('button', { name: /forget graph/i }))
+    fireEvent.click(within(dialog).getByRole('button', { name: /olvidar grafo/i }))
 
     await waitFor(() => expect(graph.forget).toHaveBeenCalledWith('/graphs/work'))
   })
@@ -163,15 +163,15 @@ describe('SettingsScreen', () => {
     graph.current = { root: '/graphs/work', name: 'Work', generation: 1 }
     renderScreen()
 
-    const section = screen.getByRole('region', { name: 'Danger zone' })
-    fireEvent.click(within(section).getByRole('button', { name: /delete graph/i }))
+    const section = screen.getByRole('region', { name: 'Zona de peligro' })
+    fireEvent.click(within(section).getByRole('button', { name: /eliminar grafo/i }))
 
-    const dialog = screen.getByRole('dialog', { name: /delete graph/i })
+    const dialog = screen.getByRole('dialog', { name: /eliminar grafo/i })
     expect(within(dialog).getByText('/graphs/work')).toBeTruthy()
-    const confirm = within(dialog).getByRole('button', { name: /delete graph/i })
+    const confirm = within(dialog).getByRole('button', { name: /eliminar grafo/i })
     expect(confirm.hasAttribute('disabled')).toBe(true)
 
-    const nameInput = within(dialog).getByLabelText('Graph name')
+    const nameInput = within(dialog).getByLabelText('Nombre del grafo')
     fireEvent.change(nameInput, { target: { value: 'Wor' } })
     expect(confirm.hasAttribute('disabled')).toBe(true)
     // Enter with a mismatched name must not delete either.
@@ -188,15 +188,15 @@ describe('SettingsScreen', () => {
   it('reflects the persisted markdown syntax mode', async () => {
     stored = { editorMarkdownSyntax: 'show' }
     renderScreen()
-    await waitFor(() => expect(radio(/^show/i).checked).toBe(true))
-    expect(radio(/^hide/i).checked).toBe(false)
+    await waitFor(() => expect(radio(/^mostrar/i).checked).toBe(true))
+    expect(radio(/^ocultar/i).checked).toBe(false)
   })
 
   it('selecting Show applies instantly and persists', async () => {
     renderScreen()
-    await waitFor(() => expect(radio(/^hide/i).checked).toBe(true))
+    await waitFor(() => expect(radio(/^ocultar/i).checked).toBe(true))
 
-    fireEvent.click(radio(/^show/i))
+    fireEvent.click(radio(/^mostrar/i))
 
     await waitFor(() =>
       expect(saved).toEqual([
@@ -207,6 +207,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -230,22 +232,22 @@ describe('SettingsScreen', () => {
         },
       ]),
     )
-    expect(radio(/^show/i).checked).toBe(true)
-    expect(radio(/^hide/i).checked).toBe(false)
+    expect(radio(/^mostrar/i).checked).toBe(true)
+    expect(radio(/^ocultar/i).checked).toBe(false)
   })
 
   it('reflects the persisted text size', async () => {
     stored = { editorTextSize: 'large' }
     renderScreen()
-    await waitFor(() => expect(radio(/^large/i).checked).toBe(true))
-    expect(radio(/^medium/i).checked).toBe(false)
+    await waitFor(() => expect(radio(/^grande/i).checked).toBe(true))
+    expect(radio(/^mediano/i).checked).toBe(false)
   })
 
   it('selecting Large applies instantly and persists the text size', async () => {
     renderScreen()
-    await waitFor(() => expect(radio(/^small/i).checked).toBe(true))
+    await waitFor(() => expect(radio(/^pequeño/i).checked).toBe(true))
 
-    fireEvent.click(radio(/^large/i))
+    fireEvent.click(radio(/^grande/i))
 
     await waitFor(() =>
       expect(saved).toEqual([
@@ -256,6 +258,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'large',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -279,13 +283,13 @@ describe('SettingsScreen', () => {
         },
       ]),
     )
-    expect(radio(/^large/i).checked).toBe(true)
-    expect(radio(/^medium/i).checked).toBe(false)
+    expect(radio(/^grande/i).checked).toBe(true)
+    expect(radio(/^mediano/i).checked).toBe(false)
   })
 
   it('enables full-width notes instantly and persists the preference', async () => {
     renderScreen()
-    const toggle = screen.getByRole('switch', { name: /full-width notes/i })
+    const toggle = screen.getByRole('switch', { name: /notas a todo el ancho/i })
     expect(toggle.getAttribute('aria-checked')).toBe('false')
 
     fireEvent.click(toggle)
@@ -297,13 +301,13 @@ describe('SettingsScreen', () => {
   it('reflects a persisted spell check opt-out', async () => {
     stored = { editorSpellCheck: false }
     renderScreen()
-    const toggle = screen.getByRole('switch', { name: /spell check/i })
+    const toggle = screen.getByRole('switch', { name: /corrector ortográfico/i })
     await waitFor(() => expect(toggle.getAttribute('aria-checked')).toBe('false'))
   })
 
   it('toggling spell check off applies instantly and persists', async () => {
     renderScreen()
-    const toggle = screen.getByRole('switch', { name: /spell check/i })
+    const toggle = screen.getByRole('switch', { name: /corrector ortográfico/i })
     // On by default.
     expect(toggle.getAttribute('aria-checked')).toBe('true')
 
@@ -319,6 +323,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -347,13 +353,13 @@ describe('SettingsScreen', () => {
   it('reflects a persisted default-bullet opt-out', async () => {
     stored = { editorDefaultBullet: false }
     renderScreen()
-    const toggle = screen.getByRole('switch', { name: /start with a bullet/i })
+    const toggle = screen.getByRole('switch', { name: /empezar con una viñeta/i })
     await waitFor(() => expect(toggle.getAttribute('aria-checked')).toBe('false'))
   })
 
   it('toggling the default bullet off applies instantly and persists', async () => {
     renderScreen()
-    const toggle = screen.getByRole('switch', { name: /start with a bullet/i })
+    const toggle = screen.getByRole('switch', { name: /empezar con una viñeta/i })
     // On by default.
     expect(toggle.getAttribute('aria-checked')).toBe('true')
 
@@ -369,6 +375,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -397,13 +405,13 @@ describe('SettingsScreen', () => {
   it('reflects a persisted bullet-after-heading opt-out', async () => {
     stored = { editorBulletAfterHeading: false }
     renderScreen()
-    const toggle = screen.getByRole('switch', { name: /bullet after a heading/i })
+    const toggle = screen.getByRole('switch', { name: /viñeta después de un encabezado/i })
     await waitFor(() => expect(toggle.getAttribute('aria-checked')).toBe('false'))
   })
 
   it('toggling bullet-after-heading off persists independently of the seed bullet', async () => {
     renderScreen()
-    const toggle = screen.getByRole('switch', { name: /bullet after a heading/i })
+    const toggle = screen.getByRole('switch', { name: /viñeta después de un encabezado/i })
     expect(toggle.getAttribute('aria-checked')).toBe('true')
 
     fireEvent.click(toggle)
@@ -418,6 +426,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: false,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -446,11 +456,11 @@ describe('SettingsScreen', () => {
   it('reflects the persisted theme and persists a new choice', async () => {
     stored = { theme: 'dark' }
     renderScreen()
-    await waitFor(() => expect(radio(/^dark/i).checked).toBe(true))
+    await waitFor(() => expect(radio(/^oscuro/i).checked).toBe(true))
 
-    fireEvent.click(radio(/^light/i))
+    fireEvent.click(radio(/^claro/i))
 
-    expect(radio(/^light/i).checked).toBe(true)
+    expect(radio(/^claro/i).checked).toBe(true)
     await waitFor(() =>
       expect(saved).toEqual([
         {
@@ -460,6 +470,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -488,14 +500,14 @@ describe('SettingsScreen', () => {
   it('reflects the persisted date format', async () => {
     stored = { dateFormat: 'dmy' }
     renderScreen()
-    const trigger = screen.getByRole('combobox', { name: 'Date format' })
+    const trigger = screen.getByRole('combobox', { name: 'Formato de fecha' })
     // The options label themselves with today's date in each order.
     await waitFor(() => expect(trigger.textContent).toContain(formatFullDate(new Date(), 'dmy')))
   })
 
   it('selecting day-month-year persists the date format', async () => {
     renderScreen()
-    const trigger = screen.getByRole('combobox', { name: 'Date format' })
+    const trigger = screen.getByRole('combobox', { name: 'Formato de fecha' })
     await waitFor(() => expect(trigger.textContent).toContain(formatFullDate(new Date(), 'mdy')))
 
     // Keyboard-driven (the pointer path needs capture APIs jsdom lacks).
@@ -515,6 +527,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -546,7 +560,7 @@ describe('SettingsScreen', () => {
     vi.setSystemTime(now)
 
     renderScreen()
-    const trigger = screen.getByRole('combobox', { name: 'Date format' })
+    const trigger = screen.getByRole('combobox', { name: 'Formato de fecha' })
     const isoLabel = formatFullDate(now, 'iso')
     await waitFor(() => expect(trigger.textContent).toContain(formatFullDate(now, 'mdy')))
 
@@ -563,6 +577,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -590,24 +606,24 @@ describe('SettingsScreen', () => {
 
   it('shows the week start setting in Date & time', async () => {
     renderScreen()
-    const dateTime = screen.getByRole('region', { name: 'Date & time' })
-    const appearance = screen.getByRole('region', { name: 'Appearance' })
+    const dateTime = screen.getByRole('region', { name: 'Fecha y hora' })
+    const appearance = screen.getByRole('region', { name: 'Apariencia' })
 
     await waitFor(() =>
-      expect(within(dateTime).getByRole('combobox', { name: 'Start week on' })).toBeTruthy(),
+      expect(within(dateTime).getByRole('combobox', { name: 'Empezar la semana en' })).toBeTruthy(),
     )
-    expect(within(appearance).queryByRole('combobox', { name: 'Start week on' })).toBeNull()
+    expect(within(appearance).queryByRole('combobox', { name: 'Empezar la semana en' })).toBeNull()
   })
 
   it('selecting Sunday persists the week start day', async () => {
     renderScreen()
-    const trigger = screen.getByRole('combobox', { name: 'Start week on' })
-    await waitFor(() => expect(trigger.textContent).toContain('Monday'))
+    const trigger = screen.getByRole('combobox', { name: 'Empezar la semana en' })
+    await waitFor(() => expect(trigger.textContent).toContain('Lunes'))
 
     fireEvent.keyDown(trigger, { key: 'ArrowDown' })
-    fireEvent.keyDown(await screen.findByRole('option', { name: 'Sunday' }), { key: 'Enter' })
+    fireEvent.keyDown(await screen.findByRole('option', { name: 'Domingo' }), { key: 'Enter' })
 
-    expect(trigger.textContent).toContain('Sunday')
+    expect(trigger.textContent).toContain('Domingo')
     await waitFor(() =>
       expect(saved).toEqual([
         {
@@ -617,6 +633,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -645,20 +663,20 @@ describe('SettingsScreen', () => {
   it('reflects the persisted time format', async () => {
     stored = { timeFormat: '24h' }
     renderScreen()
-    const trigger = screen.getByRole('combobox', { name: 'Time format' })
-    await waitFor(() => expect(trigger.textContent).toContain('24-hour'))
+    const trigger = screen.getByRole('combobox', { name: 'Formato de hora' })
+    await waitFor(() => expect(trigger.textContent).toContain('24 horas'))
   })
 
   it('selecting 24-hour persists the time format', async () => {
     renderScreen()
-    const trigger = screen.getByRole('combobox', { name: 'Time format' })
-    await waitFor(() => expect(trigger.textContent).toContain('12-hour'))
+    const trigger = screen.getByRole('combobox', { name: 'Formato de hora' })
+    await waitFor(() => expect(trigger.textContent).toContain('12 horas'))
 
     // Keyboard-driven (the pointer path needs capture APIs jsdom lacks).
     fireEvent.keyDown(trigger, { key: 'ArrowDown' })
-    fireEvent.keyDown(await screen.findByRole('option', { name: '24-hour' }), { key: 'Enter' })
+    fireEvent.keyDown(await screen.findByRole('option', { name: '24 horas' }), { key: 'Enter' })
 
-    expect(trigger.textContent).toContain('24-hour')
+    expect(trigger.textContent).toContain('24 horas')
     await waitFor(() =>
       expect(saved).toEqual([
         {
@@ -668,6 +686,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -695,10 +715,10 @@ describe('SettingsScreen', () => {
 
   it('adds an All Notes filter tag, normalized, and persists it', async () => {
     renderScreen()
-    const input = screen.getByLabelText('Add filter tag')
+    const input = screen.getByLabelText('Agregar etiqueta de filtro')
 
     fireEvent.change(input, { target: { value: ' #Meeting ' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Agregar' }))
 
     expect(screen.getByText('#meeting')).toBeTruthy()
     await waitFor(() =>
@@ -710,6 +730,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -737,15 +759,15 @@ describe('SettingsScreen', () => {
 
   it('rejects a tag name outside the #tag grammar with an inline error', async () => {
     renderScreen()
-    const input = screen.getByLabelText('Add filter tag')
+    const input = screen.getByLabelText('Agregar etiqueta de filtro')
     if (!(input instanceof HTMLInputElement)) {
       throw new Error('expected an <input>')
     }
 
     fireEvent.change(input, { target: { value: 'my tag' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Agregar' }))
 
-    expect(screen.getByRole('alert').textContent).toContain(`"my tag" can't be a tag`)
+    expect(screen.getByRole('alert').textContent).toContain(`"my tag" no puede ser una etiqueta`)
     // The draft stays put for fixing, and nothing reaches the store.
     expect(input.value).toBe('my tag')
     await waitFor(() => expect(saved).toEqual([]))
@@ -759,8 +781,8 @@ describe('SettingsScreen', () => {
     await waitFor(() => expect(screen.queryByText('#person')).toBeNull())
     expect(screen.getByText('#book')).toBeTruthy()
 
-    fireEvent.change(screen.getByLabelText('Add filter tag'), { target: { value: 'BOOK' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+    fireEvent.change(screen.getByLabelText('Agregar etiqueta de filtro'), { target: { value: 'BOOK' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Agregar' }))
 
     await waitFor(() => expect(saved).toEqual([]))
   })
@@ -772,7 +794,7 @@ describe('SettingsScreen', () => {
     await waitFor(() => expect(screen.queryByText('#link')).toBeNull())
     expect(screen.getByText('#book')).toBeTruthy()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Remove book' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Quitar book' }))
 
     expect(screen.queryByText('#book')).toBeNull()
     await waitFor(() =>
@@ -784,6 +806,8 @@ describe('SettingsScreen', () => {
           editorBulletAfterHeading: true,
           editorTextSize: 'small',
           editorFullWidth: false,
+          dailyStreamTodayOnly: false,
+          paperSheets: true,
           sidebarWidth: 260,
           contextSidebarWidth: 320,
           semanticSearchEnabled: false,
@@ -811,18 +835,18 @@ describe('SettingsScreen', () => {
 
   it('enabling semantic search persists the opt-in', async () => {
     renderScreen()
-    const enable = await screen.findByRole('button', { name: /enable semantic search/i })
+    const enable = await screen.findByRole('button', { name: /activar búsqueda semántica/i })
 
     fireEvent.click(enable)
 
     await waitFor(() =>
       expect(saved).toEqual([
-        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: true, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
+        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, dailyStreamTodayOnly: false, paperSheets: true, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: true, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
       ]),
     )
     // The control flips to the loading state (EmbeddingsSync owns the actual
     // download; the runtime here still reports `uninitialized`).
-    expect(screen.getByRole('progressbar', { name: /model download/i })).toBeTruthy()
+    expect(screen.getByRole('progressbar', { name: /descarga del modelo/i })).toBeTruthy()
   })
 
   it('shows byte-level progress while the model downloads', async () => {
@@ -830,9 +854,9 @@ describe('SettingsScreen', () => {
     embedStatus = { status: 'loading', progress: { downloaded: 45_000_000, total: 90_000_000 } }
     renderScreen()
 
-    const bar = await screen.findByRole('progressbar', { name: /model download/i })
+    const bar = await screen.findByRole('progressbar', { name: /descarga del modelo/i })
     await waitFor(() => expect(bar.getAttribute('aria-valuenow')).toBe('50'))
-    expect(screen.getByText('Downloading the model — 45 MB of 90 MB')).toBeTruthy()
+    expect(screen.getByText('Descargando el modelo — 45 MB de 90 MB')).toBeTruthy()
   })
 
   it('shows the downloaded model once ready and persists a disable', async () => {
@@ -840,16 +864,16 @@ describe('SettingsScreen', () => {
     embedStatus = { status: 'ready', model: 'all-MiniLM-L6-v2' }
     renderScreen()
 
-    expect(await screen.findByText(/model downloaded \(all-MiniLM-L6-v2\)/i)).toBeTruthy()
+    expect(await screen.findByText(/modelo descargado \(all-MiniLM-L6-v2\)/i)).toBeTruthy()
 
-    fireEvent.click(screen.getByRole('button', { name: /disable/i }))
+    fireEvent.click(screen.getByRole('button', { name: /desactivar/i }))
 
     await waitFor(() =>
       expect(saved).toEqual([
-        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
+        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, dailyStreamTodayOnly: false, paperSheets: true, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
       ]),
     )
-    expect(screen.getByRole('button', { name: /enable semantic search/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /activar búsqueda semántica/i })).toBeTruthy()
     // Disabling is immediate — every semantic consumer gates on the setting,
     // so there is no "takes effect on the next launch" caveat to show even
     // while the runtime still reports `ready`.
@@ -859,7 +883,7 @@ describe('SettingsScreen', () => {
   it('re-enabling after a failed load retries the download', async () => {
     embedStatus = { status: 'failed', message: 'offline' }
     renderScreen()
-    const enable = await screen.findByRole('button', { name: /enable semantic search/i })
+    const enable = await screen.findByRole('button', { name: /activar búsqueda semántica/i })
 
     fireEvent.click(enable)
 
@@ -869,7 +893,7 @@ describe('SettingsScreen', () => {
     await waitFor(() => expect(invoked).toContain('embed_ensure'))
     await waitFor(() =>
       expect(saved).toEqual([
-        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: true, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
+        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, dailyStreamTodayOnly: false, paperSheets: true, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: true, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
       ]),
     )
   })
@@ -881,24 +905,24 @@ describe('SettingsScreen', () => {
 
     expect(await screen.findByRole('alert')).toBeTruthy()
     expect(screen.getByText(/no disk space/i)).toBeTruthy()
-    expect(screen.getByRole('button', { name: /try again/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /intentar de nuevo/i })).toBeTruthy()
 
     // Backing out after a failure must work too — the opt-in isn't a trap.
-    fireEvent.click(screen.getByRole('button', { name: /disable/i }))
+    fireEvent.click(screen.getByRole('button', { name: /desactivar/i }))
 
     await waitFor(() =>
       expect(saved).toEqual([
-        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
+        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, dailyStreamTodayOnly: false, paperSheets: true, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
       ]),
     )
-    expect(screen.getByRole('button', { name: /enable semantic search/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /activar búsqueda semántica/i })).toBeTruthy()
   })
 
   it('rebuilding the index wipes and re-applies the projection through the bridge', async () => {
     try {
       renderScreen()
 
-      fireEvent.click(screen.getByRole('button', { name: /rebuild index/i }))
+      fireEvent.click(screen.getByRole('button', { name: /reconstruir índice/i }))
 
       // The whole chain: button → rebuildIndexVisibly → wipe, then the
       // projection-version stamp that marks a completed rebuild. (The graph is
@@ -913,7 +937,7 @@ describe('SettingsScreen', () => {
   it('disables the index rebuild until a graph index is open', () => {
     graph.indexGeneration = null
     renderScreen()
-    const button = screen.getByRole('button', { name: /rebuild index/i })
+    const button = screen.getByRole('button', { name: /reconstruir índice/i })
     expect(button.hasAttribute('disabled')).toBe(true)
   })
 
@@ -921,13 +945,13 @@ describe('SettingsScreen', () => {
     renderScreen()
     const section = screen.getByRole('region', { name: 'Editor' })
 
-    fireEvent.click(within(section).getByRole('button', { name: /show all/i }))
+    fireEvent.click(within(section).getByRole('button', { name: /mostrar todos/i }))
 
-    const dialog = await screen.findByRole('dialog', { name: 'Keyboard shortcuts' })
+    const dialog = await screen.findByRole('dialog', { name: 'Atajos de teclado' })
     // App scope (command titles) and editor scope (binding descriptions) still
     // come from the global cheat-sheet, not from a duplicated settings list.
-    expect(within(dialog).getByText('Toggle sidebar')).toBeTruthy()
-    expect(within(dialog).getByText('Go to today')).toBeTruthy()
+    expect(within(dialog).getByText('Mostrar u ocultar barra lateral')).toBeTruthy()
+    expect(within(dialog).getByText('Ir a hoy')).toBeTruthy()
     expect(within(dialog).getByText('Bold')).toBeTruthy()
     expect(within(dialog).getByText('Heading 1')).toBeTruthy()
     expect(within(dialog).getByText('Open the AI menu on the selection')).toBeTruthy()
@@ -935,21 +959,21 @@ describe('SettingsScreen', () => {
 
   it('adding an AI prompt persists the full document', async () => {
     renderScreen()
-    const section = screen.getByRole('region', { name: 'AI prompts' })
+    const section = screen.getByRole('region', { name: 'Prompts de IA' })
 
-    fireEvent.click(within(section).getByRole('button', { name: /add prompt/i }))
-    const dialog = screen.getByRole('dialog', { name: /add prompt/i })
-    fireEvent.change(within(dialog).getByPlaceholderText('Translate to French'), {
+    fireEvent.click(within(section).getByRole('button', { name: /agregar prompt/i }))
+    const dialog = screen.getByRole('dialog', { name: /agregar prompt/i })
+    fireEvent.change(within(dialog).getByPlaceholderText('Traducir al francés'), {
       target: { value: 'Translate to French' },
     })
-    fireEvent.change(within(dialog).getByPlaceholderText(/Translate the following/), {
+    fireEvent.change(within(dialog).getByPlaceholderText(/Traduce el siguiente texto/), {
       target: { value: 'Translate to French.\n\n{{selectedText}}' },
     })
-    fireEvent.submit(within(dialog).getByRole('button', { name: /add prompt/i }))
+    fireEvent.submit(within(dialog).getByRole('button', { name: /agregar prompt/i }))
 
     await waitFor(() =>
       expect(saved).toEqual([
-        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [{ id: expect.any(String), label: 'Translate to French', body: 'Translate to French.\n\n{{selectedText}}', mode: 'replace' }] },
+        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, dailyStreamTodayOnly: false, paperSheets: true, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [{ id: expect.any(String), label: 'Translate to French', body: 'Translate to French.\n\n{{selectedText}}', mode: 'replace' }] },
       ]),
     )
     expect(within(section).getByText('Translate to French')).toBeTruthy()
@@ -962,16 +986,16 @@ describe('SettingsScreen', () => {
       ],
     }
     renderScreen()
-    const section = screen.getByRole('region', { name: 'AI prompts' })
+    const section = screen.getByRole('region', { name: 'Prompts de IA' })
     const remove = await within(section).findByRole('button', {
-      name: /remove translate to french/i,
+      name: /quitar translate to french/i,
     })
 
     fireEvent.click(remove)
 
     await waitFor(() =>
       expect(saved).toEqual([
-        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
+        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, dailyStreamTodayOnly: false, paperSheets: true, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [] },
       ]),
     )
   })
@@ -983,19 +1007,19 @@ describe('SettingsScreen', () => {
       ],
     }
     renderScreen()
-    const section = screen.getByRole('region', { name: 'AI prompts' })
-    const edit = await within(section).findByRole('button', { name: /edit translate to french/i })
+    const section = screen.getByRole('region', { name: 'Prompts de IA' })
+    const edit = await within(section).findByRole('button', { name: /editar translate to french/i })
 
     fireEvent.click(edit)
-    const dialog = screen.getByRole('dialog', { name: /edit prompt/i })
-    fireEvent.change(within(dialog).getByPlaceholderText('Translate to French'), {
+    const dialog = screen.getByRole('dialog', { name: /editar prompt/i })
+    fireEvent.change(within(dialog).getByPlaceholderText('Traducir al francés'), {
       target: { value: 'Translate to German' },
     })
-    fireEvent.submit(within(dialog).getByRole('button', { name: /^save$/i }))
+    fireEvent.submit(within(dialog).getByRole('button', { name: /^guardar$/i }))
 
     await waitFor(() =>
       expect(saved).toEqual([
-        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [{ id: 'p1', label: 'Translate to German', body: '{{selectedText}}', mode: 'replace' }] },
+        { editorMarkdownSyntax: 'hide', editorSpellCheck: true, editorDefaultBullet: true, editorBulletAfterHeading: true, editorTextSize: 'small', editorFullWidth: false, dailyStreamTodayOnly: false, paperSheets: true, sidebarWidth: 260, contextSidebarWidth: 320, semanticSearchEnabled: false, describeAssets: true, contactsEnabled: false, mobileOnboarded: false, mobileStorage: 'local', mobileGraphName: '', theme: 'system', timeFormat: '12h', dateFormat: 'mdy', weekStartDay: 'monday', allNotesFilterTags: ['book', 'link', 'person'], calendarEnabled: false, calendarIds: [], graphColors: {}, aiProviders: [], defaultAiProviderId: null, chatModelSelection: null, aiPrompts: [{ id: 'p1', label: 'Translate to German', body: '{{selectedText}}', mode: 'replace' }] },
       ]),
     )
   })

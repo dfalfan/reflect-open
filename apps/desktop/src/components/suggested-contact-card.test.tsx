@@ -85,7 +85,7 @@ describe('SuggestedContactCard', () => {
 
   it('Add writes the details block in one write, then the content hides the card', async () => {
     renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Agregar' }))
 
     await waitFor(() => expect(written.length).toBe(1))
     expect(written[0]?.contents).toBe(
@@ -96,7 +96,7 @@ describe('SuggestedContactCard', () => {
 
   it('Ignore records the contact in ignoredContacts, then hides the card', async () => {
     renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: 'Ignore' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Ignorar' }))
 
     await waitFor(() => expect(written.length).toBe(1))
     expect(written[0]?.contents).toBe(

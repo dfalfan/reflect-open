@@ -11,7 +11,7 @@ vi.mock('@/providers/graph-provider', () => ({
 const { RebuildIndexField } = await import('./rebuild-index-field')
 
 function rebuildButton(): HTMLButtonElement {
-  const element = screen.getByRole('button', { name: /rebuild/i })
+  const element = screen.getByRole('button', { name: /reconstruir/i })
   if (!(element instanceof HTMLButtonElement)) {
     throw new Error('expected a <button>')
   }
@@ -45,7 +45,7 @@ describe('RebuildIndexField', () => {
 
     fireEvent.click(rebuildButton())
 
-    const pending = await screen.findByRole('button', { name: /rebuilding/i })
+    const pending = await screen.findByRole('button', { name: /reconstruyendo/i })
     expect(pending.hasAttribute('disabled')).toBe(true)
 
     finish()

@@ -104,7 +104,7 @@ describe('SimilarNotesSection', () => {
     ])
     const view = renderSimilar('notes/languages.md')
     await view.findByText('Rust')
-    expect(view.getByText('Similar notes')).toBeDefined()
+    expect(view.getByText('Notas similares')).toBeDefined()
     expect(view.getByText('Zig')).toBeDefined()
     const rustRow = view.getByRole('button', { name: 'Rust' })
     expect(rustRow.className).toContain('px-3')

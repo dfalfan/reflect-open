@@ -63,7 +63,7 @@ function noteRow(path: string, isPrivate: boolean, title = 'A') {
 describe('NoteActionsSection pin toggle', () => {
   it('offers Pin this note with the platform-formatted hint and toggles on click', async () => {
     const view = renderSection('notes/a.md')
-    const button = view.getByRole('button', { name: /Pin this note/ })
+    const button = view.getByRole('button', { name: /Fijar esta nota/ })
     // jsdom reports a non-Apple platform, so Mod renders as Ctrl.
     expect(button.textContent).toContain('CtrlO')
     await userEvent.click(button)
@@ -74,21 +74,21 @@ describe('NoteActionsSection pin toggle', () => {
   it('offers Un-pin this note when the index lists the note as pinned', async () => {
     getPinnedNotes.mockResolvedValue([{ path: 'daily/2026-06-10.md', title: 'June 10th, 2026', dailyDate: '2026-06-10' }])
     const view = renderSection('daily/2026-06-10.md')
-    await view.findByText('Un-pin this note')
-    await userEvent.click(view.getByRole('button', { name: /Un-pin this note/ }))
+    await view.findByText('Desfijar esta nota')
+    await userEvent.click(view.getByRole('button', { name: /Desfijar esta nota/ }))
     expect(toggleNotePinned).toHaveBeenCalledWith('daily/2026-06-10.md', 7)
     view.unmount()
   })
 
   it('flips the label from the toggle result before the index catches up', async () => {
     const view = renderSection('notes/a.md')
-    await userEvent.click(view.getByRole('button', { name: /Pin this note/ }))
+    await userEvent.click(view.getByRole('button', { name: /Fijar esta nota/ }))
     // The index still reports unpinned; the toggle's resolved state bridges
     // the watcher round-trip so a second click can't invert the user's intent.
-    expect(await view.findByText('Un-pin this note')).toBeDefined()
+    expect(await view.findByText('Desfijar esta nota')).toBeDefined()
     toggleNotePinned.mockResolvedValueOnce(false)
-    await userEvent.click(view.getByRole('button', { name: /Un-pin this note/ }))
-    expect(await view.findByText('Pin this note')).toBeDefined()
+    await userEvent.click(view.getByRole('button', { name: /Desfijar esta nota/ }))
+    expect(await view.findByText('Fijar esta nota')).toBeDefined()
     expect(toggleNotePinned).toHaveBeenCalledTimes(2)
     view.unmount()
   })
@@ -108,7 +108,7 @@ describe('NoteActionsSection pin toggle', () => {
       ]),
     )
 
-    await userEvent.click(view.getByRole('button', { name: /Pin this note/ }))
+    await userEvent.click(view.getByRole('button', { name: /Fijar esta nota/ }))
 
     expect(view.client.getQueryData<PinnedNote[]>(queryKey)?.map((note) => note.title)).toEqual([
       'Zeta',
@@ -129,13 +129,13 @@ describe('NoteActionsSection pin toggle', () => {
     const view = renderSection('notes/a.md')
     await waitFor(() => expect(getPinnedNotes).toHaveBeenCalledTimes(1))
 
-    await userEvent.click(view.getByRole('button', { name: /Pin this note/ }))
-    expect(view.getByText('Un-pin this note')).toBeDefined()
+    await userEvent.click(view.getByRole('button', { name: /Fijar esta nota/ }))
+    expect(view.getByText('Desfijar esta nota')).toBeDefined()
     rejectToggle({ kind: 'io', message: 'disk on fire' })
 
-    await waitFor(() => expect(view.getByText('Pin this note')).toBeDefined())
+    await waitFor(() => expect(view.getByText('Fijar esta nota')).toBeDefined())
     await waitFor(() => expect(getPinnedNotes).toHaveBeenCalledTimes(2))
-    expect(startOperation).toHaveBeenCalledWith('Updating pin')
+    expect(startOperation).toHaveBeenCalledWith('Actualizando fijado')
     expect(operationFail).toHaveBeenCalled()
     view.unmount()
   })
@@ -145,7 +145,7 @@ describe('NoteActionsSection pin toggle', () => {
 describe('NoteActionsSection private toggle', () => {
   it('offers Lock note and toggles on click', async () => {
     const view = renderSection('notes/a.md')
-    await userEvent.click(view.getByRole('button', { name: /Lock note/ }))
+    await userEvent.click(view.getByRole('button', { name: /Bloquear nota/ }))
     expect(toggleNotePrivate).toHaveBeenCalledWith('notes/a.md', 7)
     view.unmount()
   })
@@ -153,19 +153,19 @@ describe('NoteActionsSection private toggle', () => {
   it('offers Unlock note when the index reports the note private', async () => {
     getNote.mockResolvedValue(noteRow('daily/2026-06-10.md', true))
     const view = renderSection('daily/2026-06-10.md')
-    await view.findByText('Unlock note')
-    await userEvent.click(view.getByRole('button', { name: /Unlock note/ }))
+    await view.findByText('Desbloquear nota')
+    await userEvent.click(view.getByRole('button', { name: /Desbloquear nota/ }))
     expect(toggleNotePrivate).toHaveBeenCalledWith('daily/2026-06-10.md', 7)
     view.unmount()
   })
 
   it('flips the label from the toggle result before the index catches up', async () => {
     const view = renderSection('notes/a.md')
-    await userEvent.click(view.getByRole('button', { name: /Lock note/ }))
-    expect(await view.findByText('Unlock note')).toBeDefined()
+    await userEvent.click(view.getByRole('button', { name: /Bloquear nota/ }))
+    expect(await view.findByText('Desbloquear nota')).toBeDefined()
     toggleNotePrivate.mockResolvedValueOnce(false)
-    await userEvent.click(view.getByRole('button', { name: /Unlock note/ }))
-    expect(await view.findByText('Lock note')).toBeDefined()
+    await userEvent.click(view.getByRole('button', { name: /Desbloquear nota/ }))
+    expect(await view.findByText('Bloquear nota')).toBeDefined()
     expect(toggleNotePrivate).toHaveBeenCalledTimes(2)
     view.unmount()
   })
@@ -173,9 +173,9 @@ describe('NoteActionsSection private toggle', () => {
   it('restores the private label when a write fails', async () => {
     toggleNotePrivate.mockRejectedValueOnce({ kind: 'io', message: 'disk on fire' })
     const view = renderSection('notes/a.md')
-    await userEvent.click(view.getByRole('button', { name: /Lock note/ }))
-    await waitFor(() => expect(view.getByText('Lock note')).toBeDefined())
-    expect(startOperation).toHaveBeenCalledWith('Updating privacy')
+    await userEvent.click(view.getByRole('button', { name: /Bloquear nota/ }))
+    await waitFor(() => expect(view.getByText('Bloquear nota')).toBeDefined())
+    expect(startOperation).toHaveBeenCalledWith('Actualizando privacidad')
     expect(operationFail).toHaveBeenCalled()
     view.unmount()
   })
@@ -185,7 +185,7 @@ describe('NoteActionsSection private toggle', () => {
 describe('NoteActionsSection deep-link action', () => {
   it('does not offer Copy deep link in note actions', () => {
     const view = renderSection('notes/a.md')
-    expect(view.queryByRole('button', { name: /Copy deep link/ })).toBeNull()
+    expect(view.queryByRole('button', { name: /Copiar enlace directo/ })).toBeNull()
     view.unmount()
   })
 })
@@ -193,27 +193,27 @@ describe('NoteActionsSection deep-link action', () => {
 describe('NoteActionsSection trash action', () => {
   it('does not offer trash unless the note sidebar opts in', () => {
     const view = renderSection('notes/a.md')
-    expect(view.queryByRole('button', { name: 'Trash note' })).toBeNull()
+    expect(view.queryByRole('button', { name: 'Enviar a la papelera' })).toBeNull()
     view.unmount()
   })
 
   it('trashes an ordinary note after confirmation', async () => {
     const view = renderSection('notes/a.md', true)
-    await userEvent.click(view.getByRole('button', { name: 'Trash note' }))
-    const trashButtons = view.getAllByRole('button', { name: 'Trash note' })
+    await userEvent.click(view.getByRole('button', { name: 'Enviar a la papelera' }))
+    const trashButtons = view.getAllByRole('button', { name: 'Enviar a la papelera' })
     const confirmButton = trashButtons.at(-1)
     if (confirmButton === undefined) {
       throw new Error('Expected the confirmation button to render')
     }
     await userEvent.click(confirmButton)
     await waitFor(() => expect(deleteOpenNote).toHaveBeenCalledWith('notes/a.md', 7))
-    expect(startOperation).toHaveBeenCalledWith('Trashing note')
+    expect(startOperation).toHaveBeenCalledWith('Enviando la nota a la papelera')
     view.unmount()
   })
 
   it('does not offer trash for daily notes even if enabled', () => {
     const view = renderSection('daily/2026-06-10.md', true)
-    expect(view.queryByRole('button', { name: 'Trash note' })).toBeNull()
+    expect(view.queryByRole('button', { name: 'Enviar a la papelera' })).toBeNull()
     view.unmount()
   })
 })

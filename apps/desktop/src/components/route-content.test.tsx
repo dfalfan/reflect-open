@@ -201,7 +201,7 @@ describe('RouteContent', () => {
     files['notes/exist.md'] = '# Hello\n\nWorld.\n'
     const view = renderRoute({ kind: 'note', path: 'notes/exist.md' })
 
-    await view.findByLabelText('Editing notes/exist.md')
+    await view.findByLabelText('Editando notes/exist.md')
     expect(view.queryByTestId('daily-stream')).toBeNull()
     expect(view.getByTestId('fake-editor').textContent).toContain('# Hello')
     expect(editorProbe.hoverRenderer).toBe(true)
@@ -216,7 +216,7 @@ describe('RouteContent', () => {
     files['notes/exist.md'] = '# Hello\n'
     const view = renderRoute({ kind: 'note', path: 'notes/exist.md' })
 
-    await view.findByLabelText('Editing notes/exist.md')
+    await view.findByLabelText('Editando notes/exist.md')
     expect(editorProbe.hoverRenderer).toBe(false)
     view.unmount()
   })
@@ -224,7 +224,7 @@ describe('RouteContent', () => {
   it('opens a missing note seeded with an empty focused title, writing nothing', async () => {
     const view = renderRoute({ kind: 'note', path: 'notes/new.md' })
 
-    await view.findByLabelText('Editing notes/new.md')
+    await view.findByLabelText('Editando notes/new.md')
     // The seed is an empty H1: the caret lands in it (plain focus, no text
     // to select) and the title placeholder ghosts "Untitled" over the line.
     expect(view.getByTestId('fake-editor').textContent).toBe('#\n')
@@ -239,7 +239,7 @@ describe('RouteContent', () => {
 
   it('creates the file once the user actually edits the seeded note', async () => {
     const view = renderRoute({ kind: 'note', path: 'notes/new.md' })
-    await view.findByLabelText('Editing notes/new.md')
+    await view.findByLabelText('Editando notes/new.md')
 
     act(() => editorProbe.onChange?.('# Manifesto\n'))
     await act(() => flushOpenDocuments())
@@ -280,13 +280,13 @@ describe('RouteContent', () => {
 
   it('renders the All Notes screen for the allNotes route, not the stream', async () => {
     const view = renderRoute({ kind: 'allNotes', tag: null })
-    expect(view.getByLabelText('All notes')).toBeDefined()
+    expect(view.getByLabelText('Todas las notas')).toBeDefined()
     expect(view.queryByTestId('daily-stream')).toBeNull()
     // The pinned filter tabs come from settings; the table header renders
     // once the (empty) index query settles.
     expect(view.getByRole('button', { name: '#book' })).toBeDefined()
-    await view.findByText('Subject')
-    expect(view.getByText('No notes yet.')).toBeDefined()
+    await view.findByText('Asunto')
+    expect(view.getByText('Aún no hay notas.')).toBeDefined()
     view.unmount()
   })
 

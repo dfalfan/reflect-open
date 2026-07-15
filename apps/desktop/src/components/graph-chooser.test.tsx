@@ -90,9 +90,9 @@ describe('GraphChooser', () => {
     await waitFor(() =>
       expect(screen.getByRole('heading', { name: 'iCloud' })).toBeInTheDocument(),
     )
-    expect(screen.getByText('Recommended')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'A folder you choose' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Choose a folder/ })).toBeInTheDocument()
+    expect(screen.getByText('Recomendado')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Una carpeta que tú elijas' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Elegir una carpeta/ })).toBeInTheDocument()
   })
 
   it('creates an iCloud graph from the typed name', async () => {
@@ -104,10 +104,10 @@ describe('GraphChooser', () => {
     const user = userEvent.setup()
     render(<GraphChooser />, { wrapper })
 
-    const nameInput = await screen.findByRole('textbox', { name: 'Name' })
+    const nameInput = await screen.findByRole('textbox', { name: 'Nombre' })
     await user.clear(nameInput)
     await user.type(nameInput, 'My Notes')
-    await user.click(screen.getByRole('button', { name: 'Create' }))
+    await user.click(screen.getByRole('button', { name: 'Crear' }))
 
     await waitFor(() =>
       expect(invokeLog).toContainEqual(['graph_create', { path: '/icloud/Documents/My Notes' }]),
@@ -124,8 +124,8 @@ describe('GraphChooser', () => {
     render(<GraphChooser />, { wrapper })
 
     await screen.findByRole('button', { name: 'Notes' })
-    expect(screen.getByText('Open an existing graph from iCloud Drive.')).toBeInTheDocument()
-    expect(screen.getByText('or create new graph')).toBeInTheDocument()
+    expect(screen.getByText('Abre un grafo existente desde iCloud Drive.')).toBeInTheDocument()
+    expect(screen.getByText('o crea un grafo nuevo')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Work' }))
 
     await waitFor(() =>
@@ -146,22 +146,22 @@ describe('GraphChooser', () => {
     // compact create row — not the pre-status empty-container form — is the
     // input under test. Next to an existing list the row starts empty.
     await screen.findByRole('button', { name: 'Notes' })
-    const nameInput = screen.getByRole('textbox', { name: 'Name' })
+    const nameInput = screen.getByRole('textbox', { name: 'Nombre' })
     expect(nameInput).toHaveValue('')
-    expect(screen.getByRole('button', { name: 'Create' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Crear' })).toBeDisabled()
 
     // "notes" collides (case-insensitively) with the existing graph —
     // creating it would land inside that folder, so Create refuses and the
     // field says why.
     await user.type(nameInput, 'notes')
     expect(nameInput).toHaveAttribute('aria-invalid', 'true')
-    expect(screen.getByText('That name already exists in iCloud Drive.')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Create' })).toBeDisabled()
+    expect(screen.getByText('Ese nombre ya existe en iCloud Drive.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Crear' })).toBeDisabled()
 
     await user.clear(nameInput)
     await user.type(nameInput, 'Journal')
-    expect(screen.queryByText('That name already exists in iCloud Drive.')).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Create' }))
+    expect(screen.queryByText('Ese nombre ya existe en iCloud Drive.')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Crear' }))
 
     await waitFor(() =>
       expect(invokeLog).toContainEqual(['graph_create', { path: '/icloud/Documents/Journal' }]),
@@ -172,9 +172,9 @@ describe('GraphChooser', () => {
     render(<GraphChooser />, { wrapper })
 
     await waitFor(() =>
-      expect(screen.getByText(/Sign in to iCloud on this Mac/)).toBeInTheDocument(),
+      expect(screen.getByText(/Inicia sesión en iCloud en esta Mac/)).toBeInTheDocument(),
     )
-    expect(screen.getByRole('button', { name: 'Create' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Crear' })).toBeDisabled()
   })
 
   it('hides the iCloud card outside macOS builds and drops the Mac-specific copy', async () => {
@@ -182,10 +182,10 @@ describe('GraphChooser', () => {
     render(<GraphChooser />, { wrapper })
 
     await waitFor(() =>
-      expect(screen.getByRole('heading', { name: 'A folder you choose' })).toBeInTheDocument(),
+      expect(screen.getByRole('heading', { name: 'Una carpeta que tú elijas' })).toBeInTheDocument(),
     )
     expect(screen.queryByRole('heading', { name: 'iCloud' })).not.toBeInTheDocument()
-    expect(screen.getByText(/any folder on this computer/)).toBeInTheDocument()
+    expect(screen.getByText(/cualquier carpeta de esta computadora/)).toBeInTheDocument()
   })
 
   // The provider auto-opens the most recent graph on mount, so the chooser's
@@ -208,7 +208,7 @@ describe('GraphChooser', () => {
     render(<GraphChooser />, { wrapper })
 
     await waitFor(() => expect(screen.getByText('personal')).toBeInTheDocument())
-    await user.click(screen.getByRole('button', { name: 'Forget personal' }))
+    await user.click(screen.getByRole('button', { name: 'Olvidar personal' }))
 
     await waitFor(() => expect(screen.queryByText('personal')).not.toBeInTheDocument())
     expect(invokeLog).toContainEqual(['forget_recent', { root: '/graphs/personal' }])

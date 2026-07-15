@@ -42,13 +42,13 @@ describe('ShortcutsDialog', () => {
   it('lists both keymap scopes from the registries', async () => {
     renderDialog()
     await userEvent.click(screen.getByRole('button', { name: 'open' }))
-    const dialog = await screen.findByRole('dialog', { name: 'Keyboard shortcuts' })
+    const dialog = await screen.findByRole('dialog', { name: 'Atajos de teclado' })
     expect(dialog).toBeTruthy()
     // One row from each scope — derived data, so any registered binding works.
-    expect(screen.getByText('Go to today')).toBeTruthy()
+    expect(screen.getByText('Ir a hoy')).toBeTruthy()
     expect(screen.getByText('Bold')).toBeTruthy()
     // The cheat-sheet lists itself; a user who forgot ⌘/ can re-learn it here.
-    expect(screen.getByText('Keyboard shortcuts', { selector: 'li *' })).toBeTruthy()
+    expect(screen.getByText('Atajos de teclado', { selector: 'li *' })).toBeTruthy()
   })
 
   it('lists the AI menu shortcut with the Apple command chord', async () => {
@@ -67,7 +67,7 @@ describe('ShortcutsDialog', () => {
   it('keeps the sheet within the viewport and scrolls the shortcut rows', async () => {
     renderDialog()
     await userEvent.click(screen.getByRole('button', { name: 'open' }))
-    const dialog = await screen.findByRole('dialog', { name: 'Keyboard shortcuts' })
+    const dialog = await screen.findByRole('dialog', { name: 'Atajos de teclado' })
     expect(dialog.className).toContain('max-h-[calc(100dvh-2rem)]')
     expect(dialog.className).toContain('overflow-hidden')
     expect(dialog.querySelector('.overflow-y-auto')).toBeTruthy()
@@ -76,7 +76,7 @@ describe('ShortcutsDialog', () => {
   it('uses extra desktop width for additional shortcut columns', async () => {
     renderDialog()
     await userEvent.click(screen.getByRole('button', { name: 'open' }))
-    const dialog = await screen.findByRole('dialog', { name: 'Keyboard shortcuts' })
+    const dialog = await screen.findByRole('dialog', { name: 'Atajos de teclado' })
     expect(dialog.className).toContain('lg:max-w-5xl')
     expect(dialog.className).toContain('xl:max-w-6xl')
     const editorList = screen.getByRole('heading', { name: 'Editor' }).parentElement?.querySelector('ul')

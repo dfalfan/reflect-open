@@ -103,28 +103,28 @@ describe('V1ImportProvider', () => {
 
     fireEvent.click(startButton())
 
-    expect(await screen.findByText('Importing from Reflect V1')).toBeTruthy()
-    expect(screen.getByText('Reading the export…')).toBeTruthy()
+    expect(await screen.findByText('Importando desde Reflect V1')).toBeTruthy()
+    expect(screen.getByText('Leyendo la exportación…')).toBeTruthy()
     expect(importReflectV1Zip).toHaveBeenCalledWith('/tmp/reflect-v1.zip', 42)
 
     emitProgress({ stage: 'downloading', done: 3, total: 8 })
-    expect(await screen.findByText('Downloading attachments… 3 of 8')).toBeTruthy()
+    expect(await screen.findByText('Descargando adjuntos… 3 de 8')).toBeTruthy()
 
     emitProgress({ stage: 'writing', done: 10, total: 40 })
-    expect(await screen.findByText('Adding notes… 10 of 40')).toBeTruthy()
+    expect(await screen.findByText('Agregando notas… 10 de 40')).toBeTruthy()
 
     finish(summary({ mergedFiles: 1, renamedFiles: 1 }))
-    expect(await screen.findByText('Import complete')).toBeTruthy()
+    expect(await screen.findByText('Importación completa')).toBeTruthy()
     expect(
       screen.getByText(
-        '2 files imported, 1 daily note merged, 1 renamed to avoid a name clash, 1 already present.',
+        '2 archivos importados, 1 nota diaria combinada, 1 renombrados para evitar conflicto de nombres, 1 ya presentes.',
       ),
     ).toBeTruthy()
     expect(markReflectV1ImportOwnWrites).toHaveBeenCalledTimes(1)
     expect(refreshIndex).toHaveBeenCalledTimes(1)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Done' }))
-    await waitFor(() => expect(screen.queryByText('Import complete')).toBeNull())
+    fireEvent.click(screen.getByRole('button', { name: 'Listo' }))
+    await waitFor(() => expect(screen.queryByText('Importación completa')).toBeNull())
   })
 
   it('cannot be dismissed while the import runs', async () => {
@@ -134,9 +134,9 @@ describe('V1ImportProvider', () => {
     fireEvent.click(startButton())
     const dialog = await screen.findByRole('dialog')
 
-    expect(screen.queryByRole('button', { name: 'Close' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Cerrar' })).toBeNull()
     fireEvent.keyDown(dialog, { key: 'Escape' })
-    expect(screen.getByText('Importing from Reflect V1')).toBeTruthy()
+    expect(screen.getByText('Importando desde Reflect V1')).toBeTruthy()
   })
 
   it('cancels the running import and settles back to idle', async () => {
@@ -150,14 +150,14 @@ describe('V1ImportProvider', () => {
     renderProvider()
 
     fireEvent.click(startButton())
-    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancelar' }))
 
     expect(cancelReflectV1Import).toHaveBeenCalledTimes(1)
-    expect(await screen.findByRole('button', { name: 'Cancelling…' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'Cancelando…' })).toBeTruthy()
 
     reject(new Error('import cancelled'))
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
-    expect(screen.queryByText('Import failed')).toBeNull()
+    expect(screen.queryByText('Falló la importación')).toBeNull()
     expect(markReflectV1ImportOwnWrites).not.toHaveBeenCalled()
   })
 
@@ -166,10 +166,10 @@ describe('V1ImportProvider', () => {
     renderProvider()
 
     fireEvent.click(startButton())
-    await screen.findByRole('button', { name: 'Cancel' })
+    await screen.findByRole('button', { name: 'Cancelar' })
 
     emitProgress({ stage: 'writing', done: 1, total: 4 })
-    await waitFor(() => expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull())
+    await waitFor(() => expect(screen.queryByRole('button', { name: 'Cancelar' })).toBeNull())
   })
 
   it('surfaces failures with the native message', async () => {
@@ -178,11 +178,11 @@ describe('V1ImportProvider', () => {
 
     fireEvent.click(startButton())
 
-    expect(await screen.findByText('Import failed')).toBeTruthy()
+    expect(await screen.findByText('Falló la importación')).toBeTruthy()
     expect(screen.getByText('could not read the zip')).toBeTruthy()
     expect(refreshIndex).not.toHaveBeenCalled()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
@@ -249,7 +249,7 @@ describe('V1ImportProvider', () => {
 
     expect(
       await screen.findByText(
-        "12 files imported, 140 attachments downloaded. 1 attachment couldn't be downloaded and still links to Reflect V1.",
+        '12 archivos importados, 140 adjuntos descargados. 1 adjunto no se pudo descargar y todavía enlaza a Reflect V1.',
       ),
     ).toBeTruthy()
   })

@@ -112,14 +112,14 @@ describe('SettingsNavigator', () => {
 
   it('marks the section under the reading line as the page scrolls', () => {
     const scroller = renderNavigatorPage()
-    expect(activeEntry()).toBe('Appearance')
+    expect(activeEntry()).toBe('Apariencia')
 
     // Scroll until the Editor section (index 1) sits at the jump offset.
     scrollPageTo(scroller, sectionTop(1) - PAGE_PADDING_PX)
     expect(activeEntry()).toBe('Editor')
 
     scrollPageTo(scroller, 0)
-    expect(activeEntry()).toBe('Appearance')
+    expect(activeEntry()).toBe('Apariencia')
   })
 
   it('hands the last section the marker at the very bottom of the page', () => {
@@ -127,7 +127,7 @@ describe('SettingsNavigator', () => {
     scrollPageTo(scroller, CONTENT_PX - VIEWPORT_PX)
     // Danger zone's top never crosses the reading line, but the page can scroll no
     // further — the bottom override keeps the last entry reachable.
-    expect(activeEntry()).toBe('Danger zone')
+    expect(activeEntry()).toBe('Zona de peligro')
   })
 
   it('clicking an entry scrolls its section to the top of the page', () => {

@@ -53,7 +53,7 @@ describe('NoteContextSidebar', () => {
   it('queries the note path for similar notes and shows no section without results', async () => {
     const view = renderSidebar('notes/rust.md')
     await waitFor(() => expect(relatedNotes).toHaveBeenCalledWith('notes/rust.md', 6))
-    expect(view.queryByText('Similar notes')).toBeNull()
+    expect(view.queryByText('Notas similares')).toBeNull()
     view.unmount()
   })
 
@@ -69,7 +69,7 @@ describe('NoteContextSidebar', () => {
       },
     ])
     const view = renderSidebar('notes/rust.md')
-    await view.findByText('Similar notes')
+    await view.findByText('Notas similares')
     await userEvent.click(view.getByText('Zig'))
     expect(view.getByTestId('route').textContent).toContain('"kind":"note"')
     expect(view.getByTestId('route').textContent).toContain('notes/zig.md')

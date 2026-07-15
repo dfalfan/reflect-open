@@ -212,8 +212,8 @@ function renderChat() {
 describe('ChatScreen', () => {
   it('shows the add-a-provider call to action when nothing is configured', () => {
     const view = renderChat()
-    expect(view.getByRole('button', { name: /add an ai provider/i })).toBeDefined()
-    expect(view.queryByLabelText('Chat message')).toBeNull()
+    expect(view.getByRole('button', { name: /agregar un proveedor de ia/i })).toBeDefined()
+    expect(view.queryByLabelText('Mensaje de chat')).toBeNull()
   })
 
   it('runs a grounded turn: user bubble, search chip, cited answer', async () => {
@@ -234,10 +234,10 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'when does atlas ship?{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'when does atlas ship?{Enter}')
 
     expect(view.getByText('when does atlas ship?')).toBeDefined()
-    await view.findByText(/Searched “atlas” · 1 note/)
+    await view.findByText(/Buscó “atlas” · 1 nota/)
     // The turn settled, so the answer renders as markdown (not plain text).
     await waitFor(() =>
       expect(view.getByTestId('markdown-preview').textContent).toContain('It ships in June.'),
@@ -281,7 +281,7 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'open the source notes{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'open the source notes{Enter}')
     fireEvent.click(await view.findByRole('button', { name: 'Atlas' }), { metaKey: true })
     fireEvent.click(await view.findByRole('button', { name: 'Brief' }), { metaKey: true })
 
@@ -305,7 +305,7 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'what should I open?{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'what should I open?{Enter}')
     await userEvent.click(await view.findByRole('button', { name: 'Open Atlas' }))
 
     await waitFor(() => expect(probedRoute).toEqual({ kind: 'note', path: 'notes/atlas.md' }))
@@ -322,7 +322,7 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'what should I open?{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'what should I open?{Enter}')
     fireEvent.click(await view.findByRole('button', { name: 'Open Atlas' }), { metaKey: true })
 
     await waitFor(() =>
@@ -340,7 +340,7 @@ describe('ChatScreen', () => {
 
     // Keyboard-driven (the pointer path needs capture APIs jsdom lacks);
     // options render in a portal, so they're queried from screen.
-    fireEvent.keyDown(view.getByRole('combobox', { name: 'Model' }), { key: 'ArrowDown' })
+    fireEvent.keyDown(view.getByRole('combobox', { name: 'Modelo' }), { key: 'ArrowDown' })
 
     expect(await screen.findByText('OpenAI')).toBeDefined()
     const labels = screen.getAllByRole('option').map((option) => option.textContent)
@@ -365,10 +365,10 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    fireEvent.keyDown(view.getByRole('combobox', { name: 'Model' }), { key: 'ArrowDown' })
+    fireEvent.keyDown(view.getByRole('combobox', { name: 'Modelo' }), { key: 'ArrowDown' })
     fireEvent.keyDown(await screen.findByRole('option', { name: 'GPT-5.6 Terra' }), { key: 'Enter' })
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'hi{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'hi{Enter}')
 
     await waitFor(() => expect(streamChat).toHaveBeenCalledTimes(1))
     // Same entry (id → keychain key), with the picked model applied.
@@ -380,7 +380,7 @@ describe('ChatScreen', () => {
     settingsState.selection = { configId: 'm1', modelId: 'gpt-5.6-luna' }
     const view = renderChat()
 
-    fireEvent.keyDown(view.getByRole('combobox', { name: 'Model' }), { key: 'ArrowDown' })
+    fireEvent.keyDown(view.getByRole('combobox', { name: 'Modelo' }), { key: 'ArrowDown' })
 
     const picked = await screen.findByRole('option', { name: 'GPT-5.6 Luna' })
     expect(picked.getAttribute('aria-selected')).toBe('true')
@@ -394,7 +394,7 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'hi{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'hi{Enter}')
 
     await waitFor(() => expect(streamChat).toHaveBeenCalledTimes(1))
     expect(loadChatGraphContext).toHaveBeenCalledWith('test-graph')
@@ -410,7 +410,7 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'hi{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'hi{Enter}')
 
     await waitFor(() => expect(streamChat).toHaveBeenCalledTimes(1))
     expect(streamChat.mock.lastCall?.[0].context).toBeNull()
@@ -463,15 +463,15 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'what have I been reading?{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'what have I been reading?{Enter}')
 
     await userEvent.click(await view.findByRole('button', { name: '#book' }))
     expect(probedRoute).toEqual({ kind: 'allNotes', tag: 'book' })
     await userEvent.click(view.getByRole('button', { name: 'Atlas' }))
     expect(probedRoute).toEqual({ kind: 'note', path: 'notes/atlas.md' })
     // A refused listing shows the refusal, not a misleading count.
-    await view.findByText(/Listed #\* notes — Not a tag/)
-    await view.findByText(/Listed daily notes 2026-06-01 – 2026-06-11 · 2 days/)
+    await view.findByText(/Listó notas #\* — Not a tag/)
+    await view.findByText(/Listó notas diarias 2026-06-01 – 2026-06-11 · 2 días/)
     await userEvent.click(view.getByRole('button', { name: '2026-06-10' }))
     expect(probedRoute).toEqual({ kind: 'daily', date: '2026-06-10' })
   })
@@ -502,7 +502,7 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'what does the chart show?{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'what does the chart show?{Enter}')
 
     // Entries are labeled by filename; a refused asset keeps its refusal inline.
     await view.findByText('chart.png')
@@ -519,7 +519,7 @@ describe('ChatScreen', () => {
     )
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'hi{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'hi{Enter}')
 
     // Visible immediately as plain text — never re-parsed per delta.
     await view.findByText('Streaming **markdown**')
@@ -554,7 +554,7 @@ describe('ChatScreen', () => {
     getSecret.mockResolvedValueOnce(null)
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'hi{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'hi{Enter}')
     await view.findByText(/No API key found for this provider/)
     expect(streamChat).not.toHaveBeenCalled()
   })
@@ -572,7 +572,7 @@ describe('ChatScreen', () => {
     })
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'hey{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'hey{Enter}')
     await waitFor(() => expect(signal).toBeDefined())
     expect(signal?.aborted).toBe(false)
 
@@ -591,12 +591,12 @@ describe('ChatScreen', () => {
     const view = renderChat()
 
     // Dropped on the textarea, handled by the screen-level drop target.
-    fireEvent.drop(view.getByLabelText('Chat message'), {
+    fireEvent.drop(view.getByLabelText('Mensaje de chat'), {
       dataTransfer: { files: [pngFile('cat.png')], types: ['Files'] },
     })
-    await view.findByRole('button', { name: 'Remove cat.png' })
+    await view.findByRole('button', { name: 'Quitar cat.png' })
 
-    await userEvent.type(view.getByLabelText('Chat message'), '{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), '{Enter}')
 
     await waitFor(() => expect(streamChat).toHaveBeenCalled())
     expect(streamChat.mock.lastCall?.[0]?.messages.at(-1)).toEqual({
@@ -606,7 +606,7 @@ describe('ChatScreen', () => {
       ],
     })
     // The queue cleared; the photo now lives in the transcript bubble.
-    expect(view.queryByRole('button', { name: 'Remove cat.png' })).toBeNull()
+    expect(view.queryByRole('button', { name: 'Quitar cat.png' })).toBeNull()
     expect(view.getByAltText('cat.png')).toBeDefined()
   })
 
@@ -623,7 +623,7 @@ describe('ChatScreen', () => {
           releaseRead = resolve
         }),
     })
-    fireEvent.drop(view.getByLabelText('Chat message'), {
+    fireEvent.drop(view.getByLabelText('Mensaje de chat'), {
       dataTransfer: { files: [file], types: ['Files'] },
     })
 
@@ -641,7 +641,7 @@ describe('ChatScreen', () => {
     configureModel()
     const view = renderChat()
 
-    const notCancelled = fireEvent.drop(view.getByLabelText('Chat message'), {
+    const notCancelled = fireEvent.drop(view.getByLabelText('Mensaje de chat'), {
       dataTransfer: {
         files: [new File(['hi'], 'notes.txt', { type: 'text/plain' })],
         types: ['Files'],
@@ -657,14 +657,14 @@ describe('ChatScreen', () => {
     configureModel()
     const view = renderChat()
 
-    fireEvent.drop(view.getByLabelText('Chat message'), {
+    fireEvent.drop(view.getByLabelText('Mensaje de chat'), {
       dataTransfer: { files: [pngFile('cat.png')], types: ['Files'] },
     })
-    await userEvent.click(await view.findByRole('button', { name: 'Remove cat.png' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Quitar cat.png' }))
     expect(view.queryByAltText('cat.png')).toBeNull()
 
     // Nothing left to send: Enter on the empty composer is a no-op again.
-    await userEvent.type(view.getByLabelText('Chat message'), '{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), '{Enter}')
     expect(streamChat).not.toHaveBeenCalled()
   })
 
@@ -676,12 +676,12 @@ describe('ChatScreen', () => {
     ])
     const view = renderChat()
 
-    await userEvent.type(view.getByLabelText('Chat message'), 'hey{Enter}')
+    await userEvent.type(view.getByLabelText('Mensaje de chat'), 'hey{Enter}')
     await waitFor(() =>
       expect(view.getByTestId('markdown-preview').textContent).toContain('Hello!'),
     )
 
-    await userEvent.click(view.getByRole('button', { name: /new chat/i }))
+    await userEvent.click(view.getByRole('button', { name: /chat nuevo/i }))
     expect(view.queryByTestId('markdown-preview')).toBeNull()
     expect(view.queryByText('hey')).toBeNull()
   })

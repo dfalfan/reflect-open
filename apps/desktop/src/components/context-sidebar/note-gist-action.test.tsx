@@ -70,25 +70,25 @@ describe('NoteGistAction', () => {
 
   it('offers Share with private link for an unpublished note (even before its row exists)', () => {
     const view = renderAction()
-    expect(view.getByRole('button', { name: /Share with private link/ })).toBeTruthy()
+    expect(view.getByRole('button', { name: /Compartir con enlace privado/ })).toBeTruthy()
   })
 
   it('offers Unpublish link once the note carries a gist', () => {
     useNoteRow.mockReturnValue(noteRow({ gistUrl: 'https://gist.github.com/alex/g1' }))
     const view = renderAction()
-    expect(view.getByRole('button', { name: /Unpublish link/ })).toBeTruthy()
+    expect(view.getByRole('button', { name: /Despublicar enlace/ })).toBeTruthy()
   })
 
   it('publishes the open note on click', async () => {
     const view = renderAction()
-    await userEvent.click(view.getByRole('button', { name: /Share with private link/ }))
+    await userEvent.click(view.getByRole('button', { name: /Compartir con enlace privado/ }))
     expect(runGistPublish).toHaveBeenCalledWith('notes/a.md', 7)
   })
 
   it('unpublishes the open note on click once it carries a gist', async () => {
     useNoteRow.mockReturnValue(noteRow({ gistUrl: 'https://gist.github.com/alex/g1' }))
     const view = renderAction()
-    await userEvent.click(view.getByRole('button', { name: /Unpublish link/ }))
+    await userEvent.click(view.getByRole('button', { name: /Despublicar enlace/ }))
     expect(runGistUnpublish).toHaveBeenCalledWith('notes/a.md', 7)
   })
 
@@ -98,16 +98,16 @@ describe('NoteGistAction', () => {
     // on the index.
     setNoteRowOverlay('notes/a.md', 7, { gistUrl: 'https://gist.github.com/alex/g1' })
     const view = renderAction()
-    expect(view.getByRole('button', { name: /Unpublish link/ })).toBeTruthy()
+    expect(view.getByRole('button', { name: /Despublicar enlace/ })).toBeTruthy()
   })
 
   it('stays on Publish when the publish failed (already surfaced elsewhere)', async () => {
     runGistPublish.mockResolvedValue(null)
     const view = renderAction()
-    await userEvent.click(view.getByRole('button', { name: /Share with private link/ }))
+    await userEvent.click(view.getByRole('button', { name: /Compartir con enlace privado/ }))
 
     await waitFor(() => {
-      expect(view.getByRole('button', { name: /Share with private link/ })).toBeTruthy()
+      expect(view.getByRole('button', { name: /Compartir con enlace privado/ })).toBeTruthy()
     })
   })
 

@@ -143,7 +143,7 @@ describe('useWikiLinkHoverPreview', () => {
     render(<>{await renderBody(hoverHit('2026-06-09'))}</>)
 
     expect(screen.getByText('Tue, June 9th, 2026')).not.toBeNull()
-    expect(screen.getByText('Empty note')).not.toBeNull()
+    expect(screen.getByText('Nota vacía')).not.toBeNull()
     expect(mocks.markdownPreview).not.toHaveBeenCalled()
   })
 })

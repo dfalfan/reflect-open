@@ -51,7 +51,7 @@ function renderCombobox(attendees: MeetingAttendee[] = []): HTMLInputElement {
       <AttendeeCombobox attendees={attendees} onAdd={onAdd} />
     </QueryClientProvider>,
   )
-  return screen.getByPlaceholderText<HTMLInputElement>('Add attendee')
+  return screen.getByPlaceholderText<HTMLInputElement>('Agregar asistente')
 }
 
 /** cmdk highlights the first row in an effect — selection isn't synchronous. */
@@ -127,7 +127,7 @@ describe('AttendeeCombobox', () => {
     const input = renderCombobox()
 
     fireEvent.change(input, { target: { value: 'Ada L' } })
-    const addRow = await screen.findByText('Add “Ada L”')
+    const addRow = await screen.findByText('Agregar “Ada L”')
     fireEvent.click(addRow)
 
     expect(onAdd).toHaveBeenCalledWith({ name: 'Ada L' })

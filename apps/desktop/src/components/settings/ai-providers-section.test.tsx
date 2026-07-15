@@ -101,8 +101,8 @@ function twoStoredModels(): Record<string, unknown> {
 }
 
 function openDialog(): ReturnType<typeof within> {
-  fireEvent.click(screen.getByRole('button', { name: /add provider/i }))
-  return within(screen.getByRole('dialog', { name: 'Add AI provider' }))
+  fireEvent.click(screen.getByRole('button', { name: /agregar proveedor/i }))
+  return within(screen.getByRole('dialog', { name: 'Agregar proveedor de IA' }))
 }
 
 beforeEach(() => {
@@ -133,25 +133,25 @@ describe('AiProvidersSection', () => {
     expect(screen.getByText('OpenAI — GPT-5.5')).toBeTruthy()
     expect(screen.getByText(/wxyz1/)).toBeTruthy()
     expect(screen.getByText(/abcd2/)).toBeTruthy()
-    expect(screen.getByText('Default')).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Make default' })).toBeTruthy()
+    expect(screen.getByText('Por defecto')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Hacer predeterminado' })).toBeTruthy()
   })
 
   it('adds a model: key verified, then keychain + settings entry', async () => {
     renderSection()
-    await waitFor(() => expect(screen.getByText(/No AI providers configured/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/No hay proveedores de IA configurados/)).toBeTruthy())
 
     const dialog = openDialog()
     // Keyboard-driven (the pointer path needs capture APIs jsdom lacks);
     // options render in a portal, so they're queried from screen.
-    fireEvent.keyDown(dialog.getByRole('combobox', { name: 'Provider' }), { key: 'ArrowDown' })
+    fireEvent.keyDown(dialog.getByRole('combobox', { name: 'Proveedor' }), { key: 'ArrowDown' })
     fireEvent.keyDown(await screen.findByRole('option', { name: 'Anthropic' }), { key: 'Enter' })
-    fireEvent.click(dialog.getByRole('combobox', { name: 'Default model' }))
+    fireEvent.click(dialog.getByRole('combobox', { name: 'Modelo predeterminado' }))
     fireEvent.click(await screen.findByRole('option', { name: /Claude Sonnet 5/ }))
-    fireEvent.change(dialog.getByLabelText('API key'), {
+    fireEvent.change(dialog.getByLabelText('Clave de API'), {
       target: { value: 'sk-ant-test-wxyz1' },
     })
-    fireEvent.click(dialog.getByRole('button', { name: 'Add provider' }))
+    fireEvent.click(dialog.getByRole('button', { name: 'Agregar proveedor' }))
 
     await waitFor(() => expect(saved).toHaveLength(1))
     const doc = lastSavedDoc()
@@ -176,10 +176,10 @@ describe('AiProvidersSection', () => {
 
   it('offers OpenRouter in the provider picker', async () => {
     renderSection()
-    await waitFor(() => expect(screen.getByText(/No AI providers configured/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/No hay proveedores de IA configurados/)).toBeTruthy())
 
     const dialog = openDialog()
-    fireEvent.keyDown(dialog.getByRole('combobox', { name: 'Provider' }), { key: 'ArrowDown' })
+    fireEvent.keyDown(dialog.getByRole('combobox', { name: 'Proveedor' }), { key: 'ArrowDown' })
 
     expect(await screen.findByRole('option', { name: 'OpenRouter' })).toBeTruthy()
   })
@@ -187,11 +187,11 @@ describe('AiProvidersSection', () => {
   it('rejects a key the provider turns down, storing nothing', async () => {
     providerFetchMock.mockResolvedValue(new Response(null, { status: 401 }))
     renderSection()
-    await waitFor(() => expect(screen.getByText(/No AI providers configured/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/No hay proveedores de IA configurados/)).toBeTruthy())
 
     const dialog = openDialog()
-    fireEvent.change(dialog.getByLabelText('API key'), { target: { value: 'sk-typo' } })
-    fireEvent.click(dialog.getByRole('button', { name: 'Add provider' }))
+    fireEvent.change(dialog.getByLabelText('Clave de API'), { target: { value: 'sk-typo' } })
+    fireEvent.click(dialog.getByRole('button', { name: 'Agregar proveedor' }))
 
     await waitFor(() =>
       expect(dialog.getByRole('alert').textContent).toMatch(/rejected this API key/i),
@@ -203,17 +203,17 @@ describe('AiProvidersSection', () => {
   it('offers save-anyway when the provider cannot be reached', async () => {
     providerFetchMock.mockRejectedValue(new TypeError('offline'))
     renderSection()
-    await waitFor(() => expect(screen.getByText(/No AI providers configured/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/No hay proveedores de IA configurados/)).toBeTruthy())
 
     const dialog = openDialog()
-    fireEvent.change(dialog.getByLabelText('API key'), { target: { value: 'sk-offline-key' } })
-    fireEvent.click(dialog.getByRole('button', { name: 'Add provider' }))
+    fireEvent.change(dialog.getByLabelText('Clave de API'), { target: { value: 'sk-offline-key' } })
+    fireEvent.click(dialog.getByRole('button', { name: 'Agregar proveedor' }))
 
     // First submit downgrades to an explicit unverified save, not a block.
-    await waitFor(() => expect(dialog.getByRole('alert').textContent).toMatch(/reach OpenAI/))
+    await waitFor(() => expect(dialog.getByRole('alert').textContent).toMatch(/contactar a OpenAI/))
     expect(saved).toEqual([])
 
-    fireEvent.click(dialog.getByRole('button', { name: 'Save anyway' }))
+    fireEvent.click(dialog.getByRole('button', { name: 'Guardar de todos modos' }))
     await waitFor(() => expect(saved).toHaveLength(1))
     expect(secrets.size).toBe(1)
     expect(screen.queryByRole('dialog')).toBeNull()
@@ -221,12 +221,12 @@ describe('AiProvidersSection', () => {
 
   it('a failed keychain write keeps the dialog open and persists nothing', async () => {
     renderSection()
-    await waitFor(() => expect(screen.getByText(/No AI providers configured/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/No hay proveedores de IA configurados/)).toBeTruthy())
     failSecretSet = true
 
     const dialog = openDialog()
-    fireEvent.change(dialog.getByLabelText('API key'), { target: { value: 'sk-test' } })
-    fireEvent.click(dialog.getByRole('button', { name: 'Add provider' }))
+    fireEvent.change(dialog.getByLabelText('Clave de API'), { target: { value: 'sk-test' } })
+    fireEvent.click(dialog.getByRole('button', { name: 'Agregar proveedor' }))
 
     await waitFor(() => expect(dialog.getByRole('alert').textContent).toBe('keychain locked'))
     expect(screen.getByRole('dialog')).toBeTruthy()
@@ -237,11 +237,11 @@ describe('AiProvidersSection', () => {
   it('refuses to add when the settings store failed to load (no orphaned key)', async () => {
     failLoad = true
     renderSection()
-    await waitFor(() => expect(screen.getByText(/No AI providers configured/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/No hay proveedores de IA configurados/)).toBeTruthy())
 
     const dialog = openDialog()
-    fireEvent.change(dialog.getByLabelText('API key'), { target: { value: 'sk-test' } })
-    fireEvent.click(dialog.getByRole('button', { name: 'Add provider' }))
+    fireEvent.change(dialog.getByLabelText('Clave de API'), { target: { value: 'sk-test' } })
+    fireEvent.click(dialog.getByRole('button', { name: 'Agregar proveedor' }))
 
     // A session-only entry would vanish on restart, stranding the key in the
     // keychain with no UI to delete it — so the key must never be stored.
@@ -261,7 +261,7 @@ describe('AiProvidersSection', () => {
     )
 
     fireEvent.click(
-      screen.getByRole('button', { name: 'Remove Anthropic — Claude Opus 4.8' }),
+      screen.getByRole('button', { name: 'Quitar Anthropic — Claude Opus 4.8' }),
     )
 
     await waitFor(() =>
@@ -287,9 +287,9 @@ describe('AiProvidersSection', () => {
     // went stale. A snapshot-based write would leave one row behind with
     // its key already gone from the keychain.
     fireEvent.click(
-      screen.getByRole('button', { name: 'Remove Anthropic — Claude Opus 4.8' }),
+      screen.getByRole('button', { name: 'Quitar Anthropic — Claude Opus 4.8' }),
     )
-    fireEvent.click(screen.getByRole('button', { name: 'Remove OpenAI — GPT-5.5' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Quitar OpenAI — GPT-5.5' }))
 
     await waitFor(() =>
       expect(lastSavedDoc()).toMatchObject({ aiProviders: [], defaultAiProviderId: null }),
@@ -301,10 +301,10 @@ describe('AiProvidersSection', () => {
     stored = twoStoredModels()
     renderSection()
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Make default' })).toBeTruthy(),
+      expect(screen.getByRole('button', { name: 'Hacer predeterminado' })).toBeTruthy(),
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Make default' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Hacer predeterminado' }))
 
     await waitFor(() => expect(lastSavedDoc().defaultAiProviderId).toBe('b'))
     expect(lastSavedDoc().aiProviders).toHaveLength(2)
@@ -312,24 +312,24 @@ describe('AiProvidersSection', () => {
 
   it('traps Tab inside the dialog', async () => {
     renderSection()
-    await waitFor(() => expect(screen.getByText(/No AI providers configured/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/No hay proveedores de IA configurados/)).toBeTruthy())
 
     const dialog = openDialog()
-    const submitButton = dialog.getByRole('button', { name: 'Add provider' })
+    const submitButton = dialog.getByRole('button', { name: 'Agregar proveedor' })
     submitButton.focus()
     fireEvent.keyDown(submitButton, { key: 'Tab' })
 
     // From the last control, Tab wraps to the first instead of escaping
     // into the settings page behind the modal.
-    expect(document.activeElement).toBe(dialog.getByLabelText('Provider'))
+    expect(document.activeElement).toBe(dialog.getByLabelText('Proveedor'))
   })
 
   it('falls back to the first entry when the default id dangles', async () => {
     stored = { ...twoStoredModels(), defaultAiProviderId: 'gone' }
     renderSection()
 
-    await waitFor(() => expect(screen.getByText('Default')).toBeTruthy())
+    await waitFor(() => expect(screen.getByText('Por defecto')).toBeTruthy())
     // The badge lands on the first row; the second still offers "Make default".
-    expect(screen.getByRole('button', { name: 'Make default' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Hacer predeterminado' })).toBeTruthy()
   })
 })

@@ -48,15 +48,15 @@ describe('BackupSettingsField', () => {
       status: AUTH_ERROR,
     })
 
-    expect(await screen.findByText('Backup', { selector: 'legend' })).toBeTruthy()
-    expect(screen.queryByText('GitHub backup')).toBeNull()
+    expect(await screen.findByText('Respaldo', { selector: 'legend' })).toBeTruthy()
+    expect(screen.queryByText('Respaldo en GitHub')).toBeNull()
     expect(screen.getByText('git@gitlab.com:alex/notes.git')).toBeTruthy()
     // The actionable message, not a GitHub reconnect that can't help.
     expect(screen.getByText(/ssh-add/)).toBeTruthy()
-    expect(screen.queryByText(/reconnect GitHub/)).toBeNull()
+    expect(screen.queryByText(/vuelve a conectar GitHub/)).toBeNull()
     // Machine-level GitHub sign-out is noise next to a non-GitHub graph.
-    expect(screen.queryByRole('button', { name: /Sign out of GitHub/ })).toBeNull()
-    expect(screen.queryByRole('button', { name: 'Open GitHub repo' })).toBeNull()
+    expect(screen.queryByRole('button', { name: /Cerrar sesión de GitHub/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Abrir repo de GitHub' })).toBeNull()
   })
 
   it('renders a GitHub remote with the reconnect affordances', async () => {
@@ -67,13 +67,13 @@ describe('BackupSettingsField', () => {
       status: AUTH_ERROR,
     })
 
-    expect(await screen.findByText('GitHub backup')).toBeTruthy()
+    expect(await screen.findByText('Respaldo en GitHub')).toBeTruthy()
     expect(screen.getByText('alex/notes')).toBeTruthy()
-    expect(screen.getByText(/reconnect GitHub/)).toBeTruthy()
-    expect(screen.getByText('GitHub account')).toBeTruthy()
-    expect(screen.getByText(/connected graphs stop backing up/i)).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Open GitHub repo' })).toBeTruthy()
-    expect(screen.getByRole('button', { name: /Sign out of GitHub/ })).toBeTruthy()
+    expect(screen.getByText(/vuelve a conectar GitHub/)).toBeTruthy()
+    expect(screen.getByText('Cuenta de GitHub')).toBeTruthy()
+    expect(screen.getByText(/los grafos conectados dejan de respaldarse/i)).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Abrir repo de GitHub' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /Cerrar sesión de GitHub/ })).toBeTruthy()
   })
 
   it('opens the connected GitHub repository', async () => {
@@ -84,7 +84,7 @@ describe('BackupSettingsField', () => {
       status: { state: 'idle' },
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Open GitHub repo' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Abrir repo de GitHub' }))
 
     expect(openUrl).toHaveBeenCalledWith('https://github.com/alex/notes')
   })
@@ -98,14 +98,14 @@ describe('BackupSettingsField', () => {
       status: { state: 'idle' },
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Open GitHub repo' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Abrir repo de GitHub' }))
 
-    expect(await screen.findByText(/Couldn’t open the browser/)).toBeTruthy()
+    expect(await screen.findByText(/No se pudo abrir el navegador/)).toBeTruthy()
 
-    fireEvent.click(screen.getByRole('button', { name: /Sign out of GitHub/ }))
+    fireEvent.click(screen.getByRole('button', { name: /Cerrar sesión de GitHub/ }))
 
     expect(
-      within(screen.getByRole('dialog')).queryByText(/Couldn’t open the browser/),
+      within(screen.getByRole('dialog')).queryByText(/No se pudo abrir el navegador/),
     ).toBeNull()
   })
 
@@ -118,13 +118,13 @@ describe('BackupSettingsField', () => {
       status: { state: 'idle' },
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Open GitHub repo' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Abrir repo de GitHub' }))
 
-    expect(await screen.findByText(/Couldn’t open the browser/)).toBeTruthy()
+    expect(await screen.findByText(/No se pudo abrir el navegador/)).toBeTruthy()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open GitHub repo' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir repo de GitHub' }))
 
-    await waitFor(() => expect(screen.queryByText(/Couldn’t open the browser/)).toBeNull())
+    await waitFor(() => expect(screen.queryByText(/No se pudo abrir el navegador/)).toBeNull())
   })
 
   it('ignores an older open-repo failure after a newer retry succeeds', async () => {
@@ -144,14 +144,14 @@ describe('BackupSettingsField', () => {
       status: { state: 'idle' },
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Open GitHub repo' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Open GitHub repo' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Abrir repo de GitHub' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Abrir repo de GitHub' }))
 
     await waitFor(() => expect(openUrl).toHaveBeenCalledTimes(2))
 
     rejectFirstOpen(new Error('Old failure'))
 
-    await waitFor(() => expect(screen.queryByText(/Couldn’t open the browser/)).toBeNull())
+    await waitFor(() => expect(screen.queryByText(/No se pudo abrir el navegador/)).toBeNull())
   })
 
   it('confirms before signing out of GitHub', async () => {
@@ -162,17 +162,17 @@ describe('BackupSettingsField', () => {
       status: { state: 'idle' },
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: /Sign out of GitHub/ }))
+    fireEvent.click(await screen.findByRole('button', { name: /Cerrar sesión de GitHub/ }))
 
-    expect(screen.getByRole('heading', { name: 'Sign out of GitHub?' })).toBeTruthy()
-    expect(screen.getByText(/Every GitHub-backed graph will stop backing up/i)).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '¿Cerrar sesión de GitHub?' })).toBeTruthy()
+    expect(screen.getByText(/Todos los grafos respaldados en GitHub dejarán de respaldarse/i)).toBeTruthy()
     expect(sync.signOut).not.toHaveBeenCalled()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }))
 
     await waitFor(() => expect(sync.signOut).toHaveBeenCalledTimes(1))
     await waitFor(() =>
-      expect(screen.queryByRole('heading', { name: 'Sign out of GitHub?' })).toBeNull(),
+      expect(screen.queryByRole('heading', { name: '¿Cerrar sesión de GitHub?' })).toBeNull(),
     )
   })
 
@@ -185,10 +185,10 @@ describe('BackupSettingsField', () => {
       status: { state: 'idle' },
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: /Sign out of GitHub/ }))
-    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }))
+    fireEvent.click(await screen.findByRole('button', { name: /Cerrar sesión de GitHub/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }))
 
-    expect(await screen.findByRole('heading', { name: 'Sign out of GitHub?' })).toBeTruthy()
+    expect(await screen.findByRole('heading', { name: '¿Cerrar sesión de GitHub?' })).toBeTruthy()
     expect(within(screen.getByRole('dialog')).getByText('Keychain denied')).toBeTruthy()
     expect(screen.getAllByText('Keychain denied')).toHaveLength(1)
   })
@@ -208,16 +208,16 @@ describe('BackupSettingsField', () => {
       status: { state: 'idle' },
     })
 
-    fireEvent.click(await screen.findByRole('button', { name: /Sign out of GitHub/ }))
-    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    fireEvent.click(await screen.findByRole('button', { name: /Cerrar sesión de GitHub/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
 
-    expect(screen.getByRole('heading', { name: 'Sign out of GitHub?' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '¿Cerrar sesión de GitHub?' })).toBeTruthy()
 
     resolveSignOut()
 
     await waitFor(() =>
-      expect(screen.queryByRole('heading', { name: 'Sign out of GitHub?' })).toBeNull(),
+      expect(screen.queryByRole('heading', { name: '¿Cerrar sesión de GitHub?' })).toBeNull(),
     )
   })
 })

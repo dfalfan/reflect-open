@@ -232,7 +232,7 @@ describe('AllNotesScreen', () => {
       }),
     )
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: null })
-    expect(view.queryByRole('button', { name: /Trash \(/ })).toBeNull()
+    expect(view.queryByRole('button', { name: /Enviar a la papelera \(/ })).toBeNull()
     view.unmount()
   })
 
@@ -265,7 +265,7 @@ describe('AllNotesScreen', () => {
     fireEvent.click(view.getByRole('button', { name: '#book' }))
 
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: 'book' })
-    await view.findByText('No notes tagged #book.')
+    await view.findByText('No hay notas con la etiqueta #book.')
     expect(view.queryByText('Health Stacked')).toBeNull()
     view.unmount()
   })
@@ -355,7 +355,7 @@ describe('AllNotesScreen', () => {
     const view = renderScreen()
 
     // `book` is pinned, so the combobox offers only `travel` (with its count).
-    fireEvent.click(await view.findByRole('button', { name: 'Custom' }))
+    fireEvent.click(await view.findByRole('button', { name: 'Personalizado' }))
     const listbox = await view.findByRole('listbox')
     expect(listbox.textContent).toContain('#travel')
     expect(listbox.textContent).toContain('2')
@@ -377,19 +377,19 @@ describe('AllNotesScreen', () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
-    fireEvent.click(view.getByRole('button', { name: 'Custom' }))
-    const input = await view.findByPlaceholderText('Filter by any tag…')
+    fireEvent.click(view.getByRole('button', { name: 'Personalizado' }))
+    const input = await view.findByPlaceholderText('Filtrar por cualquier etiqueta…')
 
     // An exact existing tag isn't duplicated as a "Filter by" item.
     fireEvent.change(input, { target: { value: 'travel' } })
-    expect(view.queryByRole('option', { name: /Filter by/ })).toBeNull()
+    expect(view.queryByRole('option', { name: /Filtrar por/ })).toBeNull()
 
     // A leading `#` is accepted, and the tag need not exist in the index.
     fireEvent.change(input, { target: { value: '#zettel' } })
-    fireEvent.click(await view.findByRole('option', { name: 'Filter by #zettel' }))
+    fireEvent.click(await view.findByRole('option', { name: 'Filtrar por #zettel' }))
 
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: 'zettel' })
-    await view.findByText('No notes tagged #zettel.')
+    await view.findByText('No hay notas con la etiqueta #zettel.')
     view.unmount()
   })
 
@@ -397,15 +397,15 @@ describe('AllNotesScreen', () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
 
-    fireEvent.click(view.getByRole('button', { name: 'Custom' }))
-    const input = await view.findByPlaceholderText('Filter by any tag…')
+    fireEvent.click(view.getByRole('button', { name: 'Personalizado' }))
+    const input = await view.findByPlaceholderText('Filtrar por cualquier etiqueta…')
     fireEvent.change(input, { target: { value: 'TRAVEL' } })
 
     // cmdk's default filter (command-score) folds case like `foldTag` does,
     // so a differently-cased query keeps the existing facet reachable instead
     // of dead-ending with a hidden list and a suppressed "Filter by" offer.
     expect(await view.findByRole('option', { name: /#travel/ })).toBeDefined()
-    expect(view.queryByRole('option', { name: /Filter by/ })).toBeNull()
+    expect(view.queryByRole('option', { name: /Filtrar por/ })).toBeNull()
 
     fireEvent.click(view.getByRole('option', { name: /#travel/ }))
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: 'travel' })
@@ -421,13 +421,13 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     // Clicking the row body (the snippet, not a button) selects without opening.
     fireEvent.click(view.getByText('Shop your health goals.'))
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: null })
-    const trashButton = view.getByRole('button', { name: /Trash \(1\)/ })
+    const trashButton = view.getByRole('button', { name: /Enviar a la papelera \(1\)/ })
     expect(trashButton).toBeDefined()
-    expect(view.getByRole('group', { name: 'Filter by tag' }).previousElementSibling).toBe(trashButton)
+    expect(view.getByRole('group', { name: 'Filtrar por etiqueta' }).previousElementSibling).toBe(trashButton)
 
     // ⌘-click a second row extends the selection.
     fireEvent.click(view.getByText('Dandelion chocolate.'), { metaKey: true })
-    expect(view.getByRole('button', { name: /Trash \(2\)/ })).toBeDefined()
+    expect(view.getByRole('button', { name: /Enviar a la papelera \(2\)/ })).toBeDefined()
     expect(openRouteInNewWindow).not.toHaveBeenCalled()
     view.unmount()
   })
@@ -459,7 +459,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     fireEvent.click(view.getByText('alpha'))
     fireEvent.click(view.getByText('charlie'), { shiftKey: true })
 
-    expect(view.getByRole('button', { name: /Trash \(3\)/ })).toBeDefined()
+    expect(view.getByRole('button', { name: /Enviar a la papelera \(3\)/ })).toBeDefined()
     view.unmount()
   })
 
@@ -475,10 +475,10 @@ describe('AllNotesScreen — selection and bulk trash', () => {
   it('drives selection from the keyboard and opens with Return', async () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
-    const surface = view.getByLabelText('All notes')
+    const surface = view.getByLabelText('Todas las notas')
 
     fireEvent.keyDown(surface, { key: 'ArrowDown' }) // selects the first row
-    expect(view.getByRole('button', { name: /Trash \(1\)/ })).toBeDefined()
+    expect(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ })).toBeDefined()
 
     fireEvent.keyDown(surface, { key: 'Enter' })
     expect(probedRoute(view)).toEqual({ kind: 'note', path: 'notes/health.md' })
@@ -489,13 +489,13 @@ describe('AllNotesScreen — selection and bulk trash', () => {
   it('clears the selection on Escape', async () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
-    const surface = view.getByLabelText('All notes')
+    const surface = view.getByLabelText('Todas las notas')
 
     fireEvent.click(view.getByText('Shop your health goals.'))
-    expect(view.queryByRole('button', { name: /Trash \(1\)/ })).not.toBeNull()
+    expect(view.queryByRole('button', { name: /Enviar a la papelera \(1\)/ })).not.toBeNull()
 
     fireEvent.keyDown(surface, { key: 'Escape' })
-    expect(view.queryByRole('button', { name: /Trash \(/ })).toBeNull()
+    expect(view.queryByRole('button', { name: /Enviar a la papelera \(/ })).toBeNull()
     view.unmount()
   })
 
@@ -505,11 +505,11 @@ describe('AllNotesScreen — selection and bulk trash', () => {
 
     fireEvent.click(view.getByText('Shop your health goals.'))
     fireEvent.click(view.getByText('Dandelion chocolate.'), { metaKey: true })
-    fireEvent.click(view.getByRole('button', { name: /Trash \(2\)/ }))
+    fireEvent.click(view.getByRole('button', { name: /Enviar a la papelera \(2\)/ }))
 
     // Confirm, then the two notes go to the trash via `note_delete`.
-    await view.findByText('Trash 2 notes?')
-    fireEvent.click(view.getByRole('button', { name: 'Trash' }))
+    await view.findByText('¿Enviar 2 notas a la papelera?')
+    fireEvent.click(view.getByRole('button', { name: 'Enviar a la papelera' }))
 
     await waitFor(() => {
       expect(mockInvoke).toHaveBeenCalledWith('note_delete', {
@@ -531,12 +531,12 @@ describe('AllNotesScreen — selection and bulk trash', () => {
   it('opens the confirm dialog from the ⌘⌫ shortcut', async () => {
     const view = renderScreen()
     await view.findByText('Health Stacked')
-    const surface = view.getByLabelText('All notes')
+    const surface = view.getByLabelText('Todas las notas')
 
     fireEvent.click(view.getByText('Shop your health goals.'))
     fireEvent.keyDown(surface, { key: 'Backspace', metaKey: true })
 
-    expect(await view.findByText('Trash 1 note?')).toBeDefined()
+    expect(await view.findByText('¿Enviar 1 nota a la papelera?')).toBeDefined()
     view.unmount()
   })
 
@@ -547,7 +547,7 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     // Select a note, then send Return to the New note button: a focused control
     // owns Return, so the document-level shortcut must back off and not open.
     fireEvent.click(view.getByText('Shop your health goals.'))
-    fireEvent.keyDown(view.getByRole('button', { name: /New note/ }), { key: 'Enter' })
+    fireEvent.keyDown(view.getByRole('button', { name: /Nota nueva/ }), { key: 'Enter' })
 
     expect(probedRoute(view)).toEqual({ kind: 'allNotes', tag: null })
     view.unmount()
@@ -577,19 +577,19 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     await view.findByText('Health Stacked')
 
     fireEvent.click(view.getByText('Shop your health goals.'))
-    fireEvent.click(view.getByRole('button', { name: /Trash \(1\)/ }))
-    await view.findByText('Trash 1 note?')
-    fireEvent.click(view.getByRole('button', { name: 'Trash' }))
+    fireEvent.click(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ }))
+    await view.findByText('¿Enviar 1 nota a la papelera?')
+    fireEvent.click(view.getByRole('button', { name: 'Enviar a la papelera' }))
 
     // The confirm closes either way; the reason lands in the operations toast.
-    await waitFor(() => expect(view.queryByText('Trash 1 note?')).toBeNull())
+    await waitFor(() => expect(view.queryByText('¿Enviar 1 nota a la papelera?')).toBeNull())
     await waitFor(() =>
       expect(view.getByTestId('operations').textContent).toContain('failed:disk on fire'),
     )
     // The note that failed to trash is left in the list and stays selected, so
     // the bulk action is still available for an immediate retry (no re-select).
     expect(view.getByText('Health Stacked')).toBeDefined()
-    expect(view.getByRole('button', { name: /Trash \(1\)/ })).toBeDefined()
+    expect(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ })).toBeDefined()
     view.unmount()
   })
 
@@ -623,14 +623,14 @@ describe('AllNotesScreen — selection and bulk trash', () => {
 
     fireEvent.click(view.getByText('Shop your health goals.'))
     fireEvent.click(view.getByText('Dandelion chocolate.'), { metaKey: true })
-    fireEvent.click(view.getByRole('button', { name: /Trash \(2\)/ }))
-    await view.findByText('Trash 2 notes?')
-    fireEvent.click(view.getByRole('button', { name: 'Trash' }))
+    fireEvent.click(view.getByRole('button', { name: /Enviar a la papelera \(2\)/ }))
+    await view.findByText('¿Enviar 2 notas a la papelera?')
+    fireEvent.click(view.getByRole('button', { name: 'Enviar a la papelera' }))
 
     // The successfully-trashed note stays gone; the failed one stays selected.
     await waitFor(() => expect(view.queryByText('Health Stacked')).toBeNull())
     expect(view.getByText('Tokyo Gâteau')).toBeDefined()
-    expect(view.getByRole('button', { name: /Trash \(1\)/ })).toBeDefined()
+    expect(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ })).toBeDefined()
     view.unmount()
   })
 
@@ -639,14 +639,14 @@ describe('AllNotesScreen — selection and bulk trash', () => {
     await view.findByText('Health Stacked')
 
     fireEvent.click(view.getByText('Shop your health goals.'))
-    fireEvent.click(view.getByRole('button', { name: /Trash \(1\)/ }))
-    await view.findByText('Trash 1 note?')
+    fireEvent.click(view.getByRole('button', { name: /Enviar a la papelera \(1\)/ }))
+    await view.findByText('¿Enviar 1 nota a la papelera?')
 
-    const confirm = view.getByRole('button', { name: 'Trash' })
+    const confirm = view.getByRole('button', { name: 'Enviar a la papelera' })
     fireEvent.click(confirm)
     fireEvent.click(confirm) // a rapid second click must not double-delete
 
-    await waitFor(() => expect(view.queryByText('Trash 1 note?')).toBeNull())
+    await waitFor(() => expect(view.queryByText('¿Enviar 1 nota a la papelera?')).toBeNull())
     const healthDeletes = mockInvoke.mock.calls.filter(
       ([command, args]) => command === 'note_delete' && args['path'] === 'notes/health.md',
     )

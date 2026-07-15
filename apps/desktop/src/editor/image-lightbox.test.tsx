@@ -44,13 +44,13 @@ function renderMobileLightbox(): RenderedLightbox {
   const onClose = vi.fn()
   render(<ImageLightbox image={makeImage()} onClose={onClose} onOpenImage={vi.fn()} />)
 
-  const dialog = screen.getByRole('dialog', { name: 'Image preview' })
-  const preview = screen.getByRole('button', { name: 'Close image preview' })
+  const dialog = screen.getByRole('dialog', { name: 'Vista previa de imagen' })
+  const preview = screen.getByRole('button', { name: 'Cerrar vista previa de imagen' })
   const image = preview.querySelector('img')
   if (!(image instanceof HTMLImageElement)) {
     throw new Error('lightbox image missing')
   }
-  const closeChrome = screen.getByRole('button', { name: 'Close' }).parentElement
+  const closeChrome = screen.getByRole('button', { name: 'Cerrar' }).parentElement
   if (!(closeChrome instanceof HTMLElement)) {
     throw new Error('close chrome missing')
   }
@@ -271,11 +271,11 @@ describe('ImageLightbox desktop surface', () => {
     const onClose = vi.fn()
     render(<ImageLightbox image={makeImage()} onClose={onClose} onOpenImage={vi.fn()} />)
 
-    const dialog = screen.getByRole('dialog', { name: 'Image preview' })
+    const dialog = screen.getByRole('dialog', { name: 'Vista previa de imagen' })
     expect(dialog.querySelector('.bg-black')).toBeNull()
     expect(dialog.className).toContain('bg-black/80')
 
-    const preview = screen.getByRole('button', { name: 'Close image preview' })
+    const preview = screen.getByRole('button', { name: 'Cerrar vista previa de imagen' })
     const image = preview.querySelector('img')
     expect(image?.className).toContain('max-h-full max-w-full')
 

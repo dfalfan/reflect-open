@@ -35,20 +35,20 @@ describe('WorkspaceHeader', () => {
 
   it('shows the indexing indicator while the reconcile runs', () => {
     const { view } = renderHeader({ indexing: true })
-    expect(view.getByRole('status').textContent).toBe('Indexing…')
+    expect(view.getByRole('status').textContent).toBe('Indexando…')
     view.unmount()
   })
 
   it('offers the opposite theme and toggles on click', async () => {
     const { view, onToggleTheme } = renderHeader({ resolvedTheme: 'dark' })
-    await userEvent.click(view.getByText('Light mode'))
+    await userEvent.click(view.getByText('Modo claro'))
     expect(onToggleTheme).toHaveBeenCalledOnce()
     view.unmount()
   })
 
   it('opens settings', async () => {
     const { view, onOpenSettings } = renderHeader()
-    await userEvent.click(view.getByLabelText('Open settings'))
+    await userEvent.click(view.getByLabelText('Abrir ajustes'))
     expect(onOpenSettings).toHaveBeenCalledOnce()
     view.unmount()
   })

@@ -77,7 +77,7 @@ afterEach(() => {
 describe('IntegrationsSection', () => {
   it('enabling persists the opt-in and triggers the permission prompt', async () => {
     renderSection()
-    fireEvent.click(await screen.findByRole('switch', { name: 'Contacts' }))
+    fireEvent.click(await screen.findByRole('switch', { name: 'Contactos' }))
 
     expect(settings.update).toHaveBeenCalledWith({ contactsEnabled: true })
     await waitFor(() => expect(requests).toBe(1))
@@ -87,7 +87,7 @@ describe('IntegrationsSection', () => {
     authorization = 'authorized'
     settings.current = { contactsEnabled: true }
     renderSection()
-    fireEvent.click(await screen.findByRole('switch', { name: 'Contacts' }))
+    fireEvent.click(await screen.findByRole('switch', { name: 'Contactos' }))
 
     expect(settings.update).toHaveBeenCalledWith({ contactsEnabled: false })
     expect(requests).toBe(0)
@@ -97,7 +97,9 @@ describe('IntegrationsSection', () => {
     settings.current = { contactsEnabled: true }
     renderSection()
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Allow contacts access' }))
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Permitir acceso a los contactos' }),
+    )
     await waitFor(() => expect(requests).toBe(1))
   })
 
@@ -106,7 +108,9 @@ describe('IntegrationsSection', () => {
     settings.current = { contactsEnabled: true }
     renderSection()
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Open System Settings' }))
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Abrir Configuración del Sistema' }),
+    )
     expect(openUrl).toHaveBeenCalledWith(
       'x-apple.systempreferences:com.apple.preference.security?Privacy_Contacts',
     )
@@ -116,7 +120,7 @@ describe('IntegrationsSection', () => {
     authorization = 'unavailable'
     renderSection()
     await waitFor(() => expect(screen.queryByRole('switch')).toBeNull())
-    expect(screen.queryByText('Integrations')).toBeNull()
+    expect(screen.queryByText('Integraciones')).toBeNull()
   })
 
   it('keeps calendar visible on macOS when contacts are unavailable', async () => {
@@ -125,6 +129,6 @@ describe('IntegrationsSection', () => {
     renderSection()
 
     expect(await screen.findByText('Calendar events')).toBeTruthy()
-    expect(screen.queryByRole('switch', { name: 'Contacts' })).toBeNull()
+    expect(screen.queryByRole('switch', { name: 'Contactos' })).toBeNull()
   })
 })

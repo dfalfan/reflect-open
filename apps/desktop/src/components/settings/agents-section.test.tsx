@@ -80,9 +80,9 @@ afterEach(() => {
 describe('AgentsSection', () => {
   it('installs the skill with the graph generation pinned', async () => {
     renderSection()
-    fireEvent.click(await screen.findByRole('button', { name: 'Install skill' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Instalar habilidad' }))
 
-    await waitFor(() => expect(screen.getByText('Installed')).toBeTruthy())
+    await waitFor(() => expect(screen.getByText('Instalada')).toBeTruthy())
     expect(installCalls).toEqual([{ generation: GRAPH.generation }])
     expect(screen.getByText('/Users/me/.agents/skills/reflect-personal/SKILL.md')).toBeTruthy()
   })
@@ -91,9 +91,9 @@ describe('AgentsSection', () => {
     installState = 'stale'
     renderSection()
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Remove' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Quitar' }))
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Install skill' })).toBeTruthy(),
+      expect(screen.getByRole('button', { name: 'Instalar habilidad' })).toBeTruthy(),
     )
     expect(uninstallCalls).toEqual([{ generation: GRAPH.generation }])
   })
@@ -102,14 +102,14 @@ describe('AgentsSection', () => {
     installState = 'conflict'
     renderSection()
 
-    await screen.findByText(/Reflect doesn’t manage/)
-    expect(screen.queryByRole('button', { name: 'Install skill' })).toBeNull()
-    expect(screen.queryByRole('button', { name: 'Remove' })).toBeNull()
+    await screen.findByText(/que Reflect no administra/)
+    expect(screen.queryByRole('button', { name: 'Instalar habilidad' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Quitar' })).toBeNull()
   })
 
   it('renders nothing off macOS desktop', () => {
     platform.isMacosDesktop = false
     renderSection()
-    expect(screen.queryByText('Agent skill')).toBeNull()
+    expect(screen.queryByText('Habilidad de agente')).toBeNull()
   })
 })

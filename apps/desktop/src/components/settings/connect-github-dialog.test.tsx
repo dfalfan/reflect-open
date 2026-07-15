@@ -74,10 +74,10 @@ describe('ConnectGithubDialog', () => {
     sync.connectExistingRepo.mockResolvedValueOnce('notFound')
     const onClose = renderWizard()
 
-    fireEvent.change(screen.getByLabelText('New repository name'), {
+    fireEvent.change(screen.getByLabelText('Nombre del repositorio nuevo'), {
       target: { value: '  my-notes  ' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     // The owner is the verified sign-in — never typed.
     await waitFor(() =>
@@ -95,7 +95,7 @@ describe('ConnectGithubDialog', () => {
     sync.connectNewRepo.mockResolvedValueOnce('manualCreateNeeded')
     renderWizard()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     expect(await screen.findByText('alex')).toBeTruthy()
   })
@@ -105,11 +105,11 @@ describe('ConnectGithubDialog', () => {
     sync.connectNewRepo.mockResolvedValueOnce('manualCreateNeeded')
     const onClose = renderWizard()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     // The guide names the exact repo and opens the prefilled create page.
-    expect(await screen.findByText(/waiting for the repository/i)).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'Create on GitHub…' }))
+    expect(await screen.findByText(/esperando el repositorio/i)).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Crear en GitHub…' }))
     expect(openedUrls).toHaveBeenCalledWith(
       expect.stringContaining('https://github.com/new?name=g-backup'),
     )
@@ -132,10 +132,10 @@ describe('ConnectGithubDialog', () => {
       .mockResolvedValueOnce('needsPublicConfirm') // first poll finds it public
     sync.connectNewRepo.mockResolvedValueOnce('manualCreateNeeded')
     const onClose = renderWizard()
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
-    expect(await screen.findByText(/is public/i)).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'Choose another repo' }))
+    expect(await screen.findByText(/es público/i)).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Elegir otro repo' }))
 
     // New attempt with an existing repo; hold it pending to observe the UI —
     // the stale create guide (and its poll) must not resurface.
@@ -143,14 +143,14 @@ describe('ConnectGithubDialog', () => {
     sync.connectExistingRepo.mockImplementationOnce(
       () => new Promise<ConnectExistingResult>((resolve) => (gate.resolve = resolve)),
     )
-    fireEvent.click(await screen.findByRole('radio', { name: /use an existing repository/i }))
-    fireEvent.change(screen.getByLabelText('Existing repository'), {
+    fireEvent.click(await screen.findByRole('radio', { name: /usar un repositorio existente/i }))
+    fireEvent.change(screen.getByLabelText('Repositorio existente'), {
       target: { value: 'alex/other-notes' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
-    expect(await screen.findByText('Connecting…')).toBeTruthy()
-    expect(screen.queryByText(/waiting for the repository/i)).toBeNull()
+    expect(await screen.findByText('Conectando…')).toBeTruthy()
+    expect(screen.queryByText(/esperando el repositorio/i)).toBeNull()
 
     gate.resolve?.('connected')
     await waitFor(() => expect(onClose).toHaveBeenCalled())
@@ -161,20 +161,20 @@ describe('ConnectGithubDialog', () => {
     sync.connectNewRepo.mockResolvedValueOnce('manualCreateNeeded')
     renderWizard()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
-    fireEvent.click(await screen.findByRole('button', { name: 'Change repository' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Cambiar repositorio' }))
 
-    expect(await screen.findByLabelText('New repository name')).toBeTruthy()
+    expect(await screen.findByLabelText('Nombre del repositorio nuevo')).toBeTruthy()
   })
 
   it('validates the existing-repo input before any network work', async () => {
     renderWizard()
 
-    fireEvent.click(screen.getByRole('radio', { name: /use an existing repository/i }))
-    fireEvent.change(screen.getByLabelText('Existing repository'), {
+    fireEvent.click(screen.getByRole('radio', { name: /usar un repositorio existente/i }))
+    fireEvent.change(screen.getByLabelText('Repositorio existente'), {
       target: { value: 'not a repo!' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     expect(
       await screen.findByText('Enter the repository as owner/name or a GitHub URL.'),
@@ -186,17 +186,17 @@ describe('ConnectGithubDialog', () => {
     sync.connectExistingRepo.mockResolvedValueOnce('needsPublicConfirm')
     const onClose = renderWizard()
 
-    fireEvent.click(screen.getByRole('radio', { name: /use an existing repository/i }))
-    fireEvent.change(screen.getByLabelText('Existing repository'), {
+    fireEvent.click(screen.getByRole('radio', { name: /usar un repositorio existente/i }))
+    fireEvent.change(screen.getByLabelText('Repositorio existente'), {
       target: { value: 'alex/public-notes' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     // The consent screen names the repo and spells out the stakes.
-    expect(await screen.findByText(/alex\/public-notes is public/i)).toBeTruthy()
+    expect(await screen.findByText(/alex\/public-notes es público/i)).toBeTruthy()
     expect(onClose).not.toHaveBeenCalled()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Back up to a public repo' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Respaldar en un repo público' }))
 
     await waitFor(() =>
       expect(sync.connectExistingRepo).toHaveBeenLastCalledWith(
@@ -211,17 +211,17 @@ describe('ConnectGithubDialog', () => {
     sync.connectExistingRepo.mockResolvedValueOnce('notFound')
     const onClose = renderWizard()
 
-    fireEvent.click(screen.getByRole('radio', { name: /use an existing repository/i }))
-    fireEvent.change(screen.getByLabelText('Existing repository'), {
+    fireEvent.click(screen.getByRole('radio', { name: /usar un repositorio existente/i }))
+    fireEvent.change(screen.getByLabelText('Repositorio existente'), {
       target: { value: 'alex/gone' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     expect(await screen.findByText(/not found/i)).toBeTruthy()
     expect(sync.connectNewRepo).not.toHaveBeenCalled()
     expect(onClose).not.toHaveBeenCalled()
     // PAT remedy is token scope — the app-install flow is someone else's fix.
-    expect(screen.queryByRole('button', { name: /grant access/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /conceder acceso/i })).toBeNull()
   })
 
   it('offers a way back to change the repository after a failed connect', async () => {
@@ -230,19 +230,19 @@ describe('ConnectGithubDialog', () => {
     sync.connectExistingRepo.mockResolvedValueOnce('notFound')
     const onClose = renderWizard()
 
-    fireEvent.click(screen.getByRole('radio', { name: /use an existing repository/i }))
-    fireEvent.change(screen.getByLabelText('Existing repository'), {
+    fireEvent.click(screen.getByRole('radio', { name: /usar un repositorio existente/i }))
+    fireEvent.change(screen.getByLabelText('Repositorio existente'), {
       target: { value: 'alex/gone' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
     expect(await screen.findByText(/not found/i)).toBeTruthy()
 
     // Back, fix the name — the stored sign-in carries the retry through.
-    fireEvent.click(screen.getByRole('button', { name: 'Change repository' }))
-    fireEvent.change(await screen.findByLabelText('Existing repository'), {
+    fireEvent.click(screen.getByRole('button', { name: 'Cambiar repositorio' }))
+    fireEvent.change(await screen.findByLabelText('Repositorio existente'), {
       target: { value: 'alex/notes' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     await waitFor(() =>
       expect(sync.connectExistingRepo).toHaveBeenLastCalledWith(
@@ -259,8 +259,8 @@ describe('ConnectGithubDialog', () => {
     openedUrls.mockRejectedValueOnce(new Error('no handler for https'))
     renderWizard()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
-    fireEvent.click(await screen.findByRole('button', { name: 'Create on GitHub…' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Crear en GitHub…' }))
 
     // The handoff URL is the whole recovery — it must be readable, not lost
     // in a silently rejected promise.
@@ -279,21 +279,21 @@ describe('ConnectGithubDialog', () => {
       .mockResolvedValueOnce('notFound') // poll: access still not granted
     const onClose = renderWizard()
 
-    fireEvent.click(screen.getByRole('radio', { name: /use an existing repository/i }))
-    fireEvent.change(screen.getByLabelText('Existing repository'), {
+    fireEvent.click(screen.getByRole('radio', { name: /usar un repositorio existente/i }))
+    fireEvent.change(screen.getByLabelText('Repositorio existente'), {
       target: { value: 'alex/notes' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     // A plain "give access" step that names the repo and steers to a per-repo
     // grant (never "All repositories").
-    expect(await screen.findByText(/give reflect access to/i)).toBeTruthy()
+    expect(await screen.findByText(/dale a reflect acceso a/i)).toBeTruthy()
     expect(screen.getByText(/only select repositories/i)).toBeTruthy()
     expect(screen.queryByText(/all repositories/i)).toBeNull()
     expect(screen.queryByText(/token/i)).toBeNull()
     expect(screen.queryByRole('button', { name: /try again/i })).toBeNull()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Grant access on GitHub…' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Conceder acceso en GitHub…' }))
     expect(openedUrls).toHaveBeenCalledWith(
       'https://github.com/apps/reflect-github-app/installations/new',
     )
@@ -315,14 +315,14 @@ describe('ConnectGithubDialog', () => {
     storeCredential(appCredential())
     const onClose = renderWizard()
 
-    fireEvent.click(screen.getByRole('radio', { name: /use an existing repository/i }))
-    fireEvent.change(screen.getByLabelText('Existing repository'), {
+    fireEvent.click(screen.getByRole('radio', { name: /usar un repositorio existente/i }))
+    fireEvent.change(screen.getByLabelText('Repositorio existente'), {
       target: { value: 'alex/notes' },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
     await waitFor(() => expect(onClose).toHaveBeenCalled())
-    expect(screen.queryByText(/give reflect access/i)).toBeNull()
+    expect(screen.queryByText(/dale a reflect acceso/i)).toBeNull()
   })
 
   it('points the app create guide at granting access, not token scope', async () => {
@@ -331,9 +331,9 @@ describe('ConnectGithubDialog', () => {
     sync.connectNewRepo.mockResolvedValueOnce('manualCreateNeeded')
     renderWizard()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
-    fireEvent.click(await screen.findByRole('button', { name: /grant the Reflect app access/i }))
+    fireEvent.click(await screen.findByRole('button', { name: /concede acceso a la app de Reflect/i }))
     expect(openedUrls).toHaveBeenCalledWith(
       'https://github.com/apps/reflect-github-app/installations/new',
     )
@@ -351,9 +351,9 @@ describe('ConnectGithubDialog', () => {
     sync.connectNewRepo.mockResolvedValueOnce('manualCreateNeeded')
     const onClose = renderWizard()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
-    expect(await screen.findByText(/waiting for the repository/i)).toBeTruthy()
+    expect(await screen.findByText(/esperando el repositorio/i)).toBeTruthy()
     await waitFor(() => expect(onClose).toHaveBeenCalled())
     expect(sync.connectExistingRepo.mock.calls.length).toBeGreaterThanOrEqual(3)
     expect(sync.connectNewRepo).toHaveBeenCalledTimes(1)
@@ -364,9 +364,9 @@ describe('ConnectGithubDialog', () => {
     sync.connectNewRepo.mockResolvedValueOnce('manualCreateNeeded')
     renderWizard()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }))
 
-    expect(await screen.findByText(/token’s repository access/i)).toBeTruthy()
-    expect(screen.queryByRole('button', { name: /grant/i })).toBeNull()
+    expect(await screen.findByText(/acceso de repositorios de tu token/i)).toBeTruthy()
+    expect(screen.queryByRole('button', { name: /conced/i })).toBeNull()
   })
 })

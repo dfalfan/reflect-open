@@ -48,8 +48,8 @@ describe('ImportSection', () => {
       expect(open).toHaveBeenCalledWith({
         multiple: false,
         directory: false,
-        title: 'Import Reflect V1 export',
-        filters: [{ name: 'Zip archives', extensions: ['zip'] }],
+        title: 'Importar exportación de Reflect V1',
+        filters: [{ name: 'Archivos Zip', extensions: ['zip'] }],
       }),
     )
     await waitFor(() =>
@@ -72,6 +72,6 @@ describe('ImportSection', () => {
     render(<ImportSection />)
 
     expect(importButton().hasAttribute('disabled')).toBe(true)
-    expect(importButton().textContent).toContain('Importing')
+    expect(importButton().textContent).toContain('Importando')
   })
 })

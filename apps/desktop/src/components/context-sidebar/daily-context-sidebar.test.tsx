@@ -86,7 +86,7 @@ afterEach(cleanup)
 describe('DailyContextSidebar calendar header', () => {
   it('jumps to today from the calendar-icon button', async () => {
     const view = renderSidebar('2026-06-09')
-    await userEvent.click(view.getByRole('button', { name: 'Jump to today' }))
+    await userEvent.click(view.getByRole('button', { name: 'Ir a hoy' }))
     expect(view.getByTestId('route').textContent).toContain('"kind":"today"')
     view.unmount()
   })
@@ -159,10 +159,10 @@ describe('DailyContextSidebar calendar', () => {
   it('pages between months across year boundaries', async () => {
     const view = renderSidebar('2026-01-15')
     expect(view.getByText(monthLabel('2026-01'))).toBeDefined()
-    await userEvent.click(view.getByRole('button', { name: 'Previous month' }))
+    await userEvent.click(view.getByRole('button', { name: 'Mes anterior' }))
     expect(view.getByText(monthLabel('2025-12'))).toBeDefined()
-    await userEvent.click(view.getByRole('button', { name: 'Next month' }))
-    await userEvent.click(view.getByRole('button', { name: 'Next month' }))
+    await userEvent.click(view.getByRole('button', { name: 'Mes siguiente' }))
+    await userEvent.click(view.getByRole('button', { name: 'Mes siguiente' }))
     expect(view.getByText(monthLabel('2026-02'))).toBeDefined()
     view.unmount()
   })
@@ -191,7 +191,7 @@ describe('DailyContextSidebar related notes', () => {
   it('renders no Similar notes section without results', async () => {
     const view = renderSidebar('2026-06-09')
     await waitFor(() => expect(relatedNotes).toHaveBeenCalledWith('daily/2026-06-09.md', 6))
-    expect(view.queryByText('Similar notes')).toBeNull()
+    expect(view.queryByText('Notas similares')).toBeNull()
     view.unmount()
   })
 
@@ -201,7 +201,7 @@ describe('DailyContextSidebar related notes', () => {
     await waitFor(() => expect(readNote).toHaveBeenCalledWith('daily/2026-06-09.md'))
     await new Promise((resolve) => setTimeout(resolve, 0))
     expect(relatedNotes).not.toHaveBeenCalled()
-    expect(view.queryByText('Similar notes')).toBeNull()
+    expect(view.queryByText('Notas similares')).toBeNull()
     view.unmount()
   })
 
@@ -220,7 +220,7 @@ describe('DailyContextSidebar related notes', () => {
     await view.findByText('Rust')
     // The daily sidebar wires SimilarNotesSection (note-context-sidebar's
     // tests pin the same title).
-    expect(view.getByText('Similar notes')).toBeDefined()
+    expect(view.getByText('Notas similares')).toBeDefined()
     await userEvent.click(view.getByText('Rust'))
     expect(view.getByTestId('route').textContent).toContain('notes/rust.md')
     view.unmount()
@@ -230,18 +230,18 @@ describe('DailyContextSidebar related notes', () => {
 describe('DailyContextSidebar sections', () => {
   it('collapses a section and persists the state for the session', async () => {
     const view = renderSidebar('2026-06-09')
-    const header = view.getByRole('button', { name: /Note actions/ })
+    const header = view.getByRole('button', { name: /Acciones de la nota/ })
     expect(header.getAttribute('aria-expanded')).toBe('true')
-    expect(view.getByText('Pin this note')).toBeDefined()
+    expect(view.getByText('Fijar esta nota')).toBeDefined()
 
     await userEvent.click(header)
     expect(header.getAttribute('aria-expanded')).toBe('false')
-    expect(view.queryByText('Pin this note')).toBeNull()
+    expect(view.queryByText('Fijar esta nota')).toBeNull()
     view.unmount()
 
     const reopened = renderSidebar('2026-06-09')
     expect(
-      reopened.getByRole('button', { name: /Note actions/ }).getAttribute('aria-expanded'),
+      reopened.getByRole('button', { name: /Acciones de la nota/ }).getAttribute('aria-expanded'),
     ).toBe('false')
     reopened.unmount()
   })
@@ -249,7 +249,7 @@ describe('DailyContextSidebar sections', () => {
   it('the calendar is not collapsible', () => {
     const view = renderSidebar('2026-06-09')
     expect(view.getByText(monthLabel(monthOf('2026-06-09')))).toBeDefined()
-    expect(view.queryByRole('button', { name: /^Calendar$/ })).toBeNull()
+    expect(view.queryByRole('button', { name: /^Calendario$/ })).toBeNull()
     view.unmount()
   })
 })
@@ -259,14 +259,14 @@ describe('DailyContextSidebar published link', () => {
     const url = 'https://gist.github.com/alex/daily1'
     useNoteRow.mockReturnValue(noteRow({ gistUrl: url }))
     const view = renderSidebar('2026-06-09')
-    expect(view.getByText('Published URL')).toBeDefined()
+    expect(view.getByText('URL publicada')).toBeDefined()
     expect(view.getByRole('link', { name: url }).getAttribute('href')).toBe(url)
     view.unmount()
   })
 
   it('omits the Published URL section for an unpublished daily note', () => {
     const view = renderSidebar('2026-06-09')
-    expect(view.queryByText('Published URL')).toBeNull()
+    expect(view.queryByText('URL publicada')).toBeNull()
     view.unmount()
   })
 })

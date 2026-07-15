@@ -94,7 +94,7 @@ describe('appMenuLayout', () => {
   })
 
   it('exposes the selected note’s new-window shortcut in the native Window menu', () => {
-    const windowMenu = appMenuLayout().find((submenu) => submenu.text === 'Window')
+    const windowMenu = appMenuLayout().find((submenu) => submenu.text === 'Ventana')
     expect(windowMenu?.entries).toContainEqual({
       kind: 'command',
       commandId: 'note.openInNewWindow',
@@ -113,12 +113,12 @@ describe('installNativeMenu', () => {
 
     const viewMenu = submenuNew.mock.calls
       .map(([options]) => options)
-      .find((options) => options.text === 'View')
+      .find((options) => options.text === 'Ver')
     const sidebarToggle = viewMenu?.items.find((item) => item.id === 'sidebar.toggle')
 
     expect(sidebarToggle).toMatchObject({
       id: 'sidebar.toggle',
-      text: 'Toggle sidebar',
+      text: 'Mostrar u ocultar barra lateral',
       accelerator: 'CmdOrCtrl+\\',
     })
     expect(sidebarToggle?.action).toBeTypeOf('function')

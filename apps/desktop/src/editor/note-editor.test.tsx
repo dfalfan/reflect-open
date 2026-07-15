@@ -273,7 +273,7 @@ describe('NoteEditor image lightbox', () => {
 
     act(() => captured.props?.onImageClick?.(imageClick('assets/cat.png', 'Cat')))
 
-    const dialog = await screen.findByRole('dialog', { name: 'Image preview' })
+    const dialog = await screen.findByRole('dialog', { name: 'Vista previa de imagen' })
     const preview = dialog.querySelector('img')
     expect(preview).toBeInstanceOf(HTMLImageElement)
     expect(preview?.src).toBe('asset://cat.png')
@@ -289,7 +289,7 @@ describe('NoteEditor image lightbox', () => {
     act(() => captured.props?.onImageClick?.(imageClick('assets/cat.png', 'Cat')))
 
     expect(startViewTransition).toHaveBeenCalledTimes(1)
-    expect(await screen.findByRole('dialog', { name: 'Image preview' })).toBeInTheDocument()
+    expect(await screen.findByRole('dialog', { name: 'Vista previa de imagen' })).toBeInTheDocument()
   })
 
   it('opens a local image through the graph asset opener', async () => {
@@ -298,7 +298,7 @@ describe('NoteEditor image lightbox', () => {
 
     act(() => captured.props?.onImageClick?.(imageClick('assets/cat.png', 'Cat')))
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Open' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Abrir' }))
     expect(openImage).toHaveBeenCalledWith('assets/cat.png')
   })
 
@@ -307,7 +307,7 @@ describe('NoteEditor image lightbox', () => {
 
     act(() => captured.props?.onImageClick?.(imageClick('assets/cat.png', 'Cat')))
 
-    const opener = await screen.findByRole('button', { name: 'Open' })
+    const opener = await screen.findByRole('button', { name: 'Abrir' })
     expect(opener.parentElement?.className).toContain(
       'top-[max(env(safe-area-inset-top),1rem)]',
     )
@@ -322,14 +322,14 @@ describe('NoteEditor image lightbox', () => {
 
     act(() => captured.props?.onImageClick?.(imageClick('assets/cat.png', 'Cat')))
 
-    const close = await screen.findByRole('button', { name: 'Close' })
+    const close = await screen.findByRole('button', { name: 'Cerrar' })
     expect(close.parentElement?.className).toContain(
       'top-[max(env(safe-area-inset-top),1rem)]',
     )
     expect(close.parentElement?.className).toContain(
       'left-[max(env(safe-area-inset-left),1rem)]',
     )
-    const dialog = screen.getByRole('dialog', { name: 'Image preview' })
+    const dialog = screen.getByRole('dialog', { name: 'Vista previa de imagen' })
     expect(dialog.querySelector('.bg-black')).not.toBeNull()
   })
 
@@ -339,7 +339,7 @@ describe('NoteEditor image lightbox', () => {
 
     act(() => captured.props?.onImageClick?.(imageClick('assets/cat.png', 'Cat')))
 
-    const preview = await screen.findByRole('button', { name: 'Close image preview' })
+    const preview = await screen.findByRole('button', { name: 'Cerrar vista previa de imagen' })
     const image = preview.querySelector('img')
     expect(image).toBeInstanceOf(HTMLImageElement)
 
@@ -379,7 +379,7 @@ describe('NoteEditor image lightbox', () => {
     const view = renderEditor(firstOpenImage)
 
     act(() => captured.props?.onImageClick?.(imageClick('assets/cat.png', 'Cat')))
-    await screen.findByRole('dialog', { name: 'Image preview' })
+    await screen.findByRole('dialog', { name: 'Vista previa de imagen' })
 
     view.rerender(
       <NoteEditor
@@ -390,7 +390,7 @@ describe('NoteEditor image lightbox', () => {
       />,
     )
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Open' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Abrir' }))
     expect(firstOpenImage).toHaveBeenCalledWith('assets/cat.png')
     expect(secondOpenImage).not.toHaveBeenCalled()
   })
@@ -406,8 +406,8 @@ describe('NoteEditor image lightbox', () => {
 
     act(() => captured.props?.onImageClick?.(imageClick('assets/cat.png', 'Cat')))
 
-    expect(await screen.findByRole('dialog', { name: 'Image preview' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Open' })).toBeNull()
+    expect(await screen.findByRole('dialog', { name: 'Vista previa de imagen' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Abrir' })).toBeNull()
   })
 
   it('does not open a lightbox when the source cannot be resolved', () => {

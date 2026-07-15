@@ -66,7 +66,7 @@ describe('BacklinksPanel', () => {
     getBacklinksWithContext.mockResolvedValue([])
     const view = renderPanel('notes/lonely.md')
     await waitFor(() => expect(getBacklinksWithContext).toHaveBeenCalled())
-    expect(view.queryByText(/Incoming backlink/)).toBeNull()
+    expect(view.queryByText(/Retroenlaces? entrantes?/)).toBeNull()
     view.unmount()
   })
 
@@ -74,7 +74,7 @@ describe('BacklinksPanel', () => {
     getBacklinksWithContext.mockRejectedValue(new Error('index unavailable'))
     const view = renderPanel('notes/roadmap.md')
     const alert = await view.findByRole('alert')
-    expect(alert.textContent).toContain('Couldn’t load backlinks.')
+    expect(alert.textContent).toContain('No se pudieron cargar los retroenlaces.')
     view.unmount()
   })
 
@@ -89,7 +89,7 @@ describe('BacklinksPanel', () => {
       },
     ])
     const view = renderPanel('notes/roadmap.md')
-    await view.findByText('Incoming backlink (1)')
+    await view.findByText('Retroenlace entrante (1)')
     view.unmount()
   })
 
@@ -147,7 +147,7 @@ describe('BacklinksPanel', () => {
     ])
     const view = renderPanel('notes/roadmap.md')
 
-    await view.findByText('Incoming backlinks (3)')
+    await view.findByText('Retroenlaces entrantes (3)')
     expect(view.getAllByText('Meeting Notes')).toHaveLength(1)
     // Snippets render as rich text: the leading prose survives, the [[…]] source
     // becomes a chip whose label shows the bare target.
@@ -200,7 +200,7 @@ describe('BacklinksPanel', () => {
     ])
     const view = renderPanel('notes/roadmap.md')
 
-    const header = await view.findByRole('button', { name: /Incoming backlink \(1\)/ })
+    const header = await view.findByRole('button', { name: /Retroenlace entrante \(1\)/ })
     expect(header.getAttribute('aria-expanded')).toBe('true')
 
     await userEvent.click(header)
@@ -211,7 +211,7 @@ describe('BacklinksPanel', () => {
 
     const reopened = renderPanel('notes/roadmap.md')
     const persistedHeader = await reopened.findByRole('button', {
-      name: /Incoming backlink \(1\)/,
+      name: /Retroenlace entrante \(1\)/,
     })
     expect(persistedHeader.getAttribute('aria-expanded')).toBe('false')
     reopened.unmount()
@@ -239,7 +239,7 @@ describe('BacklinksPanel', () => {
 
     await view.findByText(/links and/)
     await userEvent.click(
-      view.getByRole('button', { name: 'Collapse references from Shared Source' }),
+      view.getByRole('button', { name: 'Contraer referencias de Shared Source' }),
     )
     expect(view.queryByText(/links and/)).toBeNull()
 
@@ -269,9 +269,9 @@ describe('BacklinksPanel', () => {
     )
 
     await waitFor(() =>
-      expect(view.getAllByRole('button', { name: /Incoming backlink \(1\)/ })).toHaveLength(2),
+      expect(view.getAllByRole('button', { name: /Retroenlace entrante \(1\)/ })).toHaveLength(2),
     )
-    const headers = view.getAllByRole('button', { name: /Incoming backlink \(1\)/ })
+    const headers = view.getAllByRole('button', { name: /Retroenlace entrante \(1\)/ })
 
     await userEvent.click(headers[0]!)
     expect(headers[0]!.getAttribute('aria-expanded')).toBe('false')
@@ -299,13 +299,13 @@ describe('BacklinksPanel', () => {
     ])
     const view = renderPanel('notes/roadmap.md')
 
-    const header = await view.findByRole('button', { name: /Incoming backlinks \(2\)/ })
+    const header = await view.findByRole('button', { name: /Retroenlaces entrantes \(2\)/ })
     await userEvent.click(header)
     expect(view.queryByText(/discussed/)).toBeNull()
     expect(view.queryByText(/ship the/)).toBeNull()
 
     await userEvent.click(
-      view.getByRole('button', { name: 'Expand references from Meeting Notes' }),
+      view.getByRole('button', { name: 'Expandir referencias de Meeting Notes' }),
     )
     expect(view.getByText(/discussed/)).toBeDefined()
     expect(view.queryByText(/ship the/)).toBeNull()
@@ -333,10 +333,10 @@ describe('BacklinksPanel', () => {
       },
     ])
     const view = renderPanel('notes/roadmap.md')
-    await view.findByText('Incoming backlinks (2)')
+    await view.findByText('Retroenlaces entrantes (2)')
 
     await userEvent.click(
-      view.getByRole('button', { name: 'Collapse references from Meeting Notes' }),
+      view.getByRole('button', { name: 'Contraer referencias de Meeting Notes' }),
     )
     expect(view.queryByText(/discussed/)).toBeNull()
     expect(view.getByText(/ship the/)).toBeDefined()

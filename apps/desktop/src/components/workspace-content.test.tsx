@@ -67,19 +67,19 @@ describe('WorkspaceContent', () => {
   it('hides and restores the workspace and daily context sidebars together', () => {
     const view = render(<WorkspaceContent graph={GRAPH} />)
 
-    expect(view.getByRole('complementary', { name: 'Workspace' })).toBeTruthy()
-    expect(view.getByRole('complementary', { name: 'Context' })).toBeTruthy()
+    expect(view.getByRole('complementary', { name: 'Espacio de trabajo' })).toBeTruthy()
+    expect(view.getByRole('complementary', { name: 'Contexto' })).toBeTruthy()
     expect(view.getByTestId('daily-context').textContent).toBe('2026-07-11')
 
     workspaceState.collapsed = true
     view.rerender(<WorkspaceContent graph={GRAPH} />)
-    expect(view.queryByRole('complementary', { name: 'Workspace' })).toBeNull()
-    expect(view.queryByRole('complementary', { name: 'Context' })).toBeNull()
+    expect(view.queryByRole('complementary', { name: 'Espacio de trabajo' })).toBeNull()
+    expect(view.queryByRole('complementary', { name: 'Contexto' })).toBeNull()
 
     workspaceState.collapsed = false
     view.rerender(<WorkspaceContent graph={GRAPH} />)
-    expect(view.getByRole('complementary', { name: 'Workspace' })).toBeTruthy()
-    expect(view.getByRole('complementary', { name: 'Context' })).toBeTruthy()
+    expect(view.getByRole('complementary', { name: 'Espacio de trabajo' })).toBeTruthy()
+    expect(view.getByRole('complementary', { name: 'Contexto' })).toBeTruthy()
   })
 
   it('applies the same collapsed state to ordinary note context', () => {
@@ -89,6 +89,6 @@ describe('WorkspaceContent', () => {
 
     workspaceState.collapsed = true
     view.rerender(<WorkspaceContent graph={GRAPH} />)
-    expect(view.queryByRole('complementary', { name: 'Context' })).toBeNull()
+    expect(view.queryByRole('complementary', { name: 'Contexto' })).toBeNull()
   })
 })

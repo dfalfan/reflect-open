@@ -115,10 +115,12 @@ describe('BacklinkLoadMore', () => {
     )
 
     expect(view.getByText('Already loaded reference')).toBeDefined()
-    expect(view.getByRole('alert').textContent).toContain('Couldn’t load more backlinks.')
+    expect(view.getByRole('alert').textContent).toContain(
+      'No se pudieron cargar más retroenlaces.',
+    )
     expect(observerInstances).toHaveLength(0)
 
-    await userEvent.click(view.getByRole('button', { name: 'Retry loading backlinks' }))
+    await userEvent.click(view.getByRole('button', { name: 'Reintentar cargar retroenlaces' }))
     expect(loadMore).toHaveBeenCalledTimes(1)
     expect(view.getByText('Already loaded reference')).toBeDefined()
   })
@@ -135,7 +137,7 @@ describe('BacklinkLoadMore', () => {
       />,
     )
 
-    const button = view.getByRole('button', { name: 'Loading more backlinks…' })
+    const button = view.getByRole('button', { name: 'Cargando más retroenlaces…' })
     expect(button.hasAttribute('disabled')).toBe(true)
     expect(observerInstances).toHaveLength(0)
 
@@ -155,7 +157,7 @@ describe('BacklinkLoadMore', () => {
       />,
     )
 
-    await userEvent.click(view.getByRole('button', { name: 'Load more backlinks' }))
+    await userEvent.click(view.getByRole('button', { name: 'Cargar más retroenlaces' }))
     expect(loadMore).toHaveBeenCalledTimes(1)
   })
 })

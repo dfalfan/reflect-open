@@ -280,7 +280,7 @@ describe('app commands', () => {
     expect(toggleNotePinned).toHaveBeenCalledWith('daily/2026-06-09.md', 7)
   })
 
-  it('note.togglePin reports a failed pin as "Pinning note", never an unhandled throw', async () => {
+  it('note.togglePin reports a failed pin as "Fijando nota", never an unhandled throw', async () => {
     toggleNotePinned.mockClear()
     startOperation.mockClear()
     getPinnedNotes.mockResolvedValueOnce([])
@@ -288,16 +288,16 @@ describe('app commands', () => {
     const { context } = fakeContext({ route: () => ({ kind: 'note', path: 'notes/a.md' }) })
     // runCommand has no error channel — the command must absorb and report.
     await expect(command('note.togglePin').run(context)).resolves.toBeUndefined()
-    expect(startOperation).toHaveBeenCalledWith('Pinning note')
+    expect(startOperation).toHaveBeenCalledWith('Fijando nota')
   })
 
-  it('note.togglePin reports a failed unpin as "Unpinning note"', async () => {
+  it('note.togglePin reports a failed unpin as "Desfijando nota"', async () => {
     startOperation.mockClear()
     getPinnedNotes.mockResolvedValueOnce([{ path: 'notes/a.md', title: 'A', dailyDate: null }])
     toggleNotePinned.mockRejectedValueOnce({ kind: 'io', message: 'disk on fire' })
     const { context } = fakeContext({ route: () => ({ kind: 'note', path: 'notes/a.md' }) })
     await expect(command('note.togglePin').run(context)).resolves.toBeUndefined()
-    expect(startOperation).toHaveBeenCalledWith('Unpinning note')
+    expect(startOperation).toHaveBeenCalledWith('Desfijando nota')
   })
 
   it('note.togglePin no-ops on note-less routes and without a graph', async () => {
@@ -319,7 +319,7 @@ describe('app commands', () => {
     expect(startOperation).not.toHaveBeenCalled()
   })
 
-  it('note.togglePrivate reports a failed lock as "Locking note"', async () => {
+  it('note.togglePrivate reports a failed lock as "Bloqueando nota"', async () => {
     startOperation.mockClear()
     operationFail.mockClear()
     getNote.mockResolvedValueOnce(noteRow(false))
@@ -327,17 +327,17 @@ describe('app commands', () => {
     const { context } = fakeContext({ route: () => ({ kind: 'note', path: 'notes/a.md' }) })
     // runCommand has no error channel — the command must absorb and report.
     await expect(command('note.togglePrivate').run(context)).resolves.toBeUndefined()
-    expect(startOperation).toHaveBeenCalledWith('Locking note')
+    expect(startOperation).toHaveBeenCalledWith('Bloqueando nota')
     expect(operationFail).toHaveBeenCalledTimes(1)
   })
 
-  it('note.togglePrivate reports a failed unlock as "Unlocking note"', async () => {
+  it('note.togglePrivate reports a failed unlock as "Desbloqueando nota"', async () => {
     startOperation.mockClear()
     getNote.mockResolvedValueOnce(noteRow(true))
     toggleNotePrivate.mockRejectedValueOnce({ kind: 'io', message: 'disk on fire' })
     const { context } = fakeContext({ route: () => ({ kind: 'note', path: 'notes/a.md' }) })
     await expect(command('note.togglePrivate').run(context)).resolves.toBeUndefined()
-    expect(startOperation).toHaveBeenCalledWith('Unlocking note')
+    expect(startOperation).toHaveBeenCalledWith('Desbloqueando nota')
   })
 
   it('note.copyDeepLink copies the route note through the keyboard command', async () => {

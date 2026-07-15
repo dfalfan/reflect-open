@@ -139,9 +139,9 @@ describe('CommandPalette', () => {
       }),
     )
     const { view } = renderPalette('')
-    expect(view.queryByText('No results')).toBeNull() // loading ≠ empty
+    expect(view.queryByText('No hay resultados')).toBeNull() // loading ≠ empty
     release([])
-    await waitFor(() => expect(view.queryByText('No results')).not.toBeNull())
+    await waitFor(() => expect(view.queryByText('No hay resultados')).not.toBeNull())
   })
 
   it('no "No results" while FTS is still answering a non-empty query', async () => {
@@ -153,16 +153,16 @@ describe('CommandPalette', () => {
     searchWithFilters.mockImplementation(() => pending)
     const { view } = renderPalette('rust')
     await waitFor(() => expect(suggestWikiTargets).toHaveBeenCalled())
-    expect(view.queryByText('No results')).toBeNull() // body hits still in flight
+    expect(view.queryByText('No hay resultados')).toBeNull() // body hits still in flight
     release([])
-    await waitFor(() => expect(view.queryByText('No results')).not.toBeNull())
+    await waitFor(() => expect(view.queryByText('No hay resultados')).not.toBeNull())
   })
 
   it('a failed index query shows an error, not "No results"', async () => {
     suggestWikiTargets.mockRejectedValue(new Error('index unavailable'))
     const { view } = renderPalette('')
-    await view.findByText('Search unavailable — the index didn’t answer.')
-    expect(view.queryByText('No results')).toBeNull()
+    await view.findByText('Búsqueda no disponible — el índice no respondió.')
+    expect(view.queryByText('No hay resultados')).toBeNull()
   })
 
   it('empty query shows the recent-notes recall feed', async () => {
@@ -171,8 +171,8 @@ describe('CommandPalette', () => {
     ])
     const { view } = renderPalette('')
     await view.findByText('Recent One')
-    expect(view.getByText('Recent')).toBeDefined()
-    expect(view.queryByText('Commands')).toBeNull() // recall feed only (decided)
+    expect(view.getByText('Recientes')).toBeDefined()
+    expect(view.queryByText('Comandos')).toBeNull() // recall feed only (decided)
   })
 
   it('a typed query shows ranked notes with highlighted snippets and Enter opens the top hit', async () => {
@@ -244,16 +244,16 @@ describe('CommandPalette', () => {
   it('> filters to commands and Enter runs the selection', async () => {
     suggestWikiTargets.mockResolvedValue([])
     searchWithFilters.mockResolvedValue([])
-    const { view } = renderPalette('> toggle theme')
-    await view.findByText('Toggle theme')
-    expect(view.queryByText('Notes')).toBeNull()
+    const { view } = renderPalette('> cambiar tema')
+    await view.findByText('Cambiar tema')
+    expect(view.queryByText('Notas')).toBeNull()
   })
 
   it('bound commands show keycap hints (jsdom is non-Apple: Ctrl)', async () => {
     suggestWikiTargets.mockResolvedValue([])
     searchWithFilters.mockResolvedValue([])
-    const { view } = renderPalette('> go to today')
-    const row = await view.findByText('Go to today')
+    const { view } = renderPalette('> ir a hoy')
+    const row = await view.findByText('Ir a hoy')
     const item = row.closest('[cmdk-item]')
     expect(item?.textContent).toContain('Ctrl')
     expect(item?.textContent).toContain('D')
@@ -356,7 +356,7 @@ describe('CommandPalette', () => {
     readNote.mockRejectedValue({ kind: 'notFound', message: 'no such note' })
     const { view } = renderPalette('2026-06-16')
     const preview = await view.findByTestId('palette-preview')
-    await waitFor(() => expect(preview.textContent).toContain('Empty'))
+    await waitFor(() => expect(preview.textContent).toContain('Vacía'))
     expect(preview.textContent).toContain('Tue, June 16th, 2026')
   })
 
@@ -364,8 +364,8 @@ describe('CommandPalette', () => {
     suggestWikiTargets.mockResolvedValue([])
     searchWithFilters.mockResolvedValue([])
     const toggleTheme = vi.fn()
-    const { view } = renderPalette('toggle theme', { toggleTheme })
-    await view.findByText('Toggle theme')
+    const { view } = renderPalette('cambiar tema', { toggleTheme })
+    await view.findByText('Cambiar tema')
 
     await userEvent.keyboard('{Enter}')
     await waitFor(() => expect(toggleTheme).toHaveBeenCalled())
@@ -374,10 +374,10 @@ describe('CommandPalette', () => {
   it('> command mode renders the single column without a preview pane', async () => {
     suggestWikiTargets.mockResolvedValue([])
     searchWithFilters.mockResolvedValue([])
-    const { view } = renderPalette('> toggle theme')
-    await view.findByText('Toggle theme')
+    const { view } = renderPalette('> cambiar tema')
+    await view.findByText('Cambiar tema')
     expect(view.queryByTestId('palette-preview')).toBeNull()
-    expect(view.queryByText('No note selected')).toBeNull()
+    expect(view.queryByText('Ninguna nota seleccionada')).toBeNull()
   })
 
   it('a daily suggestion renders its day label and opens the daily route', async () => {

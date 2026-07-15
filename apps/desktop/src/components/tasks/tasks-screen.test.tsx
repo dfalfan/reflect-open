@@ -236,7 +236,7 @@ describe('TasksScreen', () => {
   it('shows an empty state when there are no open tasks', async () => {
     getOpenTasks.mockResolvedValue([])
     const view = renderScreen()
-    await view.findByText('No tasks to show.')
+    await view.findByText('No hay tareas para mostrar.')
     view.unmount()
   })
 
@@ -253,14 +253,14 @@ describe('TasksScreen', () => {
 
     // Open resolved to []; completed still loading → no false "empty" yet.
     await waitFor(() => expect(getOpenTasks).toHaveBeenCalled())
-    expect(view.queryByText('No tasks to show.')).toBeNull()
+    expect(view.queryByText('No hay tareas para mostrar.')).toBeNull()
 
     // Completed resolves with a task → it appears (was never reported empty).
     resolveCompleted([
       task({ notePath: 'notes/p.md', text: 'archived task', noteTitle: 'P', checked: true }),
     ])
     await view.findByText('archived task')
-    expect(view.queryByText('No tasks to show.')).toBeNull()
+    expect(view.queryByText('No hay tareas para mostrar.')).toBeNull()
     view.unmount()
   })
 
@@ -268,7 +268,7 @@ describe('TasksScreen', () => {
     getOpenTasks.mockRejectedValue(new Error('index unavailable'))
     const view = renderScreen()
     const alert = await view.findByRole('alert')
-    expect(alert.textContent).toContain('Couldn’t load tasks.')
+    expect(alert.textContent).toContain('No se pudieron cargar las tareas.')
     view.unmount()
   })
 
@@ -278,7 +278,7 @@ describe('TasksScreen', () => {
     getCompletedTasks.mockRejectedValue(new Error('index unavailable'))
     const view = renderScreen()
     const alert = await view.findByRole('alert')
-    expect(alert.textContent).toContain('Couldn’t load tasks.')
+    expect(alert.textContent).toContain('No se pudieron cargar las tareas.')
     view.unmount()
   })
 
@@ -291,8 +291,8 @@ describe('TasksScreen', () => {
     const view = renderScreen()
     await view.findByRole('alert') // archived read failed → alert
 
-    await userEvent.click(view.getByRole('button', { name: 'Task filters' }))
-    await userEvent.click(await view.findByText('Show archived tasks'))
+    await userEvent.click(view.getByRole('button', { name: 'Filtros de tareas' }))
+    await userEvent.click(await view.findByText('Mostrar tareas archivadas'))
 
     // The retained archived error no longer counts → open tasks render, no alert.
     await view.findByText('open task')
@@ -351,7 +351,7 @@ describe('TasksScreen', () => {
     view.getByText('StartupToolbox → Later')
 
     await userEvent.click(context)
-    expect(view.getByRole('button', { name: 'Convert to bullet 2' })).toBeDefined()
+    expect(view.getByRole('button', { name: 'Convertir en viñeta 2' })).toBeDefined()
     view.unmount()
   })
 
@@ -705,7 +705,7 @@ describe('TasksScreen', () => {
     await userEvent.keyboard('{Meta>}{Enter}{/Meta}')
     await waitFor(() => expect(toggleTask).toHaveBeenCalledTimes(2))
     // Completing keeps both showing struck (the middle state), not dropped.
-    await waitFor(() => expect(view.getAllByRole('button', { name: /^Reopen:/ })).toHaveLength(2))
+    await waitFor(() => expect(view.getAllByRole('button', { name: /^Reabrir:/ })).toHaveLength(2))
     expect(view.getByText('first')).toBeDefined()
     view.unmount()
   })
@@ -736,7 +736,7 @@ describe('TasksScreen', () => {
     const view = renderScreen()
 
     await view.findByText('a')
-    await userEvent.click(await view.findByRole('button', { name: 'Add a task to Project' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Agregar una tarea a Project' }))
     await waitFor(() => expect(insertTask).toHaveBeenCalledWith('notes/proj.md', 1))
     // The new row's editor opens, ready to type.
     await view.findByTestId('task-editor')
@@ -757,7 +757,7 @@ describe('TasksScreen', () => {
     const view = renderScreen()
 
     await view.findByText('late')
-    expect(view.queryByRole('button', { name: /Add a task/ })).toBeNull()
+    expect(view.queryByRole('button', { name: /Agregar una tarea/ })).toBeNull()
     view.unmount()
   })
 
@@ -907,7 +907,7 @@ describe('TasksScreen', () => {
     await userEvent.click(
       view.getByRole('button', { name: 'StartupToolbox → Reflections' }),
     )
-    expect(view.getByRole('button', { name: 'Convert to bullet 2' })).toBeDefined()
+    expect(view.getByRole('button', { name: 'Convertir en viñeta 2' })).toBeDefined()
     view.unmount()
   })
 
@@ -1040,7 +1040,7 @@ describe('TasksScreen', () => {
 
     await view.findByText('plan')
     await userEvent.keyboard('{Meta>}a{/Meta}') // select both (no editor)
-    await userEvent.click(view.getByRole('button', { name: /Schedule 2/ }))
+    await userEvent.click(view.getByRole('button', { name: /Programar 2/ }))
     // Pick June 20 in the calendar (today mock = 2026-06-14, so it opens on June).
     await userEvent.click(await view.findByText('20'))
 
@@ -1062,7 +1062,7 @@ describe('TasksScreen', () => {
 
     await view.findByText('plan')
     await userEvent.keyboard('{Meta>}a{/Meta}') // select both (no editor mounts)
-    await userEvent.click(view.getByRole('button', { name: /Convert to bullet 2/ }))
+    await userEvent.click(view.getByRole('button', { name: /Convertir en viñeta 2/ }))
 
     await waitFor(() => expect(convertTaskToBullet).toHaveBeenCalledTimes(2))
     expect(convertTaskToBullet).toHaveBeenCalledWith(expect.objectContaining({ notePath: 'notes/a.md' }), 1)
@@ -1099,7 +1099,7 @@ describe('TasksScreen', () => {
     const view = renderScreen()
 
     await userEvent.click(await view.findByRole('button', { name: 'plan' })) // sole → editor mounts
-    await userEvent.click(view.getByRole('button', { name: /Convert to bullet 1/ }))
+    await userEvent.click(view.getByRole('button', { name: /Convertir en viñeta 1/ }))
 
     // Edit first (persist the draft), then convert the rewritten line.
     await waitFor(() =>
@@ -1188,7 +1188,7 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
     await waitFor(() =>
       expect(toggleTask).toHaveBeenCalledWith(
         expect.objectContaining({ notePath: 'notes/p.md', markerOffset: 5, raw: '[ ] project task' }),
@@ -1196,7 +1196,7 @@ describe('TasksScreen', () => {
       ),
     )
     // V1's middle state: the row stays visible, struck, until archived.
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await view.findByRole('button', { name: 'Reabrir: project task' })
     expect(view.getByText('project task')).toBeDefined()
     view.unmount()
   })
@@ -1216,8 +1216,8 @@ describe('TasksScreen', () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     const view = renderScreen(client)
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
+    await view.findByRole('button', { name: 'Reabrir: project task' })
 
     // The checkbox is flipped back to [ ] in the note itself; the reindex
     // reports the task open again with the note's newer updatedAt. The session's
@@ -1235,8 +1235,8 @@ describe('TasksScreen', () => {
     ])
     await client.invalidateQueries({ queryKey: [INDEX_QUERY_SCOPE] })
 
-    await view.findByRole('button', { name: 'Complete: project task' })
-    expect(view.queryByRole('button', { name: 'Reopen: project task' })).toBeNull()
+    await view.findByRole('button', { name: 'Completar: project task' })
+    expect(view.queryByRole('button', { name: 'Reabrir: project task' })).toBeNull()
     view.unmount()
   })
 
@@ -1254,16 +1254,16 @@ describe('TasksScreen', () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     const view = renderScreen(client)
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
+    await view.findByRole('button', { name: 'Reabrir: project task' })
 
     // An unrelated invalidation refetches before the completion's reindex lands:
     // the index still returns the pre-completion row (same updatedAt). The row
     // must stay struck rather than flicker back to open.
     await client.invalidateQueries({ queryKey: [INDEX_QUERY_SCOPE] })
 
-    await view.findByRole('button', { name: 'Reopen: project task' })
-    expect(view.queryByRole('button', { name: 'Complete: project task' })).toBeNull()
+    await view.findByRole('button', { name: 'Reabrir: project task' })
+    expect(view.queryByRole('button', { name: 'Completar: project task' })).toBeNull()
     view.unmount()
   })
 
@@ -1282,7 +1282,7 @@ describe('TasksScreen', () => {
 
     await userEvent.click(await view.findByRole('button', { name: 'project task' }))
     expect(view.getByTestId('task-editor')).toBeDefined()
-    await userEvent.click(view.getByRole('button', { name: 'Complete: project task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Completar: project task' }))
 
     await waitFor(() =>
       expect(toggleTask).toHaveBeenCalledWith(
@@ -1315,7 +1315,7 @@ describe('TasksScreen', () => {
 
     await view.findByRole('button', { name: 'first task' })
     await userEvent.keyboard('{Meta>}a{/Meta}')
-    await userEvent.click(view.getByRole('button', { name: 'Complete: first task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Completar: first task' }))
 
     await waitFor(() => expect(toggleTask).toHaveBeenCalledTimes(2))
     expect(toggleTask).toHaveBeenNthCalledWith(
@@ -1328,8 +1328,8 @@ describe('TasksScreen', () => {
       expect.objectContaining({ notePath: 'notes/b.md', markerOffset: 9, raw: '[ ] second task' }),
       1,
     )
-    await view.findByRole('button', { name: 'Reopen: first task' })
-    await view.findByRole('button', { name: 'Reopen: second task' })
+    await view.findByRole('button', { name: 'Reabrir: first task' })
+    await view.findByRole('button', { name: 'Reabrir: second task' })
     view.unmount()
   })
 
@@ -1360,15 +1360,15 @@ describe('TasksScreen', () => {
     await view.findByRole('button', { name: 'open task' })
     await view.findByRole('button', { name: 'done task' })
     await userEvent.keyboard('{Meta>}a{/Meta}')
-    await userEvent.click(view.getByRole('button', { name: 'Reopen: done task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Reabrir: done task' }))
 
     await waitFor(() => expect(toggleTask).toHaveBeenCalledTimes(1))
     expect(toggleTask).toHaveBeenCalledWith(
       expect.objectContaining({ notePath: 'notes/b.md', markerOffset: 9, raw: '[x] done task' }),
       1,
     )
-    await view.findByRole('button', { name: 'Complete: open task' })
-    await view.findByRole('button', { name: 'Complete: done task' })
+    await view.findByRole('button', { name: 'Completar: open task' })
+    await view.findByRole('button', { name: 'Completar: done task' })
     view.unmount()
   })
 
@@ -1388,7 +1388,7 @@ describe('TasksScreen', () => {
 
     await userEvent.click(await view.findByRole('button', { name: 'project task' }))
     await userEvent.click(view.getByRole('button', { name: 'stage-checkbox-edit' }))
-    await userEvent.click(view.getByRole('button', { name: 'Complete: project task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Completar: project task' }))
 
     await waitFor(() =>
       expect(editTask).toHaveBeenCalledWith(
@@ -1430,10 +1430,10 @@ describe('TasksScreen', () => {
 
     await userEvent.click(await view.findByRole('button', { name: 'project task' }))
     await userEvent.click(view.getByRole('button', { name: 'stage-checkbox-edit' }))
-    await userEvent.click(view.getByRole('button', { name: 'Complete: project task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Completar: project task' }))
 
     await waitFor(() => expect(editTask).toHaveBeenCalledTimes(1))
-    const reopen = await view.findByRole('button', { name: 'Reopen: edited content' })
+    const reopen = await view.findByRole('button', { name: 'Reabrir: edited content' })
     await waitFor(() => expect((reopen as HTMLButtonElement).disabled).toBe(true))
     await userEvent.click(reopen)
     expect(toggleTask).not.toHaveBeenCalled()
@@ -1456,8 +1456,8 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
-    await userEvent.click(await view.findByRole('button', { name: 'Reopen: project task' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Reabrir: project task' }))
 
     await waitFor(() =>
       expect(toggleTask).toHaveBeenLastCalledWith(
@@ -1465,7 +1465,7 @@ describe('TasksScreen', () => {
         1,
       ),
     )
-    await view.findByRole('button', { name: 'Complete: project task' })
+    await view.findByRole('button', { name: 'Completar: project task' })
     view.unmount()
   })
 
@@ -1485,7 +1485,7 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Reopen: project task' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Reabrir: project task' }))
 
     await waitFor(() =>
       expect(toggleTask).toHaveBeenCalledWith(
@@ -1493,7 +1493,7 @@ describe('TasksScreen', () => {
         1,
       ),
     )
-    await view.findByRole('button', { name: 'Complete: project task' })
+    await view.findByRole('button', { name: 'Completar: project task' })
     view.unmount()
   })
 
@@ -1521,8 +1521,8 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Reopen: project task' }))
-    const complete = await view.findByRole('button', { name: 'Complete: project task' })
+    await userEvent.click(await view.findByRole('button', { name: 'Reabrir: project task' }))
+    const complete = await view.findByRole('button', { name: 'Completar: project task' })
     await waitFor(() => expect((complete as HTMLButtonElement).disabled).toBe(true))
     expect(complete.querySelector('.lucide-circle-check')).toBeNull()
     expect(complete.querySelector('.lucide-circle')).not.toBeNull()
@@ -1545,17 +1545,17 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
+    await view.findByRole('button', { name: 'Reabrir: project task' })
     getOpenTasks.mockResolvedValue([])
 
     await userEvent.click(view.getByText('project task'))
     await view.findByTestId('task-editor')
-    await userEvent.click(view.getByRole('button', { name: 'Reopen: project task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Reabrir: project task' }))
 
     await waitFor(() => expect(fail).toHaveBeenCalledWith('stale index'))
     expect(startOperation).toHaveBeenCalledWith('Reopening task')
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await view.findByRole('button', { name: 'Reabrir: project task' })
     view.unmount()
   })
 
@@ -1577,7 +1577,7 @@ describe('TasksScreen', () => {
 
     await userEvent.click(await view.findByRole('button', { name: 'project task' }))
     expect(view.getByTestId('task-editor')).toBeDefined()
-    await userEvent.click(view.getByRole('button', { name: 'Reopen: project task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Reabrir: project task' }))
 
     await waitFor(() =>
       expect(toggleTask).toHaveBeenCalledWith(
@@ -1607,7 +1607,7 @@ describe('TasksScreen', () => {
 
     await userEvent.click(await view.findByRole('button', { name: 'project task' }))
     await userEvent.click(view.getByRole('button', { name: 'stage-checkbox-edit' }))
-    await userEvent.click(view.getByRole('button', { name: 'Reopen: project task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Reabrir: project task' }))
 
     await waitFor(() =>
       expect(editTask).toHaveBeenCalledWith(
@@ -1639,17 +1639,17 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
+    await view.findByRole('button', { name: 'Reabrir: project task' })
     getOpenTasks.mockResolvedValue([])
 
     await userEvent.click(view.getByText('project task'))
     await userEvent.click(view.getByRole('button', { name: 'stage-checkbox-edit' }))
-    await userEvent.click(view.getByRole('button', { name: 'Reopen: project task' }))
+    await userEvent.click(view.getByRole('button', { name: 'Reabrir: project task' }))
 
     await waitFor(() => expect(fail).toHaveBeenCalledWith('disk full'))
     expect(startOperation).toHaveBeenCalledWith('Reopening task')
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await view.findByRole('button', { name: 'Reabrir: project task' })
     expect(view.queryByText('edited content')).toBeNull()
     view.unmount()
   })
@@ -1671,9 +1671,9 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
     // Flipped to completed in place — still on screen, now marked done.
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await view.findByRole('button', { name: 'Reabrir: project task' })
     expect(view.getByText('project task')).toBeDefined()
     view.unmount()
   })
@@ -1685,15 +1685,15 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
     // The row lingers struck and an Archive 1 action appears.
-    const archive = await view.findByRole('button', { name: /Archive 1/ })
+    const archive = await view.findByRole('button', { name: /Archivar 1/ })
     expect(view.getByText('project task')).toBeDefined()
 
     await userEvent.click(archive)
     // Archiving hides this session's completed rows (still `[x]` on disk).
     await waitFor(() => expect(view.queryByText('project task')).toBeNull())
-    expect(view.queryByRole('button', { name: /Archive/ })).toBeNull()
+    expect(view.queryByRole('button', { name: /Archivar/ })).toBeNull()
     view.unmount()
   })
 
@@ -1704,8 +1704,8 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
-    await view.findByRole('button', { name: 'Reopen: project task' })
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
+    await view.findByRole('button', { name: 'Reabrir: project task' })
     await userEvent.keyboard('{Meta>}{Shift>}{Enter}{/Shift}{/Meta}')
     await waitFor(() => expect(view.queryByText('project task')).toBeNull())
     view.unmount()
@@ -1720,15 +1720,15 @@ describe('TasksScreen', () => {
     const view = renderScreen()
 
     // Complete it → struck (kept showing via the session set), then try to delete.
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: one' }))
-    await view.findByRole('button', { name: 'Reopen: one' })
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: one' }))
+    await view.findByRole('button', { name: 'Reabrir: one' })
     await userEvent.click(view.getByText('one')) // select the struck row → editor opens
     await view.findByTestId('task-editor')
     await userEvent.click(view.getByRole('button', { name: 'delete-edit' }))
 
     await waitFor(() => expect(deleteTask).toHaveBeenCalled())
     // The write failed, so the struck row is restored, not lost.
-    await view.findByRole('button', { name: 'Reopen: one' })
+    await view.findByRole('button', { name: 'Reabrir: one' })
     view.unmount()
   })
 
@@ -1739,7 +1739,7 @@ describe('TasksScreen', () => {
     ])
     const view = renderScreen()
 
-    await userEvent.click(await view.findByRole('button', { name: 'Complete: project task' }))
+    await userEvent.click(await view.findByRole('button', { name: 'Completar: project task' }))
     await waitFor(() => expect(fail).toHaveBeenCalledWith('stale index'))
     expect(startOperation).toHaveBeenCalledWith('Completing task')
     // Rolled back: the row returns after the failed write.

@@ -76,14 +76,14 @@ describe('insertTemplate', () => {
 
   it('fails loud when there is no editor to insert into', async () => {
     await insertTemplate('templates/journal.md', null)
-    expect(startOperation).toHaveBeenCalledWith('Inserting template')
-    expect(operationFail).toHaveBeenCalledWith('No open note to insert into')
+    expect(startOperation).toHaveBeenCalledWith('Insertando plantilla')
+    expect(operationFail).toHaveBeenCalledWith('No hay ninguna nota abierta donde insertar')
   })
 
   it('surfaces a failed read as a failed operation, never a silent nothing', async () => {
     readNote.mockRejectedValueOnce(new Error('gone'))
     await insertTemplate('templates/journal.md', fakeEditor())
-    expect(startOperation).toHaveBeenCalledWith('Inserting template')
+    expect(startOperation).toHaveBeenCalledWith('Insertando plantilla')
     expect(operationFail).toHaveBeenCalledWith('gone')
   })
 })

@@ -100,11 +100,11 @@ describe('SyncSection', () => {
   it('combines iCloud Drive and GitHub backup under Sync for local graphs', async () => {
     renderSection()
 
-    const section = screen.getByRole('region', { name: 'Sync' })
+    const section = screen.getByRole('region', { name: 'Sincronización' })
     expect(within(section).getByText('iCloud Drive', { selector: 'legend' })).toBeTruthy()
-    expect(await within(section).findByText('1 graph in iCloud Drive.')).toBeTruthy()
-    expect(within(section).getByText('GitHub backup', { selector: 'legend' })).toBeTruthy()
-    expect(within(section).getByRole('button', { name: /connect github/i })).toBeTruthy()
+    expect(await within(section).findByText('1 grafo en iCloud Drive.')).toBeTruthy()
+    expect(within(section).getByText('Respaldo en GitHub', { selector: 'legend' })).toBeTruthy()
+    expect(within(section).getByRole('button', { name: /conectar github/i })).toBeTruthy()
   })
 
   it('keeps GitHub backup visible when the graph syncs through iCloud', async () => {
@@ -116,12 +116,14 @@ describe('SyncSection', () => {
 
     renderSection()
 
-    const section = screen.getByRole('region', { name: 'Sync' })
+    const section = screen.getByRole('region', { name: 'Sincronización' })
     expect(within(section).getByText('iCloud Drive', { selector: 'legend' })).toBeTruthy()
-    expect(await within(section).findByText('All note files are downloaded.')).toBeTruthy()
-    expect(within(section).getByText('No notes need review.')).toBeTruthy()
-    expect(within(section).getByText('GitHub backup', { selector: 'legend' })).toBeTruthy()
-    expect(within(section).getByRole('button', { name: /connect github/i })).toBeTruthy()
+    expect(
+      await within(section).findByText('Todos los archivos de notas están descargados.'),
+    ).toBeTruthy()
+    expect(within(section).getByText('Ninguna nota necesita revisión.')).toBeTruthy()
+    expect(within(section).getByText('Respaldo en GitHub', { selector: 'legend' })).toBeTruthy()
+    expect(within(section).getByRole('button', { name: /conectar github/i })).toBeTruthy()
   })
 
   it('surfaces iCloud download and review counts', async () => {
@@ -136,11 +138,13 @@ describe('SyncSection', () => {
 
     renderSection()
 
-    const section = screen.getByRole('region', { name: 'Sync' })
+    const section = screen.getByRole('region', { name: 'Sincronización' })
     expect(
-      await within(section).findByText('2 notes are still downloading from iCloud.'),
+      await within(section).findByText('2 notas todavía se están descargando de iCloud.'),
     ).toBeTruthy()
-    expect(within(section).getByText('1 note needs review, 1 sync fork')).toBeTruthy()
+    expect(
+      within(section).getByText('1 nota necesita revisión, 1 bifurcación de sincronización'),
+    ).toBeTruthy()
     expect(within(section).getByRole('button', { name: /A.*notes\/a\.md/ })).toBeTruthy()
   })
 
@@ -155,7 +159,7 @@ describe('SyncSection', () => {
 
     renderSection()
 
-    const section = screen.getByRole('region', { name: 'Sync' })
+    const section = screen.getByRole('region', { name: 'Sincronización' })
     const noteLink = await within(section).findByRole('button', {
       name: /Conflicted note.*notes\/conflicted\.md/,
     })
@@ -176,7 +180,7 @@ describe('SyncSection', () => {
 
     renderSection()
 
-    const section = screen.getByRole('region', { name: 'Sync' })
+    const section = screen.getByRole('region', { name: 'Sincronización' })
     fireEvent.click(
       await within(section).findByRole('button', {
         name: /Conflicted note.*notes\/conflicted\.md/,
@@ -203,8 +207,8 @@ describe('SyncSection', () => {
 
     renderSection()
 
-    const section = screen.getByRole('region', { name: 'Sync' })
+    const section = screen.getByRole('region', { name: 'Sincronización' })
     expect(within(section).queryByText('iCloud Drive', { selector: 'legend' })).toBeNull()
-    expect(within(section).getByText('GitHub backup', { selector: 'legend' })).toBeTruthy()
+    expect(within(section).getByText('Respaldo en GitHub', { selector: 'legend' })).toBeTruthy()
   })
 })

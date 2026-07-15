@@ -52,7 +52,7 @@ describe('AudioMemoButton', () => {
     // aria-disabled (not `disabled`) keeps pointer events alive so the
     // explanatory tooltip can fire; the reason copy itself is asserted in the
     // provider test, and jsdom can't drive Radix's tooltip-open mechanics.
-    const micButton = view.getByRole('button', { name: 'Record audio memo' })
+    const micButton = view.getByRole('button', { name: 'Grabar memo de audio' })
     expect(micButton.getAttribute('aria-disabled')).toBe('true')
     expect(micButton).toHaveProperty('disabled', false)
 
@@ -66,7 +66,7 @@ describe('AudioMemoButton', () => {
     const view = renderButton()
 
     expect(view.getByText('1:23')).not.toBeNull()
-    await userEvent.click(view.getByRole('button', { name: 'Stop recording' }))
+    await userEvent.click(view.getByRole('button', { name: 'Detener grabación' }))
     expect(memo.toggle).toHaveBeenCalled()
   })
 
@@ -74,7 +74,7 @@ describe('AudioMemoButton', () => {
     memo.phase = 'recording'
     const view = renderButton()
 
-    view.getByRole('button', { name: 'Stop recording' }).focus()
+    view.getByRole('button', { name: 'Detener grabación' }).focus()
     await userEvent.keyboard('{Escape}')
     expect(memo.cancel).toHaveBeenCalled()
     expect(memo.toggle).not.toHaveBeenCalled()
@@ -93,8 +93,8 @@ describe('AudioMemoButton', () => {
     memo.phase = 'transcribing'
     const view = renderButton()
 
-    expect(view.getByText('Transcribing…')).not.toBeNull()
-    const micButton = view.getByRole('button', { name: 'Record audio memo' })
+    expect(view.getByText('Transcribiendo…')).not.toBeNull()
+    const micButton = view.getByRole('button', { name: 'Grabar memo de audio' })
     expect(micButton).toHaveProperty('disabled', false)
     await userEvent.click(micButton)
     expect(memo.toggle).toHaveBeenCalled()
@@ -107,9 +107,9 @@ describe('AudioMemoButton', () => {
     const view = renderButton()
 
     expect(view.getByText('provider down')).not.toBeNull()
-    await userEvent.click(view.getByRole('button', { name: 'Retry' }))
+    await userEvent.click(view.getByRole('button', { name: 'Reintentar' }))
     expect(memo.retry).toHaveBeenCalled()
-    await userEvent.click(view.getByRole('button', { name: 'Discard' }))
+    await userEvent.click(view.getByRole('button', { name: 'Descartar' }))
     expect(memo.discard).toHaveBeenCalled()
   })
 
@@ -119,7 +119,7 @@ describe('AudioMemoButton', () => {
     memo.canRetry = false
     const view = renderButton()
 
-    expect(view.queryByRole('button', { name: 'Retry' })).toBeNull()
-    expect(view.getByRole('button', { name: 'Discard' })).not.toBeNull()
+    expect(view.queryByRole('button', { name: 'Reintentar' })).toBeNull()
+    expect(view.getByRole('button', { name: 'Descartar' })).not.toBeNull()
   })
 })

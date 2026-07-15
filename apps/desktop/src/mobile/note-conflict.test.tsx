@@ -108,12 +108,12 @@ describe('MobileNote with a conflicted note', () => {
       </QueryClientProvider>,
     )
 
-    expect(await screen.findByText(/choose what to keep/i)).toBeTruthy()
+    expect(await screen.findByText(/elige qué conservar/i)).toBeTruthy()
     // Protected: raw file shown verbatim, no live editor mounted.
     expect(screen.getByText(/desktop line/)).toBeTruthy()
     expect(screen.queryByTestId('fake-editor')).toBeNull()
-    expect(screen.getByRole('button', { name: /keep this device’s version/i })).toBeTruthy()
-    expect(screen.getByRole('button', { name: /keep the other device’s/i })).toBeTruthy()
-    expect(screen.getByRole('button', { name: /keep both/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /conservar la versión de este dispositivo/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /conservar la del otro dispositivo/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /conservar ambas/i })).toBeTruthy()
   })
 })

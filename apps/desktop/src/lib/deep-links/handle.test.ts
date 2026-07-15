@@ -68,8 +68,8 @@ describe('handleDeepLink', () => {
     await handle('reflect://note/ghost')
 
     expect(navigate).not.toHaveBeenCalled()
-    expect(startOperationMock).toHaveBeenCalledWith('Opening link')
-    expect(operationHandle.fail).toHaveBeenCalledWith('Note not found: ghost')
+    expect(startOperationMock).toHaveBeenCalledWith('Abriendo enlace')
+    expect(operationHandle.fail).toHaveBeenCalledWith('Nota no encontrada: ghost')
   })
 
   it('surfaces a resolution failure instead of rejecting the handler', async () => {
@@ -78,7 +78,7 @@ describe('handleDeepLink', () => {
     await expect(handle('reflect://note/Project%20X')).resolves.toBeUndefined()
 
     expect(navigate).not.toHaveBeenCalled()
-    expect(startOperationMock).toHaveBeenCalledWith('Opening link')
+    expect(startOperationMock).toHaveBeenCalledWith('Abriendo enlace')
     expect(operationHandle.fail).toHaveBeenCalled()
   })
 
@@ -131,9 +131,9 @@ describe('handleDeepLink', () => {
 
     expect(navigate).not.toHaveBeenCalled()
     expect(spoolMock).not.toHaveBeenCalled()
-    expect(startOperationMock).toHaveBeenCalledWith('Opening link')
+    expect(startOperationMock).toHaveBeenCalledWith('Abriendo enlace')
     expect(operationHandle.fail).toHaveBeenCalledWith(
-      'Unrecognized link: reflect://edit-notes?content=evil',
+      'Enlace no reconocido: reflect://edit-notes?content=evil',
     )
   })
 
@@ -148,7 +148,7 @@ describe('handleDeepLink', () => {
     expect(envelope.text).toBe('call the bank')
     expect(generation).toBe(3)
     expect(navigate).not.toHaveBeenCalled()
-    expect(startOperationMock).toHaveBeenCalledWith('Added to today')
+    expect(startOperationMock).toHaveBeenCalledWith('Agregado a hoy')
     expect(operationHandle.done).toHaveBeenCalled()
   })
 
@@ -159,7 +159,7 @@ describe('handleDeepLink', () => {
     const envelope = textCaptureEnvelopeSchema.parse(JSON.parse(json))
     expect(envelope.kind).toBe('task')
     expect(envelope.text).toBe('buy milk')
-    expect(startOperationMock).toHaveBeenCalledWith('Task added to today')
+    expect(startOperationMock).toHaveBeenCalledWith('Tarea agregada a hoy')
     expect(operationHandle.done).toHaveBeenCalled()
   })
 
@@ -169,7 +169,7 @@ describe('handleDeepLink', () => {
     await handle('reflect://append?text=milk')
 
     expect(operationHandle.done).not.toHaveBeenCalled()
-    expect(startOperationMock).toHaveBeenCalledWith('Saving capture')
+    expect(startOperationMock).toHaveBeenCalledWith('Guardando captura')
     expect(operationHandle.fail).toHaveBeenCalled()
   })
 })

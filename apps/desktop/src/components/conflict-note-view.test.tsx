@@ -35,7 +35,7 @@ describe('ConflictNoteView', () => {
     const stacked = '<<<<<<< Mac\nmac\n=======\nphone\n>>>>>>> iPhone\n<<<<<<< Mac\n=======\nipad\n>>>>>>> iPad\n'
     render(<ConflictNoteView content={stacked} />)
 
-    expect(screen.getByText('Empty on this side')).toBeTruthy()
+    expect(screen.getByText('Vacío de este lado')).toBeTruthy()
     expect(screen.getByText(/ipad/)).toBeTruthy()
   })
 

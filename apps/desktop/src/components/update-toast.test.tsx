@@ -48,13 +48,13 @@ describe('UpdateToast', () => {
 
     await waitFor(() =>
       expect(toast.message).toHaveBeenCalledWith(
-        'Update available',
+        'Actualización disponible',
         expect.objectContaining({
           id: 'reflect-update',
           closeButton: false,
-          description: 'Reflect 1.2.3 is ready to install.',
+          description: 'Reflect 1.2.3 está lista para instalar.',
           dismissible: false,
-          action: expect.objectContaining({ label: 'Install' }),
+          action: expect.objectContaining({ label: 'Instalar' }),
         }),
       ),
     )
@@ -72,7 +72,7 @@ describe('UpdateToast', () => {
     rerender(<UpdateToast />)
     await waitFor(() =>
       expect(toast.loading).toHaveBeenCalledWith(
-        'Downloading update',
+        'Descargando actualización',
         expect.objectContaining({ id: 'reflect-update', description: '42%' }),
       ),
     )
@@ -88,10 +88,10 @@ describe('UpdateToast', () => {
     rerender(<UpdateToast />)
     await waitFor(() =>
       expect(toast.success).toHaveBeenCalledWith(
-        'Update ready',
+        'Actualización lista',
         expect.objectContaining({
           id: 'reflect-update',
-          action: expect.objectContaining({ label: 'Restart' }),
+          action: expect.objectContaining({ label: 'Reiniciar' }),
         }),
       ),
     )
@@ -109,11 +109,11 @@ describe('UpdateToast', () => {
     rerender(<UpdateToast />)
     await waitFor(() =>
       expect(toast.error).toHaveBeenCalledWith(
-        'Update failed',
+        'Falló la actualización',
         expect.objectContaining({
           id: 'reflect-update',
           description: 'signature failed',
-          action: expect.objectContaining({ label: 'Retry install' }),
+          action: expect.objectContaining({ label: 'Reintentar instalación' }),
         }),
       ),
     )

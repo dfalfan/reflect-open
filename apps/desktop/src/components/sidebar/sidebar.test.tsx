@@ -175,12 +175,12 @@ describe('Sidebar', () => {
     // The Daily row shares the ⌘D capture command: omitting
     // `restoreSurfaceScroll` makes even an off-surface return discard the
     // stream's saved position and re-anchor on today.
-    await userEvent.click(view.getByRole('button', { name: /daily notes/i }))
+    await userEvent.click(view.getByRole('button', { name: /notas diarias/i }))
     await waitFor(() =>
       expect(navigate).toHaveBeenCalledWith({ kind: 'today' }, { focusEditor: true }),
     )
 
-    await userEvent.click(view.getByRole('button', { name: /settings/i }))
+    await userEvent.click(view.getByRole('button', { name: /abrir ajustes/i }))
     await waitFor(() => expect(navigate).toHaveBeenCalledWith({ kind: 'settings' }))
 
     await userEvent.click(view.getByRole('button', { name: /chat/i }))
@@ -193,7 +193,7 @@ describe('Sidebar', () => {
       kind: 'note',
       path: untitledNotePath(),
     })
-    const newNote = view.getByRole('button', { name: /new note/i })
+    const newNote = view.getByRole('button', { name: /nota nueva/i })
 
     // Active like every other row whose route is current — until the birth
     // rename moves the note onto a title slug.
@@ -210,14 +210,14 @@ describe('Sidebar', () => {
   it('New note is inactive on slug-named note routes', () => {
     const { view } = renderSidebar(undefined, { kind: 'note', path: 'notes/meeting.md' })
     expect(
-      view.getByRole('button', { name: /new note/i }).getAttribute('aria-current'),
+      view.getByRole('button', { name: /nota nueva/i }).getAttribute('aria-current'),
     ).toBeNull()
   })
 
   it('All notes stays active while editing a slug-named note', () => {
     const { view } = renderSidebar(undefined, { kind: 'note', path: 'notes/meeting.md' })
     expect(
-      view.getByRole('button', { name: /all notes/i }).getAttribute('aria-current'),
+      view.getByRole('button', { name: /todas las notas/i }).getAttribute('aria-current'),
     ).toBe('page')
   })
 
@@ -226,22 +226,22 @@ describe('Sidebar', () => {
     // never light at once.
     const { view } = renderSidebar(undefined, { kind: 'note', path: untitledNotePath() })
     expect(
-      view.getByRole('button', { name: /new note/i }).getAttribute('aria-current'),
+      view.getByRole('button', { name: /nota nueva/i }).getAttribute('aria-current'),
     ).toBe('page')
     expect(
-      view.getByRole('button', { name: /all notes/i }).getAttribute('aria-current'),
+      view.getByRole('button', { name: /todas las notas/i }).getAttribute('aria-current'),
     ).toBeNull()
   })
 
   it('the search affordance opens the palette', async () => {
     const { view, openPalette } = renderSidebar()
-    await userEvent.click(view.getByRole('button', { name: /search anything/i }))
+    await userEvent.click(view.getByRole('button', { name: /buscar cualquier cosa/i }))
     expect(openPalette).toHaveBeenCalled()
   })
 
   it('the mic button starts an audio memo', async () => {
     const { view } = renderSidebar()
-    await userEvent.click(view.getByRole('button', { name: /record audio memo/i }))
+    await userEvent.click(view.getByRole('button', { name: /grabar memo de audio/i }))
     expect(audioMemo.toggle).toHaveBeenCalled()
   })
 
@@ -249,7 +249,7 @@ describe('Sidebar', () => {
     audioMemo.available = false
     audioMemo.unavailableReason = 'Add an OpenAI or Gemini model in Settings to record audio memos'
     const { view } = renderSidebar()
-    const micButton = view.getByRole('button', { name: /record audio memo/i })
+    const micButton = view.getByRole('button', { name: /grabar memo de audio/i })
     expect(micButton.getAttribute('aria-disabled')).toBe('true')
     await userEvent.click(micButton)
     expect(audioMemo.toggle).not.toHaveBeenCalled()
@@ -262,7 +262,7 @@ describe('Sidebar', () => {
     const { view } = renderSidebar()
 
     const pinnedSection = await waitFor(() => {
-      const section = view.getByRole('region', { name: /pinned notes/i })
+      const section = view.getByRole('region', { name: /notas fijadas/i })
       expect(section.textContent).toContain('Roadmap')
       return section
     })
@@ -302,7 +302,7 @@ describe('Sidebar', () => {
     ])
     const { view } = renderSidebar()
 
-    const pinnedSection = await view.findByRole('region', { name: /pinned notes/i })
+    const pinnedSection = await view.findByRole('region', { name: /notas fijadas/i })
     expect(pinnedSection.textContent).toContain('Meeting with Ada')
     expect(pinnedSection.textContent).not.toContain('[[Ada Lovelace|Ada]]')
     expect(view.getByRole('button', { name: 'Meeting with Ada' })).toBeTruthy()
@@ -317,7 +317,7 @@ describe('Sidebar', () => {
     const roadmap = await view.findByRole('button', { name: 'Roadmap' })
     await waitFor(() => expect(roadmap.getAttribute('aria-current')).toBe('page'))
     expect(
-      view.getByRole('button', { name: /all notes/i }).getAttribute('aria-current'),
+      view.getByRole('button', { name: /todas las notas/i }).getAttribute('aria-current'),
     ).toBeNull()
   })
 
@@ -325,7 +325,7 @@ describe('Sidebar', () => {
     getPinnedNotes.mockResolvedValue([])
     const { view } = renderSidebar()
     await waitFor(() => expect(getPinnedNotes).toHaveBeenCalled())
-    expect(view.queryByRole('region', { name: /pinned notes/i })).toBeNull()
+    expect(view.queryByRole('region', { name: /notas fijadas/i })).toBeNull()
   })
 
   it('right-click unpins a pinned row through the native context menu', async () => {
@@ -340,7 +340,7 @@ describe('Sidebar', () => {
     await waitFor(() => expect(openNativeContextMenu).toHaveBeenCalledWith({
       items: [
         expect.objectContaining({
-          text: 'Unpin Note',
+          text: 'Desfijar nota',
         }),
       ],
     }))
@@ -367,8 +367,8 @@ describe('Sidebar', () => {
       { path: 'notes/rust.md', title: 'Rust', dailyDate: null },
     ])
     const { view } = renderSidebar()
-    const backButton = view.getByRole('button', { name: 'Go back' })
-    const forwardButton = view.getByRole('button', { name: 'Go forward' })
+    const backButton = view.getByRole('button', { name: 'Atrás' })
+    const forwardButton = view.getByRole('button', { name: 'Adelante' })
     expect(backButton).toHaveProperty('disabled', true)
     expect(forwardButton).toHaveProperty('disabled', true)
 
@@ -395,7 +395,7 @@ describe('Sidebar', () => {
     expect(openRecent).toHaveBeenCalledWith('/work')
 
     await userEvent.click(view.getByRole('button', { name: /Notes/ }))
-    await userEvent.click(view.getByRole('menuitem', { name: /open another graph/i }))
+    await userEvent.click(view.getByRole('menuitem', { name: /abrir otro grafo/i }))
     expect(chooseGraph).toHaveBeenCalled()
     expect(pickAndOpen).not.toHaveBeenCalled()
   })
@@ -404,7 +404,7 @@ describe('Sidebar', () => {
     const { view, navigate } = renderSidebar()
 
     await userEvent.click(view.getByRole('button', { name: /Notes/ }))
-    await userEvent.click(view.getByRole('menuitem', { name: /user settings/i }))
+    await userEvent.click(view.getByRole('menuitem', { name: /ajustes del usuario/i }))
 
     await waitFor(() => expect(navigate).toHaveBeenCalledWith({ kind: 'settings' }))
   })
@@ -413,7 +413,7 @@ describe('Sidebar', () => {
     const { view } = renderSidebar()
 
     await userEvent.click(view.getByRole('button', { name: /Notes/ }))
-    await userEvent.click(view.getByRole('menuitem', { name: /reveal graph in finder/i }))
+    await userEvent.click(view.getByRole('menuitem', { name: /mostrar grafo en finder/i }))
 
     expect(revealItemInDir).toHaveBeenCalledWith('/notes')
   })
@@ -422,7 +422,7 @@ describe('Sidebar', () => {
     const { view } = renderSidebar()
 
     await userEvent.click(view.getByRole('button', { name: /Notes/ }))
-    await userEvent.click(view.getByRole('menuitem', { name: 'Graph color' }))
+    await userEvent.click(view.getByRole('menuitem', { name: 'Color del grafo' }))
     await userEvent.click(await view.findByRole('menuitem', { name: 'Teal' }))
 
     // The patch composes over the latest settings at apply time — feed the
