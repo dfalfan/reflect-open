@@ -245,72 +245,79 @@ export function TasksScreen(): ReactElement {
       aria-label="Tareas"
       className="flex h-full min-h-0 flex-col outline-none"
     >
-      <header className="flex flex-none items-center gap-2 border-b border-border py-2.5 pl-2 pr-3 lg:pl-10">
-        <div className="window-drag-control min-w-0 flex-1">
-          <Search
-            aria-hidden
-            className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-text-muted"
-          />
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar..."
-            aria-label="Buscar tareas"
-            className="h-9 border-none bg-transparent pl-8 shadow-none focus-visible:ring-0"
-          />
-        </div>
-        {selection.selectedCount > 0 ? (
-          <TaskScheduleCalendar
-            open={scheduleOpen}
-            onOpenChange={setScheduleOpen}
-            today={today}
-            onSchedule={onSchedule}
-          >
+      {/* The screen's name is its title — the same treatment as the note
+          sections: top of the type scale, room above, and the toolbar riding
+          its baseline. The search shrinks from a full-width strip to one more
+          control on the right. */}
+      <header className="flex flex-none flex-wrap items-end justify-between gap-3 border-b border-border pt-10 pb-6 pl-12 pr-7">
+        <h1 className="text-3xl font-semibold tracking-tight text-text">Tareas</h1>
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <div className="window-drag-control w-56">
+            <Search
+              aria-hidden
+              className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-text-muted"
+            />
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Buscar..."
+              aria-label="Buscar tareas"
+              className="h-9 border-none bg-transparent pl-8 shadow-none focus-visible:ring-0"
+            />
+          </div>
+          {selection.selectedCount > 0 ? (
+            <TaskScheduleCalendar
+              open={scheduleOpen}
+              onOpenChange={setScheduleOpen}
+              today={today}
+              onSchedule={onSchedule}
+            >
+              <Button
+                type="button"
+                variant="ghost"
+                aria-label={`Programar ${selection.selectedCount}`}
+                className="window-drag-control text-xs text-text-muted"
+              >
+                <CalendarClock aria-hidden className="size-3.5" />
+                Programar
+                <TaskToolbarCountBadge count={selection.selectedCount} />
+              </Button>
+            </TaskScheduleCalendar>
+          ) : null}
+          {selection.selectedCount > 0 ? (
             <Button
               type="button"
               variant="ghost"
-              aria-label={`Programar ${selection.selectedCount}`}
+              aria-label={`Convertir en viñeta ${selection.selectedCount}`}
+              onClick={onConvertToBullet}
+              title="Quita la casilla y deja la línea como una viñeta simple — sale de la lista de Tareas"
               className="window-drag-control text-xs text-text-muted"
             >
-              <CalendarClock aria-hidden className="size-3.5" />
-              Programar
+              <List aria-hidden className="size-3.5" />
+              Convertir en viñeta
               <TaskToolbarCountBadge count={selection.selectedCount} />
             </Button>
-          </TaskScheduleCalendar>
-        ) : null}
-        {selection.selectedCount > 0 ? (
-          <Button
-            type="button"
-            variant="ghost"
-            aria-label={`Convertir en viñeta ${selection.selectedCount}`}
-            onClick={onConvertToBullet}
-            title="Quita la casilla y deja la línea como una viñeta simple — sale de la lista de Tareas"
-            className="window-drag-control text-xs text-text-muted"
-          >
-            <List aria-hidden className="size-3.5" />
-            Convertir en viñeta
-            <TaskToolbarCountBadge count={selection.selectedCount} />
-          </Button>
-        ) : null}
-        {recentlyCompleted.length > 0 ? (
-          <Button
-            type="button"
-            variant="ghost"
-            aria-label={`Archivar ${recentlyCompleted.length}`}
-            onClick={actions.archive}
-            className="window-drag-control text-xs text-text-muted"
-          >
-            <Archive aria-hidden className="size-3.5" />
-            Archivar
-            <TaskToolbarCountBadge count={recentlyCompleted.length} />
-          </Button>
-        ) : null}
-        <TaskFiltersMenu
-          filters={filters}
-          toggle={toggle}
-          open={filtersOpen}
-          onOpenChange={setFiltersOpen}
-        />
+          ) : null}
+          {recentlyCompleted.length > 0 ? (
+            <Button
+              type="button"
+              variant="ghost"
+              aria-label={`Archivar ${recentlyCompleted.length}`}
+              onClick={actions.archive}
+              className="window-drag-control text-xs text-text-muted"
+            >
+              <Archive aria-hidden className="size-3.5" />
+              Archivar
+              <TaskToolbarCountBadge count={recentlyCompleted.length} />
+            </Button>
+          ) : null}
+          <TaskFiltersMenu
+            filters={filters}
+            toggle={toggle}
+            open={filtersOpen}
+            onOpenChange={setFiltersOpen}
+          />
+        </div>
       </header>
       <div
         ref={setScrollElement}
