@@ -1,29 +1,79 @@
 ### Purpose
 
-This document helps AI agents and automated systems interact with the Reflect repo safely and effectively. It summarizes setup, workflows, CI parity, testing, directories, and environment variables.
+This document helps AI agents work effectively in the Rizoma repo. It covers what
+the project is, how it's built, how to run and test it, and the code conventions
+to follow.
 
-### What is Reflect
+### What is Rizoma
 
-Reflect is a modern note‑taking tool with a TypeScript codebase. This repo contains Reflect V2, a rewrite of the original Reflect code-base to make it offline-first, markdown backed, and open source.
+Rizoma is Daniel's personal note-taking app: offline-first, markdown-backed,
+daily-notes-first, with `[[wiki links]]` instead of folders. A React + TypeScript
+frontend in a Tauri 2 native shell, targeting macOS and iOS.
 
-### Product Principles
+It is a **personal tool, not a product**. There are no users to support, no
+external contributors, no backwards-compatibility obligations. When something is
+wrong, fix it properly rather than preserving it.
 
-Drawn from the product docs — read these for deeper context:
-[V1 Overview](docs/reflect-v1-overview.md) · [V2 Product Vision](docs/reflect-v2-product-vision.md) · [V2 Grounding Brief](docs/reflect-v2-grounding-brief.md) · [Indexing Strategy](docs/reflect-v2-indexing-strategy.md) · [Sync Strategy](docs/reflect-v2-sync-strategy.md)
+A rhizome is a root that grows sideways and connects any point to any other with
+no trunk and no hierarchy — the opposite of the folder tree. That's the organizing
+idea behind the app, and where the name comes from.
 
+### Origin: a fork of Reflect
 
-- **Daily notes first.** The app opens to today's note. All capture flows into the daily note by default.
-- **Association over hierarchy.** `[[Wiki Links]]` replace folders. The note graph is the organizing model; there are no folders.
-- **Markdown is the source of truth.** Notes are `.md` files (`daily/YYYY-MM-DD.md`, `notes/`). SQLite under `.reflect/` is a rebuildable projection of the notes — with one durable exception: the `chat_*` tables hold AI chat history, which is not derivable from markdown. Index wipes and rebuilds must leave them untouched.
-- **No Reflect-hosted APIs.** LLM calls go directly to user-approved providers (OpenAI, Anthropic, etc.). Sync goes to GitHub/iCloud/Git. Never proxy through Reflect infrastructure.
-- **BYOK AI.** AI features use user-supplied keys. Never assume Reflect operates AI infrastructure.
-- **`private: true` is a hard block.** Notes with this frontmatter flag must never have their content sent to any external service — AI, transcription, or otherwise. Enforce at every call site.
-- **Keyboard-native UX.** Every core workflow must be reachable from the keyboard. This is product identity, not polish.
-- **Minimal UI.** Do less, and do it well. Don't add surfaces that compete with the editor.
-- **Secrets in the OS keychain.** API keys and credentials never go in markdown, Git, or `.reflect/`.
-- **Portable data.** Full export (JSON, markdown, HTML) must work from day one.
-- **No Electron.** Desktop shell is Tauri.
-- **MIT open-source core.** Write as if the code is public and will be critiqued.
+This repo began as a fork of [Reflect V2](https://github.com/reflect-app/reflect-open)
+(MIT). That relationship is now **severed**:
+
+- There is no upstream remote. `origin` is `dfalfan/reflect-open` — Daniel's fork.
+  Nothing is pulled from the original project and nothing is contributed back.
+- Diverge freely. Do not preserve upstream's shape, naming, or abstractions to
+  keep some future merge clean; that merge is not coming. Optimize for what makes
+  this app better for its one user.
+- `LICENSE` (MIT, © Reflect App, LLC) covers the inherited code and stays as-is.
+
+**The code still says "reflect" everywhere and that is expected.** Only the docs
+carry the new name. The package scope (`@reflect/core`, `@reflect/desktop`), the
+Rust crates (`reflect-open`, `reflect-cli`), the CLI binary (`reflect`), the
+bundle identifiers (`app.reflect.ios`), and the graph directory (`.reflect/`) are
+all unchanged. Do not rename them opportunistically — it's a large, risky change
+that touches code signing and would be its own deliberate piece of work.
+
+Docs under `docs/` (`reflect-v1-*.md`, `reflect-v2-*.md`, `docs/plans/`) are
+inherited design context from the original project. They explain why the
+architecture looks the way it does. Read them as history and rationale, not as
+requirements Rizoma owes anything to.
+
+### Product principles
+
+These are Daniel's calls, not inherited dogma. They can change — if a principle
+gets in the way, say so rather than working around it.
+
+- **Daily notes first.** The app opens to today's note. Capture flows into the
+  daily note by default.
+- **Association over hierarchy.** `[[Wiki Links]]` replace folders. The note graph
+  is the organizing model; there are no folders.
+- **Markdown is the source of truth.** Notes are `.md` files (`daily/YYYY-MM-DD.md`,
+  `notes/`). SQLite under `.reflect/` is a rebuildable projection of the notes.
+- **Keyboard-native UX.** Every core workflow should be reachable from the keyboard.
+- **Minimal UI.** Do less, and do it well. Don't add surfaces that compete with the
+  editor.
+- **Portable data.** Export (JSON, markdown, HTML) must keep working. The notes are
+  plain files on disk; never trap them.
+
+The next three are **mechanical, not philosophical** — the code implements them and
+breaking one is a real bug, not a change of taste:
+
+- **`private: true` is a hard block.** Notes with this frontmatter flag must never
+  have their content sent to any external service — AI, transcription, or
+  otherwise. Enforced at every call site.
+- **No hosted backend.** LLM calls go directly to user-approved providers
+  (OpenAI, Anthropic, …). Sync goes to GitHub/iCloud/Git. There is no server to
+  proxy through — it does not exist. AI features use Daniel's own API keys.
+- **Secrets live in the OS keychain.** API keys and credentials never go in
+  markdown, Git, or `.reflect/`.
+
+One durable exception to "markdown is the source of truth": the `chat_*` tables
+hold AI chat history, which is not derivable from markdown. Index wipes and
+rebuilds must leave them untouched.
 
 ### Agent workflow
 
@@ -31,71 +81,60 @@ Drawn from the product docs — read these for deeper context:
   does, read the relevant source first and trace behavior to the final output. If
   you have not verified something, say so instead of guessing.
 - **Plan proportionally.** For non-trivial, ambiguous, or high-risk changes, form a
-  short plan before editing and ask for sign-off when the direction affects public
-  APIs, migrations, release behavior, or broad UX. Simple localized fixes can
-  proceed once the relevant context is understood.
-- **Use a dedicated worktree or branch.** Check `git status` before editing and
-  before staging. Preserve unrelated user changes; ask before publishing if the
-  worktree is dirty, the PR scope is ambiguous, or staging would include changes
-  you did not make.
-- **Prefer the clean design.** Optimize for the correct open-source shape rather
-  than the smallest diff. Avoid compatibility shims, dual paths, or legacy behavior
-  unless the product/release context requires them.
-- **Verify locally.** Run typecheck, lint, and targeted tests for the code you
-  touched. If a required check cannot run, report the reason and the residual risk.
-- **Publish completed work.** When a requested implementation is complete and
-  verified, create or use an appropriate branch, commit the intended changes, push,
-  open a normal ready-for-review PR, and wait for CI/checks, Bugbot, review
-  comments, merge conflicts, and other blockers to settle.
+  short plan and get sign-off first — especially for migrations, data-loss risk, or
+  broad UX shifts. Simple localized fixes can proceed once you understand the
+  context.
+- **Check `git status` before editing and before staging.** Preserve unrelated
+  changes; ask before committing if the worktree is dirty or the scope is
+  ambiguous.
+- **Prefer the clean design.** No compatibility shims, no dual paths, no legacy
+  behavior. There is nothing to be compatible with.
+- **Verify locally.** Run `pnpm check` and targeted tests for what you touched. If a
+  check can't run, report why and the residual risk.
+- **You cannot see the UI.** Never try to screenshot or drive the app with a
+  headless browser. For visual feedback on UI work, ask Daniel for a screenshot.
 
 ### Development workflow
 
-Development happens on `next` (the default branch); branch from it and target it with
-PRs. `master` is the public-release branch and only advances when `next` is merged
-into it for a stable release. Versions on `next` carry a prerelease suffix
-(`0.2.0-beta.1`), which the release pipeline publishes as GitHub pre-releases — see
-[docs/macos-distribution.md](docs/macos-distribution.md).
-
-PR titles must be conventional commits (`feat:` / `fix:` / `chore:` …, enforced by
-CI). The title becomes the squash-commit message, drives the release-please version
-bump, and — for `feat`/`fix` — is the user-facing changelog entry, so write it
-as behavior, not implementation. Do not use `feat!:` or `BREAKING CHANGE:` footers;
-see [CONTRIBUTING.md](CONTRIBUTING.md).
-
-The app version lives solely in `apps/desktop/package.json`, maintained by
-release-please through Release PRs. Never hand-edit that version, the changelogs
-(`apps/desktop/CHANGELOG.md`, `apps/desktop/CHANGELOG.beta.md`), or the manifests
-under `.github/release-please/`.
+Work happens directly on `next`, the default and only branch. Commits go straight
+to it — no PRs, no branch protection, no CI gate, no conventional-commit
+requirement. Write commit messages as plain description; Spanish is fine.
 
 1. Make your changes
-2. Run typecheck (`pnpm typecheck`)
-3. Run lint (`pnpm lint`) — fix any errors; `pnpm lint:fix` auto-fixes where possible
-4. Run specific tests for your changes (`pnpm test --run path/to/test`)
+2. `pnpm typecheck`
+3. `pnpm lint` (`pnpm lint:fix` auto-fixes where possible)
+4. `pnpm test --run path/to/test` for the code you touched
 
-`pnpm check` runs typecheck + lint together. Run it before declaring any work done.
+`pnpm check` runs typecheck + lint together. Run it before declaring work done.
+
+**Inherited release machinery is dormant — ignore it.** `.github/workflows/`
+(`ci.yml`, `pr-title.yml`, `release-please.yml`, `release.yml`, `testflight.yml`)
+has never run on this fork: there are no Actions runs and no secrets configured.
+The `0.6.1-beta` in `apps/desktop/package.json`, the changelogs, and the
+`.github/release-please/` manifests are frozen artifacts from the original repo —
+nothing maintains them now. Don't treat them as authoritative, don't try to keep
+them consistent, and don't follow the old rule about never hand-editing them. They
+are kept only because deleting them hasn't been worth the effort yet.
+
+Nothing has been published from this fork. `pnpm release:macos` (local signing +
+notarization) and the iOS/TestFlight helpers are inherited and untested here; see
+[docs/macos-distribution.md](docs/macos-distribution.md) and
+[docs/ios-testflight.md](docs/ios-testflight.md) if that ever becomes interesting.
+Day-to-day, `pnpm tauri dev` is the whole story.
 
 ### Running tests
 
-There are too many tests for you to run them all, so you will just have to run the ones that are specific to whatever logic you've written.
-
-Local unit tests:
+There are too many tests to run them all — run the ones specific to what you wrote.
 
 ```bash
-# Run vitest tests
-pnpm test --run path/to/test
-```
-
-Rust tests (the Cargo workspace: desktop shell, `reflect` CLI, index-schema crate):
-
-```bash
-# Prefer per-crate runs; cargo test --workspace also works
-cargo test -p reflect-cli
-cargo test -p reflect-open
+pnpm test --run path/to/test        # vitest
+cargo test -p reflect-cli           # Rust: the CLI crate
+cargo test -p reflect-open          # Rust: the desktop shell crate
 ```
 
 **Before any cargo build/check/test that compiles the desktop crate** (including
-`--workspace` commands and clippy), the sidecars (the `reflect` CLI and the
-`reflect-capture-host` native-messaging host) must be staged once per checkout:
+`--workspace` commands and clippy), stage the sidecars (the `reflect` CLI and the
+`reflect-capture-host` native-messaging host) once per checkout:
 
 ```bash
 pnpm --filter @reflect/desktop sidecar
@@ -106,8 +145,8 @@ Otherwise tauri-build fails with `resource path binaries/<name>-<triple> doesn't
 
 ### Repo layout
 
-Reflect is a **Turborepo + pnpm monorepo** around a **Tauri 2** desktop/mobile app: a
-React + TypeScript frontend bundled by Vite, embedded in a Rust native shell. The Rust
+A **Turborepo + pnpm monorepo** around a **Tauri 2** desktop/mobile app: a React +
+TypeScript frontend bundled by Vite, embedded in a Rust native shell. The Rust
 crates form a single **Cargo workspace** rooted at the repository root.
 
 ```
@@ -130,7 +169,7 @@ reflect-open/
 │   │   └── public/         # Static assets served by Vite
 │   ├── cli/                # `reflect` — self-contained Rust read/discovery CLI (see docs/cli.md)
 │   ├── extension/          # @reflect/extension — Chrome MV3 capture extension (WXT; see its README)
-│   └── native-host/        # `reflect-capture-host` — native-messaging spooler sidecar (Plan 11)
+│   └── native-host/        # `reflect-capture-host` — native-messaging spooler sidecar
 ├── packages/
 │   ├── core/               # @reflect/core — ALL TS business logic (markdown/, indexing/,
 │   │                       #   graph/, embeddings/, ai/, settings/, ipc/)
@@ -139,24 +178,22 @@ reflect-open/
 │   └── index-schema/       # Shared SQLite migrations for <graph>/.reflect/index.sqlite
 │                           #   (one schema for the desktop writer + CLI reader)
 ├── design-system/          # Design tokens, components, and UI guidelines (see design-system/readme.md)
-├── docs/                   # Product/architecture docs + docs/plans/ (Reflect V2)
+├── docs/                   # Inherited design docs + docs/plans/
 ├── Cargo.toml              # Root Cargo workspace (reflect-open, reflect-cli, reflect-capture-host, reflect-index-schema)
 └── turbo.json, pnpm-workspace.yaml
 ```
 
-### Related repos
-
-- **Meowdown:** the local checkout lives at `~/repos/meowdown`. Meowdown is the
-  first-party hybrid/live-preview Markdown editor that Reflect uses through
-  `@meowdown/core` and `@meowdown/react`. When investigating editor behavior,
-  markdown round-tripping, keybindings, slash menus, wiki links, task checkboxes,
-  paste/drop handling, or mobile editor quirks, check that repo as well as this
-  one. If the root cause is in Meowdown, fix it there and open the PR against the
-  Meowdown project rather than papering over it in Reflect.
+**Related repo — Meowdown:** the local checkout lives at `~/repos/meowdown`. It's
+the hybrid/live-preview Markdown editor this app uses through `@meowdown/core` and
+`@meowdown/react`. When investigating editor behavior, markdown round-tripping,
+keybindings, slash menus, wiki links, task checkboxes, paste/drop handling, or
+mobile editor quirks, check that repo too. Note that Meowdown is a third-party
+upstream — if a root cause lives there, the options are a PR against Meowdown or a
+local workaround here; decide with Daniel rather than assuming.
 
 **Design system**
 
-All UI work should follow the Reflect design system documented in [`design-system/readme.md`](design-system/readme.md). Key resources:
+UI work should follow the design system in [`design-system/readme.md`](design-system/readme.md):
 
 - `design-system/tokens/` — CSS custom properties for color, typography, spacing, and motion
 - `design-system/components/` — reusable React primitives (Button, Input, Badge, etc.)
@@ -176,48 +213,30 @@ pnpm dev              # turbo dev across packages (Vite on http://localhost:1420
                       #   add ?platform=ios to the URL to preview the MOBILE tree in a
                       #   plain browser (dev-only in-memory bridge + seeded demo graph)
 pnpm tauri dev        # Full Tauri app with hot reload (stages the CLI sidecar first)
-pnpm tauri:dev        # `pnpm tauri dev` with the dev overlay → the "Reflect Dev" flavor (green icon, own identifier; coexists with Reflect / Reflect Beta)
+pnpm tauri:dev        # `pnpm tauri dev` with the dev overlay → the "Reflect Dev" flavor
+                      #   (green icon, own identifier; coexists with a released build)
 pnpm build            # turbo build pipeline → apps/desktop/dist/
 pnpm tauri build      # Native app bundle, incl. the reflect CLI sidecar
-pnpm release:macos    # Signed + notarized macOS build for distribution (docs/macos-distribution.md)
-pnpm release:macos publish  # The above, then fill and undraft the release-please draft release
-pnpm tauri:ios:dev "iPhone 17 Pro"  # Run the Tauri iOS target in the simulator (docs/contributing/mobile-simulator.md)
-pnpm release:ios preflight --build-number=123  # Check iOS/TestFlight signing, App Store Connect app record, and upload auth
-pnpm release:ios testflight --build-number=123 --wait  # Build and upload the iOS app to TestFlight
+pnpm check            # typecheck + lint
 ```
 
 **iOS simulator**
 
-The mobile app is the Tauri iOS target of `apps/desktop`, not a separate
-package. Use `pnpm tauri:ios:dev "iPhone 17 Pro"` from the repo root (or
-`pnpm tauri:ios:dev --host` for a physical device); debug builds are the dev
-flavor (`app.reflect.ios.dev`, shown as `Reflect Dev`) and need that script's
-config overlay, so do not run plain `tauri ios dev`. List
-available simulator names with `xcrun simctl list devices available`. The first
-run can be quiet while Xcode compiles Rust, Swift plugin code, and native
-dependencies. See `docs/contributing/mobile-simulator.md` before committing
-changes under `apps/desktop/src-tauri/gen/apple/`, because Tauri/Xcode may
-normalize generated project and plist files.
-
-**iOS TestFlight**
-
-Use `pnpm release:ios` for TestFlight work; do not hand-roll `tauri ios build`
-and `altool` unless debugging the helper itself. Start with
-`pnpm release:ios preflight --build-number=<number>`, then run
-`pnpm release:ios testflight --build-number=<number> --wait` or upload an
-existing IPA with `pnpm release:ios upload --ipa=<path> --wait`.
-
-The iOS bundle identifier is `app.reflect.ios`, intentionally separate from the
-old Capacitor TestFlight app (`app.reflect.ReflectMobile`). The release helper
-verifies the IPA bundle identifier and `ITSAppUsesNonExemptEncryption=false`
-before upload. See `docs/ios-testflight.md` for App Store Connect setup, local
-keychain fallback (`reflect-notary`), API key CI secrets, and troubleshooting.
+The mobile app is the Tauri iOS target of `apps/desktop`, not a separate package.
+Use `pnpm tauri:ios:dev "iPhone 17 Pro"` from the repo root (or
+`pnpm tauri:ios:dev --host` for a physical device); debug builds are the dev flavor
+(`app.reflect.ios.dev`) and need that script's config overlay, so do not run plain
+`tauri ios dev`. List simulator names with `xcrun simctl list devices available`.
+The first run can be quiet while Xcode compiles Rust, Swift plugin code, and native
+dependencies. See `docs/contributing/mobile-simulator.md` before committing changes
+under `apps/desktop/src-tauri/gen/apple/`, because Tauri/Xcode may normalize
+generated project and plist files.
 
 # Code Conventions
 
-Write code as if this open-source repository will be reviewed closely by other
-engineers. Favor small, composable modules, explicit contracts, tests that
-document behavior, and the existing local patterns over new abstractions.
+Favor small, composable modules, explicit contracts, tests that document behavior,
+and the existing local patterns over new abstractions. The bar is "the next person
+to read this is you in six months, with no memory of today."
 
 ## Structured Code Style
 
@@ -227,9 +246,9 @@ document behavior, and the existing local patterns over new abstractions.
 - Prefer `@/` imports where the project already uses them.
 - Avoid comments unless they explain non-obvious decisions or complex logic.
   Do not add comments that merely restate the code.
-- Always write documentation for public APIs.
+- Document public APIs.
 - Never use single-character variable names.
-- Always run build/typecheck/lint before declaring implementation work done.
+- Always run typecheck/lint before declaring implementation work done.
 
 ## TypeScript
 
@@ -289,3 +308,5 @@ document behavior, and the existing local patterns over new abstractions.
   `apps/desktop/src/components/ui/`. If the shadcn primitive is missing locally,
   install or generate it there and use it. Never hand-roll an overlay primitive
   when shadcn already covers it.
+- The UI is in **Spanish**. New user-facing strings should be written in Spanish
+  to match; code, identifiers, and comments stay in English.
