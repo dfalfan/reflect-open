@@ -232,6 +232,17 @@ body {
   label {
     touch-action: manipulation;
   }
+
+  /* Native apps don't show permanent scroll tracks in their content: the
+     document is the chrome, and a track pinned beside the note isn't. Hidden
+     globally rather than per-container — routes mount their own scrollers, so
+     opting each one in by hand would silently miss the next one added.
+     Placed in @layer base so Tailwind's scrollbar-* utilities in
+     @layer utilities can override per-element (the chat scroller opts back
+     into scrollbar-thin). */
+  * {
+    scrollbar-width: none;
+  }
 }
 
 /* One keyboard-focus treatment everywhere. Zero-specificity (`:where`) so any
