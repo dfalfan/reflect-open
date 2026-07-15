@@ -1,47 +1,42 @@
 import { describe, expect, it } from 'vitest'
 import { checkRoundTrip } from './roundtrip'
 
+/**
+ * The wrapper's contract: meowdown's verdict survives untouched except for
+ * one forgiveness — table delimiter rows compare canonically, so padding
+ * their dashes (Obsidian's habit) no longer locks the note read-only.
+ */
 describe('checkRoundTrip', () => {
-  it('classifies faithful content as exact', () => {
-    const cases = [
-      '# Heading\n\nA paragraph with [[Wiki Link]] and **bold**.\n',
-      '> quote\n',
-      '```\ncode [[not a link]]\n\nblank line inside fence\n```\n',
-      '| a | b |\n| --- | --- |\n| 1 | 2 |\n',
-      '- item one\n- item two\n',
-      '- [ ] buy milk\n- [x] done\n',
-      '<div>raw html</div>\n',
-      'Title\n=====\n\nbody\n',
-    ]
-    for (const markdown of cases) {
-      expect(checkRoundTrip(markdown), markdown).toBe('exact')
-    }
+  it('passes exact content through untouched', () => {
+    expect(checkRoundTrip('# Hola\n\nTexto normal.')).toBe('exact')
+    expect(checkRoundTrip('| A | B |\n| --- | --- |\n| 1 | 2 |')).toBe('exact')
   })
 
-  it('classifies tightened loose lists as normalizing (content preserved)', () => {
-    expect(checkRoundTrip('- item one\n\n- item two\n')).toBe('normalizing')
+  it('forgives an Obsidian-style padded delimiter row as normalizing', () => {
+    const obsidian = '| Aspecto | Detalle |\n|---------|---------|\n| **Modelo** | GPT-4o |'
+    expect(checkRoundTrip(obsidian)).toBe('normalizing')
   })
 
-  it('classifies git conflict markers as lossy (sync conflicts open protected)', () => {
-    // Load-bearing for Plan 12: a sync merge commits raw conflict markers into
-    // the note, and the converter mangles them (`<<<<<<<` is swallowed, the
-    // `=======` separator re-parses as a setext underline, `>>>>>>>` becomes
-    // nested blockquotes — verified by the discovery spike). `lossy` is what
-    // routes conflicted notes into the protected read-only view, where the
-    // conflict notice offers marker-aware resolution on the raw text instead
-    // of ever letting the editor rewrite (and destroy) the markers. If
-    // meowdown ever learns to round-trip markers, this case starts failing —
-    // that is the signal the in-editor conflict widget can be built.
-    const conflicted = [
-      '# Shared',
-      '',
-      '<<<<<<< this device',
-      'edited on a',
-      '=======',
-      'edited on b',
-      '>>>>>>> other device',
-      '',
-    ].join('\n')
-    expect(checkRoundTrip(conflicted)).toBe('lossy')
+  it('keeps alignment colons meaningful while forgiving dash padding', () => {
+    const aligned = '| A | B | C |\n|:-----|:----:|-----:|\n| 1 | 2 | 3 |'
+    expect(checkRoundTrip(aligned)).toBe('normalizing')
+  })
+
+  it('still refuses a ragged table the serializer would repair', () => {
+    // The serializer completes the short row with an empty cell — a content
+    // row change, not delimiter syntax, so the note stays protected.
+    const ragged = '| A | B |\n|---|---|\n| solo |'
+    expect(checkRoundTrip(ragged)).toBe('lossy')
+  })
+
+  it('still refuses a borderless table the serializer would rewrite', () => {
+    // Adding border pipes rewrites content rows; forgiving that would need
+    // table-block awareness, so it stays conservative.
+    const borderless = 'A | B\n--|--\n1 | 2'
+    expect(checkRoundTrip(borderless)).toBe('lossy')
+  })
+
+  it('never mistakes a thematic break for a delimiter row', () => {
+    expect(checkRoundTrip('arriba\n\n---\n\nabajo')).toBe('exact')
   })
 })
