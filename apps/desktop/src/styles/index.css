@@ -272,8 +272,9 @@ html:root {
   --meowdown-muted: var(--text-secondary);
   --meowdown-accent: var(--accent);
   /* The caret inherits meowdown's accent by default — a loud brand-purple
-     bar. A quiet gray reads calmer than both the accent and full ink. */
-  --meowdown-caret: var(--text-secondary);
+     bar. A muted gray reads calmer than both the accent and full ink, and
+     lighter still keeps it present without pulling the eye. */
+  --meowdown-caret: var(--text-muted);
   --meowdown-mark: var(--text-muted);
   --meowdown-bullet: var(--text-muted); /* resting bullet dot; collapsed stays themed */
   --meowdown-border: var(--border);
@@ -391,6 +392,26 @@ html:root {
    own stylesheet. */
 .reflect-editor ~ .md-virtual-caret-layer .md-virtual-caret {
   width: 1.5px;
+}
+
+/* The block handle's 6-dot drag grip ships at `--meowdown-muted` (our
+   `--text-secondary`) — heavier than it needs to be for an affordance that
+   only matters on hover. Fade it toward the page so it reads as a hint, not a
+   control, while the +/menu button beside it keeps its own weight. `--text-muted`
+   ties it to text color so it stays faint in either theme; meowdown's react
+   sheet is unlayered, so this later unlayered rule wins on source order. */
+[data-testid='block-handle-drag'] {
+  color: color-mix(in oklab, var(--text-muted) 40%, transparent);
+}
+
+/* Thematic breaks (`---`) inherit `--meowdown-border` (our hairline `--border`),
+   which all but vanishes on the note canvas. Replicate Notion's separator,
+   which tints the dark text ink at ~9% (`--ca-borPriTra` → rgba(55,53,47,.09))
+   rather than laying down a solid light gray: a faint, refined line that reads
+   the same technique in either theme. Unlayered, so it beats meowdown's layered
+   `.ProseMirror hr`. */
+.reflect-editor hr {
+  border-top-color: color-mix(in oklab, var(--text) 9%, transparent);
 }
 
 /* The new-note flow's name field: ghost "Untitled" over the seeded empty H1
