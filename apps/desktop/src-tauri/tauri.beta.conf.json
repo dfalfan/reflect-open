@@ -32,7 +32,7 @@
   "plugins": {
     "updater": {
       "endpoints": [
-        "https://github.com/team-reflect/reflect-open/releases/download/updater-beta/latest.json"
+        "https://github.com/team-reflect/reflect-open/releases/download/updater-dev-noop/latest.json"
       ]
     }
   }
