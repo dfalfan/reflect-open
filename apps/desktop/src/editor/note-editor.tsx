@@ -175,6 +175,13 @@ interface NoteEditorProps {
    * and its selection affordance entirely (e.g. for `private: true` notes).
    */
   onSelectionMenuSearch?: SelectionMenuSearchHandler
+  /**
+   * Whether meowdown shows its floating sparkle button over a selection
+   * (meowdown's default: on). The desktop note pane turns it off — its
+   * `SelectionToolbar` carries the AI entry point instead — while the touch
+   * surface keeps it as the only selection AI affordance.
+   */
+  selectionMenuAffordance?: boolean
   /** Extra controls in the pending-replacement preview footer (e.g. Retry). */
   pendingReplacementActions?: ReactNode
   /** Called when a staged replacement is accepted or discarded. */
@@ -224,6 +231,7 @@ export function NoteEditor({
   onWikilinkSearch,
   onTagSearch,
   onSelectionMenuSearch,
+  selectionMenuAffordance,
   pendingReplacementActions,
   onPendingReplacementResolve,
   onSlashMenuSearch,
@@ -423,6 +431,7 @@ export function NoteEditor({
         {...(onWikilinkSearch !== undefined ? { onWikilinkSearch } : {})}
         {...(onTagSearch !== undefined ? { onTagSearch } : {})}
         {...(onSelectionMenuSearch !== undefined ? { onSelectionMenuSearch } : {})}
+        {...(selectionMenuAffordance !== undefined ? { selectionMenuAffordance } : {})}
         {...(pendingReplacementActions !== undefined ? { pendingReplacementActions } : {})}
         {...(onPendingReplacementResolve !== undefined ? { onPendingReplacementResolve } : {})}
         {...(onSlashMenuSearch !== undefined ? { onSlashMenuSearch } : {})}

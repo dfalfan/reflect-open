@@ -394,6 +394,19 @@ html:root {
   width: 1.5px;
 }
 
+/* The selection toolbar's entrance: opacity only, nothing else — any
+   transform-based enter (zoom, slide) reads as the bar flying in from
+   somewhere. It mounts visibility:hidden and is revealed by the positioning
+   layout effect, so the fade can never start from an unpositioned frame. */
+@keyframes reflect-selection-toolbar-in {
+  from {
+    opacity: 0;
+  }
+}
+.reflect-selection-toolbar {
+  animation: reflect-selection-toolbar-in 150ms ease-out;
+}
+
 /* The block handle's 6-dot drag grip ships at `--meowdown-muted` (our
    `--text-secondary`) — heavier than it needs to be for an affordance that
    only matters on hover. Fade it toward the page so it reads as a hint, not a

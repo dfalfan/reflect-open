@@ -17,6 +17,7 @@ import {
 } from '@/editor/editor-handle-registry'
 import { markModeFromSyntax } from '@/editor/mark-mode'
 import { NoteEditor, type NoteEditorHandle } from '@/editor/note-editor'
+import { SelectionToolbar } from '@/editor/selection-toolbar'
 import { resolveAssetFileLink, useAssetPersistence } from '@/editor/use-asset-persistence'
 import { useEditorAutocomplete } from '@/editor/use-editor-autocomplete'
 import { useNoteDocument } from '@/editor/use-note-document'
@@ -372,6 +373,10 @@ export function NotePaneComponent({
         {...(aiMenu.onSelectionMenuSearch !== undefined
           ? { onSelectionMenuSearch: aiMenu.onSelectionMenuSearch }
           : {})}
+        // On desktop the SelectionToolbar below carries the AI entry point;
+        // meowdown's sparkle would double it. Touch keeps the sparkle as its
+        // only affordance (the toolbar no-ops there).
+        selectionMenuAffordance={isTouchEditorSurface()}
         pendingReplacementActions={aiMenu.pendingReplacementActions}
         onPendingReplacementResolve={aiMenu.onPendingReplacementResolve}
         onSlashMenuSearch={onSlashMenuSearch}
@@ -386,6 +391,11 @@ export function NotePaneComponent({
         onExitBoundary={handleExitBoundary}
       >
         <EditorAiKeymap onTrigger={aiMenu.openMenu} />
+        <SelectionToolbar
+          {...(aiMenu.onSelectionMenuSearch !== undefined
+            ? { onAiRequest: aiMenu.openMenu }
+            : {})}
+        />
       </NoteEditor>
 
       {showBacklinks ? (
