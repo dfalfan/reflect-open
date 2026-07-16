@@ -30,6 +30,7 @@ import {
   type WikilinkSearchHandler,
 } from '@meowdown/react'
 import { EditorInputTraits } from '@/editor/editor-input-traits'
+import { CaretPositionWatch } from '@/editor/caret-position-watch'
 import { FormattingToolbarBridge } from '@/editor/formatting-toolbar-bridge'
 import {
   IMAGE_LIGHTBOX_TRANSITION_NAME,
@@ -434,6 +435,7 @@ export function NoteEditor({
       >
         <EditorInputTraits />
         <FormattingToolbarBridge />
+        <CaretPositionWatch />
         {renderWikilinkHoverCard !== undefined ? (
           <WikilinkHoverCard className="reflect-hover-card">
             {renderWikilinkHoverCard}
