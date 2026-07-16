@@ -12,8 +12,6 @@ import { RouterProvider, useRouter } from '@/routing/router'
 import { DailyContextSidebar } from './daily-context-sidebar'
 
 const dailyDatesInRange = vi.hoisted(() => vi.fn())
-const relatedNotes = vi.hoisted(() => vi.fn())
-const readNote = vi.hoisted(() => vi.fn())
 const useNoteRow = vi.hoisted(() => vi.fn<(path: string) => NoteRow | null>(() => null))
 const openRouteInNewWindow = vi.hoisted(() =>
   vi.fn<(route: NoteRoute) => Promise<boolean>>(),
@@ -22,8 +20,6 @@ vi.mock('@reflect/core', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@reflect/core')>()),
   hasBridge: () => true,
   dailyDatesInRange,
-  readNote,
-  relatedNotes,
 }))
 vi.mock('@/hooks/use-note-row', () => ({ useNoteRow }))
 vi.mock('@/lib/windows/open-in-new-window', async (importOriginal) => ({
@@ -75,8 +71,6 @@ function noteRow(overrides: Partial<NoteRow> = {}): NoteRow {
 beforeEach(() => {
   window.sessionStorage.clear()
   dailyDatesInRange.mockReset().mockResolvedValue([])
-  readNote.mockReset().mockResolvedValue('- daily entry\n')
-  relatedNotes.mockReset().mockResolvedValue([])
   useNoteRow.mockReset().mockReturnValue(null)
   openRouteInNewWindow.mockReset().mockResolvedValue(true)
 })
@@ -183,46 +177,6 @@ describe('DailyContextSidebar calendar', () => {
       </TooltipProvider>,
     )
     expect(view.getByText(monthLabel('2026-09'))).toBeDefined()
-    view.unmount()
-  })
-})
-
-describe('DailyContextSidebar related notes', () => {
-  it('renders no Similar notes section without results', async () => {
-    const view = renderSidebar('2026-06-09')
-    await waitFor(() => expect(relatedNotes).toHaveBeenCalledWith('daily/2026-06-09.md', 6))
-    expect(view.queryByText('Notas similares')).toBeNull()
-    view.unmount()
-  })
-
-  it('does not calculate Similar notes for an empty-bullet daily note', async () => {
-    readNote.mockResolvedValue('- \n')
-    const view = renderSidebar('2026-06-09')
-    await waitFor(() => expect(readNote).toHaveBeenCalledWith('daily/2026-06-09.md'))
-    await new Promise((resolve) => setTimeout(resolve, 0))
-    expect(relatedNotes).not.toHaveBeenCalled()
-    expect(view.queryByText('Notas similares')).toBeNull()
-    view.unmount()
-  })
-
-  it('lists semantic neighbors when they exist', async () => {
-    relatedNotes.mockResolvedValue([
-      {
-        path: 'notes/rust.md',
-        title: 'Rust',
-        score: 0.9,
-        snippet: 'borrow checker notes',
-        heading: null,
-        isPrivate: false,
-      },
-    ])
-    const view = renderSidebar('2026-06-09')
-    await view.findByText('Rust')
-    // The daily sidebar wires SimilarNotesSection (note-context-sidebar's
-    // tests pin the same title).
-    expect(view.getByText('Notas similares')).toBeDefined()
-    await userEvent.click(view.getByText('Rust'))
-    expect(view.getByTestId('route').textContent).toContain('notes/rust.md')
     view.unmount()
   })
 })
